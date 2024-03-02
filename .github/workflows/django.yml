@@ -1,0 +1,72 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.11]
+
+    services:
+      mariadb:
+        image: mariadb:10.9
+        env:
+          MYSQL_ROOT_PASSWORD: ci_pipe_pssw
+          MYSQL_DATABASE: montrek_ci_pipe_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: Clone Montrek Repository
+      uses: actions/checkout@master
+      with:
+        repository: chrishombach/montrek
+        token: ${{ secrets.ECONOMIC_COMMON_PAT }}
+        path: ./montrek
+        ref: ${{ vars.MONTREK_BASE_VERSION }}
+    - uses: actions/checkout@v3
+      with:
+        path: ./montrek/montrek/${{ vars.MONTREK_PROJECT }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Dependencies
+      run: |
+        cd montrek
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Setup env
+      run: |
+        echo "DB_USER=root" >> .env
+        echo "DB_PASSWORD=ci_pipe_pssw" >> .env
+        echo "DB_NAME=montrek_ci_pipe_db" >> .env
+        echo "DB_HOST=0.0.0.0" >> .env
+        echo "INSTALLED_APPS=${{ vars.INSTALLED_APPS }} " >> .env
+    - name: Run migrations
+      run: |
+        cd montrek/montrek
+        echo $DB_NAME
+        python manage.py makemigrations
+
+    - name: Run Tests and Coverage
+      run: |
+        cd montrek/montrek
+        coverage run manage.py test ${{ vars.MONTREK_PROJECT }} --exclude-tag=functional
+        coverage report
+        coverage html -d coverage_html
+
+    - name: Upload coverage HTML report
+      uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report
+        path: montrek/coverage_html
