@@ -20,12 +20,10 @@ class CurrencyRepository(MontrekRepository):
         self.add_last_ts_satellite_fields_annotations(
             CurrencyTimeSeriesSatellite,
             ["fx_rate"],
-            self.reference_date,
         )
         self.add_satellite_fields_annotations(
             CurrencyStaticSatellite,
             ["ccy_name", "ccy_code"],
-            self.reference_date,
         )
         return self.build_queryset()
 
