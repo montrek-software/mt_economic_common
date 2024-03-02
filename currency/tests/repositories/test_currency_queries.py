@@ -1,9 +1,13 @@
 from django.test import TestCase
 from django.utils import timezone
-from currency.tests.factories.currency_factories import CurrencyStaticSatelliteFactory
-from currency.repositories.currency_queries import get_all_currency_codes_from_db
-from currency.repositories.currency_queries import add_fx_rate_to_ccy
-from currency.models import CurrencyTimeSeriesSatellite
+from mt_economic_common.currency.tests.factories.currency_factories import (
+    CurrencyStaticSatelliteFactory,
+)
+from mt_economic_common.currency.repositories.currency_queries import (
+    get_all_currency_codes_from_db,
+)
+from mt_economic_common.currency.repositories.currency_queries import add_fx_rate_to_ccy
+from mt_economic_common.currency.models import CurrencyTimeSeriesSatellite
 
 
 TEST_CURRENCY_CODES = ["USD", "EUR", "GBP"]

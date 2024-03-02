@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from country.tests.factories.country_factories import CountryStaticSatelliteFactory
-from country.repositories.country_repository import CountryRepository
+from mt_economic_common.country.tests.factories.country_factories import (
+    CountryStaticSatelliteFactory,
+)
+from mt_economic_common.country.repositories.country_repository import CountryRepository
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 
 

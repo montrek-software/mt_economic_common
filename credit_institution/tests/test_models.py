@@ -1,12 +1,14 @@
 import hashlib
 from django.test import TestCase
-from credit_institution.tests.factories.credit_institution_factories import (
+from mt_economic_common.credit_institution.tests.factories.credit_institution_factories import (
     CreditInstitutionHubFactory,
 )
-from credit_institution.tests.factories.credit_institution_factories import (
+from mt_economic_common.credit_institution.tests.factories.credit_institution_factories import (
     CreditInstitutionStaticSatelliteFactory,
 )
-from credit_institution.models import CreditInstitutionStaticSatellite
+from mt_economic_common.credit_institution.models import (
+    CreditInstitutionStaticSatellite,
+)
 
 
 class TestCreditInstitutionModels(TestCase):

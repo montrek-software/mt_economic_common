@@ -1,8 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from country.repositories.country_repository import CountryRepository
-from country.tests.factories.country_factories import CountryStaticSatelliteFactory
+from mt_economic_common.country.repositories.country_repository import CountryRepository
+from mt_economic_common.country.tests.factories.country_factories import (
+    CountryStaticSatelliteFactory,
+)
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 
 

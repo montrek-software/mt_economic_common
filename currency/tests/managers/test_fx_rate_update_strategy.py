@@ -3,12 +3,16 @@ from typing import List, Dict
 import decimal
 from django.test import TestCase
 from django.utils import timezone
-from currency.managers.fx_rate_update_strategy import (
+from mt_economic_common.currency.managers.fx_rate_update_strategy import (
     FxRateUpdateStrategy,
     YahooFxRateUpdateStrategy,
 )
-from currency.tests.factories.currency_factories import CurrencyStaticSatelliteFactory
-from currency.repositories.currency_repository import CurrencyRepository
+from mt_economic_common.currency.tests.factories.currency_factories import (
+    CurrencyStaticSatelliteFactory,
+)
+from mt_economic_common.currency.repositories.currency_repository import (
+    CurrencyRepository,
+)
 from baseclasses.utils import montrek_time
 
 TEST_CURRENCY_CODES = ["USD", "EUR", "GBP"]
@@ -43,16 +47,14 @@ class TestFxRateUpdateStrategy(TestCase):
         strategy.update_fx_rates(self.test_time)
 
         for currency_hub in CurrencyRepository().std_queryset().all():
-            self.assertEqual(
-                currency_hub.fx_rate, 1.0
-            )
+            self.assertEqual(currency_hub.fx_rate, 1.0)
 
 
 class TestYahooFxRateUpdateStrategy(TestFxRateUpdateStrategy):
     def test_get_fx_rates_from_source(self):
         strategy = YahooFxRateUpdateStrategy()
         strategy.update_fx_rates(self.test_time)
-        expected_rates = {'USD': 0.9125, 'EUR': 1.0, 'GBP': 1.1529}
+        expected_rates = {"USD": 0.9125, "EUR": 1.0, "GBP": 1.1529}
         for currency_hub in CurrencyRepository().std_queryset().all():
             ccy_code = currency_hub.ccy_code
             self.assertAlmostEqual(
@@ -60,7 +62,7 @@ class TestYahooFxRateUpdateStrategy(TestFxRateUpdateStrategy):
                 decimal.Decimal(expected_rates[ccy_code]),
             )
 
-    #def test_get_fx_rates_on_weekends(self):
+    # def test_get_fx_rates_on_weekends(self):
     #    strategy = YahooFxRateUpdateStrategy()
     #    strategy.update_fx_rates(montrek_time(2024,1,14)) # Sunday
     #    for currency_hub in CurrencyRepository().std_queryset().all():
@@ -79,14 +81,17 @@ class TestYahooFxRateUpdateStrategy(TestFxRateUpdateStrategy):
 
     def test_receive_no_data_message(self):
         strategy = YahooFxRateUpdateStrategy()
-        strategy.handle_hist_data_and_return_fx_rates(pd.DataFrame(), '', 'bli', 'blubb')
+        strategy.handle_hist_data_and_return_fx_rates(
+            pd.DataFrame(), "", "bli", "blubb"
+        )
         self.assertEqual(len(strategy.fx_rates), 0)
         self.assertEqual(len(strategy.messages), 1)
         self.assertEqual(
             strategy.messages[0].message,
             "YahooFxRateUpdateStrategy: bli has no data for blubb",
         )
-        strategy.handle_hist_data_and_return_fx_rates(pd.DataFrame({'Close': [1.2]}), 'EUR', 'bli', 'blubb')
+        strategy.handle_hist_data_and_return_fx_rates(
+            pd.DataFrame({"Close": [1.2]}), "EUR", "bli", "blubb"
+        )
         self.assertEqual(len(strategy.fx_rates), 1)
-        self.assertEqual(strategy.fx_rates['EUR'], 1.2)
-
+        self.assertEqual(strategy.fx_rates["EUR"], 1.2)

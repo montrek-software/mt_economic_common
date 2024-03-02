@@ -1,5 +1,8 @@
 from django.test import TestCase
-from country.tests.factories.country_factories import CountryStaticSatelliteFactory
+from mt_economic_common.country.tests.factories.country_factories import (
+    CountryStaticSatelliteFactory,
+)
+
 
 class TestCountryStaticSatellite(TestCase):
     def test_str(self):

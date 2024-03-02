@@ -1,7 +1,11 @@
 from django.test import TestCase
 from django.urls import reverse
-from currency.repositories.currency_repository import CurrencyRepository
-from currency.tests.factories.currency_factories import CurrencyStaticSatelliteFactory
+from mt_economic_common.currency.repositories.currency_repository import (
+    CurrencyRepository,
+)
+from mt_economic_common.currency.tests.factories.currency_factories import (
+    CurrencyStaticSatelliteFactory,
+)
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 
 

@@ -1,9 +1,9 @@
 from django.test import TestCase
-from currency.tests.factories.currency_factories import (
+from mt_economic_common.currency.tests.factories.currency_factories import (
     CurrencyStaticSatelliteFactory,
     CurrencyTimeSeriesSatelliteFactory,
 )
-from currency.models import CurrencyHub
+from mt_economic_common.currency.models import CurrencyHub
 
 
 class TestCurrencyModels(TestCase):
