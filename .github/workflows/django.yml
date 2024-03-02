@@ -30,7 +30,7 @@ jobs:
       uses: actions/checkout@master
       with:
         repository: chrishombach/montrek
-        token: ${{ secrets.ECONOMINC_COMMON_PAT }}
+        token: ${{ secrets.ECONOMIC_COMMON_PAT }}
         path: ./montrek
         ref: ${{ vars.MONTREK_BASE_VERSION }}
     - uses: actions/checkout@v3
