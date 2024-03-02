@@ -1,6 +1,6 @@
 from django import forms
 
-from country.repositories.country_repository import CountryRepository
+from mt_economic_common.country.repositories.country_repository import CountryRepository
 from baseclasses.forms import MontrekCreateForm
 
 

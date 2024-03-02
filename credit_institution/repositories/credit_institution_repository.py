@@ -6,7 +6,7 @@ from mt_economic_common.credit_institution.models import (
 )
 from baseclasses.repositories.db_helper import get_satellite_from_hub_query
 from baseclasses.repositories.montrek_repository import MontrekRepository
-from country.models import CountryStaticSatellite
+from mt_economic_common.country.models import CountryStaticSatellite
 
 
 class CreditInstitutionRepository(MontrekRepository):
