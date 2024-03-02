@@ -13,7 +13,6 @@ class CreditInstitutionRepository(MontrekRepository):
     hub_class = CreditInstitutionHub
 
     def std_queryset(self, **kwargs):
-        reference_date = timezone.now()
         self.add_satellite_fields_annotations(
             CreditInstitutionStaticSatellite,
             [
@@ -21,7 +20,6 @@ class CreditInstitutionRepository(MontrekRepository):
                 "credit_institution_bic",
                 "account_upload_method",
             ],
-            reference_date,
         )
         self.add_linked_satellites_field_annotations(
             CountryStaticSatellite,
@@ -30,7 +28,6 @@ class CreditInstitutionRepository(MontrekRepository):
                 "country_name",
                 "hub_entity_id",
             ],
-            reference_date,
         )
         self.rename_field("hub_entity_id", "country_id")
         return self.build_queryset()
