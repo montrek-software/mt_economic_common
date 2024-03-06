@@ -80,7 +80,7 @@ class CountryDetailsView(MontrekDetailView):
         )
         action_update_country = ActionElement(
             icon="pencil",
-            link=reverse("country_update", kwargs={"pk": self.obj.id}),
+            link=reverse("country_update", kwargs={"pk": self.kwargs["pk"]}),
             action_id="id_update_country",
             hover_text="Update Country",
         )
