@@ -1,3 +1,5 @@
+from django.urls import reverse
+from baseclasses.dataclasses.view_classes import ActionElement
 from baseclasses.views import MontrekListView, MontrekDetailView, MontrekCreateView
 from baseclasses.dataclasses.table_elements import (
     StringTableElement,
@@ -44,6 +46,16 @@ class CreditInstitutionOverview(MontrekListView):
             ),
         )
 
+    @property
+    def actions(self) -> tuple:
+        action_create = ActionElement(
+            icon="plus",
+            link=reverse("credit_institution_create"),
+            action_id="create_credit_institution",
+            hover_text="Create Credit Institution",
+        )
+        return (action_create,)
+
 
 class CreditInstitutionCreate(MontrekCreateView):
     page_class = CreditInstitutionAppPage
@@ -65,3 +77,13 @@ class CreditIntitutionDetailView(MontrekDetailView):
             StringTableElement(name="BIC", attr="credit_institution_bic"),
             StringTableElement(name="Upload Method", attr="account_upload_method"),
         )
+
+    @property
+    def actions(self) -> tuple:
+        action_back = ActionElement(
+            icon="arrow-left",
+            link=reverse("credit_institution"),
+            action_id="back_to_overview",
+            hover_text="Back to Overview",
+        )
+        return (action_back,)
