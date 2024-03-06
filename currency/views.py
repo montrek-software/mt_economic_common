@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.urls import reverse
+from baseclasses.dataclasses.view_classes import ActionElement
 from baseclasses.views import MontrekListView
 from baseclasses.views import MontrekDetailView
 from baseclasses.views import MontrekCreateView
@@ -38,6 +39,16 @@ class CurrencyOverview(MontrekListView):
             ),
         )
 
+    @property
+    def actions(self) -> tuple:
+        action_new_currency = ActionElement(
+            icon="plus",
+            link=reverse("currency_create"),
+            action_id="id_create_currency",
+            hover_text="Create Currency",
+        )
+        return (action_new_currency,)
+
 
 class CurrencyDetailView(MontrekDetailView):
     page_class = CurrencyPage
@@ -46,12 +57,22 @@ class CurrencyDetailView(MontrekDetailView):
     title = "Details"
 
     @property
-    def elements(self) -> dict:
+    def elements(self) -> tuple:
         return (
             StringTableElement(name="Name", attr="ccy_name"),
             StringTableElement(name="Code", attr="ccy_code"),
             FloatTableElement(name="FX Rate", attr="fx_rate"),
         )
+
+    @property
+    def actions(self) -> tuple:
+        action_back = ActionElement(
+            icon="chevron-left",
+            link=reverse("currency"),
+            action_id="id_back",
+            hover_text="Back to Overview",
+        )
+        return (action_back,)
 
 
 class CurrencyCreateView(MontrekCreateView):
