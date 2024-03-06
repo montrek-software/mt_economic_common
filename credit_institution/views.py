@@ -71,7 +71,7 @@ class CreditIntitutionDetailView(MontrekDetailView):
     title = "Details"
 
     @property
-    def elements(self) -> dict:
+    def elements(self) -> tuple:
         return (
             StringTableElement(name="Name", attr="credit_institution_name"),
             StringTableElement(name="BIC", attr="credit_institution_bic"),
