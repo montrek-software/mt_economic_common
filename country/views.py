@@ -173,4 +173,11 @@ class CountryMapView(MontrekTemplateView):
 
     def get_context_data(self, **kwargs):
         country = self.repository().std_queryset().get(id=kwargs["pk"])
-        return {"country_google_maps_url": country.country_google_maps_url}
+        long = country.country_long
+        lat = country.country_lat
+        box_coords = [long - 5, lat + 5, long + 5, lat - 5]
+        embedded_url = f"https://www.openstreetmap.org/export/embed.html?bbox={box_coords[0]}%2C{box_coords[3]}%2C{box_coords[2]}%2C{box_coords[1]}&layer=mapnik&marker={lat}%2C{long}"
+        return {
+            "country_google_maps_url": country.country_google_maps_url,
+            "embedded_url": embedded_url,
+        }

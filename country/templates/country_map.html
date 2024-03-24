@@ -2,7 +2,11 @@
 {% block content %}
 <div class="container">
     <div class="row">
-      {{ country_google_maps_url }}
+      <iframe src="{{ embedded_url }}" width="600" height="450" style="border:2;" allowfullscreen="" loading="lazy"></iframe>
     </div>
+    <div class="row">
+      <div class="col-md-12">
+        <a href={{ country_google_maps_url }}>View On Google Maps</a>
+      </div>
 </div>
 {% endblock %}
