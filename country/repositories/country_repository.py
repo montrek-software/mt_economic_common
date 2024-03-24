@@ -8,6 +8,25 @@ class CountryRepository(MontrekRepository):
 
     def std_queryset(self):
         self.add_satellite_fields_annotations(
-            CountryStaticSatellite, ["country_name", "country_code"]
+            CountryStaticSatellite,
+            [
+                "country_name",
+                "country_official_name",
+                "country_code",
+                "country_flag",
+                "country_lat",
+                "country_long",
+                "country_un_member",
+                "country_region",
+                "country_subregion",
+                "country_continent",
+                "country_capital",
+                "country_area",
+                "country_population",
+                "country_continent",
+                "country_postal_code_format",
+                "country_postal_code_regex",
+                "country_google_maps_url",
+            ],
         )
         return self.build_queryset().order_by("country_name")

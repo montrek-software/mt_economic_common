@@ -6,6 +6,8 @@ from mt_economic_common.country.managers.country_manager import (
 
 
 class MockCountryRequestManager:
+    base_url = "test_url"
+
     def get_countries_as_json(self):
         return [
             {
