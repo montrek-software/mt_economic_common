@@ -107,4 +107,4 @@ class CountryUpdateView(MontrekUpdateView):
 def upload_countries_rest_countries(request):
     man = RestCountriesManager(session_data={"user_id": request.user.id})
     man.write_countries_to_db()
-    HttpResponseRedirect(reverse("country"))
+    return HttpResponseRedirect(reverse("country"))

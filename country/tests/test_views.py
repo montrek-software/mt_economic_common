@@ -54,3 +54,15 @@ class TestCountryUpdateView(TestCase):
         url = reverse("country_update", kwargs={"pk": country.hub_entity.id})
         response = self.client.get(url)
         self.assertTemplateUsed(response, "montrek_create.html")
+
+
+class TestUploadCountriesRestCountries(TestCase):
+    def setUp(self):
+        self.user = MontrekUserFactory()
+        self.client.force_login(self.user)
+
+    def test_upload_countries_rest_countries_returns_correct_html(self):
+        url = reverse("upload_countries_rest_countries")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("country"))
