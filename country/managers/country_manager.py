@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+import json
 from mt_economic_common.country.repositories.country_repository import CountryRepository
 from mt_economic_common.country.managers.country_request_manager import (
     CountryRequestManager,
@@ -26,7 +28,7 @@ class RestCountriesManager(CountryManager):
     request_manager = RestCountriesRequestManager()
 
     def _countries_json_to_df(self, countries_json: list) -> pd.DataFrame:
-        countries_df = pd.DataFrame(countries_json)
+        countries_df = pd.read_json(json.dumps(countries_json))
         countries_df["country_name"] = countries_df["name"].apply(lambda x: x["common"])
         countries_df["country_official_name"] = countries_df["name"].apply(
             lambda x: x["official"]
@@ -41,14 +43,15 @@ class RestCountriesManager(CountryManager):
         countries_df["country_continent"] = countries_df["continents"].apply(
             lambda x: ", ".join(x) if x else None
         )
+        countries_df["capital"] = countries_df["capital"].fillna("None")
         countries_df["country_capital"] = countries_df["capital"].apply(
-            lambda x: ", ".join(x) if x else None
+            lambda x: ", ".join(x)
         )
         countries_df["country_postal_code_format"] = countries_df["postalCode"].apply(
-            lambda x: x["format"] if x else None
+            lambda x: self._get_json_field(x, "format")
         )
         countries_df["country_postal_code_regex"] = countries_df["postalCode"].apply(
-            lambda x: x["regex"] if x else None
+            lambda x: self._get_json_field(x, "regex")
         )
         countries_df["country_google_maps_url"] = countries_df["maps"].apply(
             lambda x: x["googleMaps"] if x else None
@@ -79,3 +82,8 @@ class RestCountriesManager(CountryManager):
             ]
             + list(rename_columns.values()),
         ]
+
+    def _get_json_field(self, json_obj: dict | None, field_name: str):
+        if pd.isnull(json_obj):
+            return None
+        return json_obj.get(field_name, None)
