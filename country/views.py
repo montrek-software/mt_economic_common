@@ -1,4 +1,6 @@
+from logging import warn
 from django.urls import reverse
+from django.views.generic.base import HttpResponseRedirect
 
 from baseclasses.views import (
     MontrekCreateView,
@@ -11,6 +13,7 @@ from baseclasses.dataclasses.view_classes import ActionElement
 from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
 from mt_economic_common.country.repositories.country_repository import CountryRepository
 from mt_economic_common.country.forms import CountryCreateForm
+from mt_economic_common.country.managers.country_manager import RestCountriesManager
 
 
 class CountryCreateView(MontrekCreateView):
@@ -30,9 +33,12 @@ class CountryOverview(MontrekListView):
     @property
     def elements(self) -> tuple:
         return (
-            table_elements.StringTableElement(
+            table_elements.LinkTextTableElement(
                 name="Country Name",
-                attr="country_name",
+                url="country_details",
+                kwargs={"pk": "id"},
+                text="country_name",
+                hover_text="View Country",
             ),
             table_elements.StringTableElement(
                 name="Country Code",
@@ -48,7 +54,13 @@ class CountryOverview(MontrekListView):
             action_id="id_create_country",
             hover_text="Create country",
         )
-        return (action_new_country,)
+        action_upload_countries = ActionElement(
+            icon="upload",
+            link=reverse("upload_countries_rest_countries"),
+            action_id="id_upload_countries",
+            hover_text="Upload countries from RestCountries.com",
+        )
+        return (action_new_country, action_upload_countries)
 
 
 class CountryDetailsView(MontrekDetailView):
@@ -93,3 +105,9 @@ class CountryUpdateView(MontrekUpdateView):
     title = "Country Update"
     form_class = CountryCreateForm
     success_url = "country"
+
+
+def upload_countries_rest_countries(request):
+    man = RestCountriesManager(session_data={"user_id": request.user.id})
+    man.write_countries_to_db()
+    return HttpResponseRedirect(reverse("country"))

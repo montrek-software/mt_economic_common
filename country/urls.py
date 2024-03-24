@@ -22,4 +22,9 @@ urlpatterns = [
         views.CountryUpdateView.as_view(),
         name="country_update",
     ),
+    path(
+        "upload_countries_rest_countries",
+        views.upload_countries_rest_countries,
+        name="upload_countries_rest_countries",
+    ),
 ]

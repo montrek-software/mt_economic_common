@@ -10,4 +10,4 @@ class CountryRepository(MontrekRepository):
         self.add_satellite_fields_annotations(
             CountryStaticSatellite, ["country_name", "country_code"]
         )
-        return self.build_queryset()
+        return self.build_queryset().order_by("country_name")
