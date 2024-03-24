@@ -73,15 +73,15 @@ class CountryDetailsView(MontrekDetailView):
     def elements(self) -> tuple:
         return (
             table_elements.StringTableElement(
-                name="Country Name",
+                name="Name",
                 attr="country_name",
             ),
             table_elements.StringTableElement(
-                name="Country Official Name",
+                name="Official Name",
                 attr="country_official_name",
             ),
             table_elements.StringTableElement(
-                name="Country Code",
+                name="Code",
                 attr="country_code",
             ),
             table_elements.ImageTableElement(
@@ -89,35 +89,35 @@ class CountryDetailsView(MontrekDetailView):
                 attr="country_flag",
             ),
             table_elements.FloatTableElement(
-                name="Country Latitude",
+                name="Latitude",
                 attr="country_lat",
             ),
             table_elements.FloatTableElement(
-                name="Country Longitude",
+                name="Longitude",
                 attr="country_long",
             ),
             table_elements.StringTableElement(
-                name="Country Capital",
+                name="Capital",
                 attr="country_capital",
             ),
             table_elements.StringTableElement(
-                name="Country Region",
+                name="Region",
                 attr="country_region",
             ),
             table_elements.StringTableElement(
-                name="Country Subregion",
+                name="Subregion",
                 attr="country_subregion",
             ),
             table_elements.StringTableElement(
-                name="Country Continent",
+                name="Continent",
                 attr="country_continent",
             ),
             table_elements.IntTableElement(
-                name="Country Area",
+                name="Area",
                 attr="country_area",
             ),
             table_elements.IntTableElement(
-                name="Country Population",
+                name="Population",
                 attr="country_population",
             ),
             table_elements.BooleanTableElement(
