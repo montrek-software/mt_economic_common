@@ -21,7 +21,7 @@ class CountryStaticSatellite(baseclass_models.MontrekSatelliteABC):
     country_area = models.FloatField(null=True)
     country_population = models.BigIntegerField(null=True)
     country_continent = models.CharField(max_length=100, null=True)
-    country_flag = models.CharField(max_length=50, null=True)
+    country_flag = models.CharField(max_length=255, null=True)
     country_postal_code_format = models.CharField(max_length=255, null=True)
     country_postal_code_regex = models.CharField(max_length=255, null=True)
     country_google_maps_url = models.CharField(max_length=255, null=True)
@@ -31,7 +31,7 @@ class CountryStaticSatellite(baseclass_models.MontrekSatelliteABC):
         return self.country_name
 
     @classmethod
-    def exclude_fields(cls) -> list[str]:
-        exclude_fields = super().exclude_fields()
+    def exclude_from_hash_value(cls) -> list[str]:
+        exclude_fields = super().exclude_from_hash_value()
         exclude_fields.append("country_flag")
         return exclude_fields

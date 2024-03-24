@@ -77,8 +77,60 @@ class CountryDetailsView(MontrekDetailView):
                 attr="country_name",
             ),
             table_elements.StringTableElement(
+                name="Country Official Name",
+                attr="country_official_name",
+            ),
+            table_elements.StringTableElement(
                 name="Country Code",
                 attr="country_code",
+            ),
+            table_elements.ImageTableElement(
+                name="Flag",
+                attr="country_flag",
+            ),
+            table_elements.FloatTableElement(
+                name="Country Latitude",
+                attr="country_lat",
+            ),
+            table_elements.FloatTableElement(
+                name="Country Longitude",
+                attr="country_long",
+            ),
+            table_elements.StringTableElement(
+                name="Country Capital",
+                attr="country_capital",
+            ),
+            table_elements.StringTableElement(
+                name="Country Region",
+                attr="country_region",
+            ),
+            table_elements.StringTableElement(
+                name="Country Subregion",
+                attr="country_subregion",
+            ),
+            table_elements.StringTableElement(
+                name="Country Continent",
+                attr="country_continent",
+            ),
+            table_elements.IntTableElement(
+                name="Country Area",
+                attr="country_area",
+            ),
+            table_elements.IntTableElement(
+                name="Country Population",
+                attr="country_population",
+            ),
+            table_elements.BooleanTableElement(
+                name="UN Member",
+                attr="country_un_member",
+            ),
+            table_elements.StringTableElement(
+                name="Postal Code Format",
+                attr="country_postal_code_format",
+            ),
+            table_elements.StringTableElement(
+                name="Postal Code Regex",
+                attr="country_postal_code_regex",
             ),
         )
 

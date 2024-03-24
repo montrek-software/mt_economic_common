@@ -56,6 +56,9 @@ class RestCountriesManager(CountryManager):
         countries_df["country_google_maps_url"] = countries_df["maps"].apply(
             lambda x: x["googleMaps"] if x else None
         )
+        countries_df["country_flag"] = countries_df["flags"].apply(
+            lambda x: x["png"] if x else None
+        )
         rename_columns = {
             "cca2": "country_code",
             "capital": "country_capital",
@@ -64,7 +67,6 @@ class RestCountriesManager(CountryManager):
             "subregion": "country_subregion",
             "area": "country_area",
             "population": "country_population",
-            "flag": "country_flag",
         }
         countries_df = countries_df.rename(columns=rename_columns)
         return countries_df.loc[
@@ -79,6 +81,7 @@ class RestCountriesManager(CountryManager):
                 "country_postal_code_format",
                 "country_postal_code_regex",
                 "country_google_maps_url",
+                "country_flag",
             ]
             + list(rename_columns.values()),
         ]
