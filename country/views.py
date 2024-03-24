@@ -7,6 +7,7 @@ from baseclasses.views import (
     MontrekListView,
     MontrekDetailView,
     MontrekUpdateView,
+    MontrekTemplateView,
 )
 from baseclasses.dataclasses import table_elements
 from baseclasses.dataclasses.view_classes import ActionElement
@@ -163,3 +164,13 @@ def upload_countries_rest_countries(request):
     man = RestCountriesManager(session_data={"user_id": request.user.id})
     man.write_countries_to_db()
     return HttpResponseRedirect(reverse("country"))
+
+
+class CountryMapView(MontrekTemplateView):
+    page_class = CountryPage
+    template_name = "country_map.html"
+    repository = CountryRepository
+
+    def get_context_data(self, **kwargs):
+        country = self.repository().std_queryset().get(id=kwargs["pk"])
+        return {"country_google_maps_url": country.country_google_maps_url}

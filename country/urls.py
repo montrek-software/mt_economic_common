@@ -27,4 +27,9 @@ urlpatterns = [
         views.upload_countries_rest_countries,
         name="upload_countries_rest_countries",
     ),
+    path(
+        "map/<int:pk>",
+        views.CountryMapView.as_view(),
+        name="country_map",
+    ),
 ]
