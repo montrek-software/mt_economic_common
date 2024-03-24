@@ -171,15 +171,29 @@ class CountryMapView(MontrekTemplateView):
     template_name = "country_map.html"
     repository = CountryRepository
     title = "Map"
+    tab = "tab_map"
 
     def get_template_context(self) -> dict:
         country = self.repository().std_queryset().get(id=self.kwargs["pk"])
         long = country.country_long
         lat = country.country_lat
+        long = long if long else 0
+        lat = lat if lat else 90
         box_coords = [long - 5, lat + 5, long + 5, lat - 5]
         embedded_url = f"https://www.openstreetmap.org/export/embed.html?bbox={box_coords[0]}%2C{box_coords[3]}%2C{box_coords[2]}%2C{box_coords[1]}&layer=mapnik&marker={lat}%2C{long}"
+        google_maps_url = country.country_google_maps_url
+        google_maps_url = (
+            google_maps_url if google_maps_url else "https://www.google.com/maps"
+        )
+        open_street_map_url = country.country_open_street_map_url
+        open_street_map_url = (
+            open_street_map_url
+            if open_street_map_url
+            else "https://www.openstreetmap.org"
+        )
         return {
-            "country_google_maps_url": country.country_google_maps_url,
+            "country_google_maps_url": google_maps_url,
+            "country_open_street_map_url": open_street_map_url,
             "embedded_url": embedded_url,
         }
 

@@ -27,6 +27,7 @@ class CountryRepository(MontrekRepository):
                 "country_postal_code_format",
                 "country_postal_code_regex",
                 "country_google_maps_url",
+                "country_open_street_map_url",
             ],
         )
         return self.build_queryset().order_by("country_name")
