@@ -170,9 +170,10 @@ class CountryMapView(MontrekTemplateView):
     page_class = CountryPage
     template_name = "country_map.html"
     repository = CountryRepository
+    title = "Map"
 
-    def get_context_data(self, **kwargs):
-        country = self.repository().std_queryset().get(id=kwargs["pk"])
+    def get_template_context(self) -> dict:
+        country = self.repository().std_queryset().get(id=self.kwargs["pk"])
         long = country.country_long
         lat = country.country_lat
         box_coords = [long - 5, lat + 5, long + 5, lat - 5]
@@ -181,3 +182,13 @@ class CountryMapView(MontrekTemplateView):
             "country_google_maps_url": country.country_google_maps_url,
             "embedded_url": embedded_url,
         }
+
+    @property
+    def actions(self) -> tuple:
+        action_back = ActionElement(
+            icon="arrow-left",
+            link=reverse("country"),
+            action_id="back_to_overview",
+            hover_text="Back to Overview",
+        )
+        return (action_back,)

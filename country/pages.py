@@ -31,4 +31,9 @@ class CountryPage(MontrekPage):
             link=reverse("country_details", args=[self.obj.id]),
             html_id="tab_details",
         )
-        return [details_tab]
+        map_tab = TabElement(
+            name="Map",
+            link=reverse("country_map", args=[self.obj.id]),
+            html_id="tab_map",
+        )
+        return [details_tab, map_tab]
