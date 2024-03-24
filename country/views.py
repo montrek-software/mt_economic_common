@@ -33,9 +33,12 @@ class CountryOverview(MontrekListView):
     @property
     def elements(self) -> tuple:
         return (
-            table_elements.StringTableElement(
+            table_elements.LinkTextTableElement(
                 name="Country Name",
-                attr="country_name",
+                url="country_details",
+                kwargs={"pk": "id"},
+                text="country_name",
+                hover_text="View Country",
             ),
             table_elements.StringTableElement(
                 name="Country Code",
