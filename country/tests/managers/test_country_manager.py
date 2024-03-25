@@ -305,3 +305,5 @@ class TestCountryManager(TestCase):
         self.assertEqual(ccy_query[1].ccy_code, "DM")
         self.assertEqual(ccy_query[1].ccy_name, "Deutsche Mark")
         self.assertEqual(ccy_query[1].ccy_symbol, "DM")
+        self.assertEqual(test_query[0].country_ccy, ["EUR"])
+        self.assertEqual(test_query[1].country_ccy, ["EUR", "DM"])
