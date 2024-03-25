@@ -3,6 +3,9 @@ from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from mt_economic_common.country.managers.country_manager import (
     RestCountriesManager,
 )
+from mt_economic_common.currency.repositories.currency_repository import (
+    CurrencyRepository,
+)
 
 
 class MockCountryRequestManager:
@@ -132,7 +135,10 @@ class MockCountryRequestManager:
                 "independent": True,
                 "status": "officially-assigned",
                 "unMember": True,
-                "currencies": {"EUR": {"name": "Euro", "symbol": "€"}},
+                "currencies": {
+                    "EUR": {"name": "Euro", "symbol": "€"},
+                    "DM": {"name": "Deutsche Mark", "symbol": "DM"},
+                },
                 "idd": {"root": "+4", "suffixes": ["9"]},
                 "capital": ["Berlin"],
                 "altSpellings": [
@@ -291,3 +297,11 @@ class TestCountryManager(TestCase):
         self.assertEqual(test_query[0].country_code, "FR")
         self.assertEqual(test_query[1].country_name, "Germany")
         self.assertEqual(test_query[1].country_code, "DE")
+        ccy_query = CurrencyRepository().std_queryset().all()
+        self.assertEqual(ccy_query.count(), 2)
+        self.assertEqual(ccy_query[0].ccy_code, "EUR")
+        self.assertEqual(ccy_query[0].ccy_name, "Euro")
+        self.assertEqual(ccy_query[0].ccy_symbol, "€")
+        self.assertEqual(ccy_query[1].ccy_code, "DM")
+        self.assertEqual(ccy_query[1].ccy_name, "Deutsche Mark")
+        self.assertEqual(ccy_query[1].ccy_symbol, "DM")

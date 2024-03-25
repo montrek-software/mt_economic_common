@@ -6,6 +6,9 @@ from mt_economic_common.country.managers.country_request_manager import (
     CountryRequestManager,
     RestCountriesRequestManager,
 )
+from mt_economic_common.currency.repositories.currency_repository import (
+    CurrencyRepository,
+)
 
 
 class CountryManager:
@@ -14,6 +17,7 @@ class CountryManager:
 
     def __init__(self, session_data: dict):
         self.repository = self.repository_class(session_data=session_data)
+        self.session_data = session_data
 
     def write_countries_to_db(self):
         countries_json = self.request_manager.get_countries_as_json()
@@ -29,6 +33,7 @@ class RestCountriesManager(CountryManager):
 
     def _countries_json_to_df(self, countries_json: list) -> pd.DataFrame:
         countries_df = pd.read_json(json.dumps(countries_json))
+        self._create_currencies(countries_df["currencies"])
         countries_df["country_name"] = countries_df["name"].apply(lambda x: x["common"])
         countries_df["country_official_name"] = countries_df["name"].apply(
             lambda x: x["official"]
@@ -94,3 +99,24 @@ class RestCountriesManager(CountryManager):
         if pd.isnull(json_obj):
             return None
         return json_obj.get(field_name, None)
+
+    def _create_currencies(self, currencies_series: pd.Series):
+        def extract_currencies(data: list):
+            return [
+                {
+                    "ccy_code": currency,
+                    "ccy_name": details["name"],
+                    "ccy_symbol": details["symbol"],
+                }
+                for currency, details in data.items()
+            ]
+
+        currency_list = [
+            item
+            for sublist in currencies_series.apply(extract_currencies)
+            for item in sublist
+        ]
+        currency_df = pd.DataFrame(currency_list).drop_duplicates()
+        CurrencyRepository(
+            session_data=self.session_data
+        ).create_objects_from_data_frame(currency_df)
