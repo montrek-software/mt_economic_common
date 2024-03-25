@@ -29,6 +29,7 @@ class CurrencyOverview(MontrekListView):
         return (
             StringTableElement(name="Name", attr="ccy_name"),
             StringTableElement(name="Code", attr="ccy_code"),
+            StringTableElement(name="Symbol", attr="ccy_symbol"),
             FloatTableElement(name="FX Rate", attr="fx_rate"),
             LinkTableElement(
                 name="Link",
@@ -61,6 +62,7 @@ class CurrencyDetailView(MontrekDetailView):
         return (
             StringTableElement(name="Name", attr="ccy_name"),
             StringTableElement(name="Code", attr="ccy_code"),
+            StringTableElement(name="Symbol", attr="ccy_symbol"),
             FloatTableElement(name="FX Rate", attr="fx_rate"),
         )
 

@@ -23,7 +23,7 @@ class CurrencyRepository(MontrekRepository):
         )
         self.add_satellite_fields_annotations(
             CurrencyStaticSatellite,
-            ["ccy_name", "ccy_code"],
+            ["ccy_name", "ccy_code", "ccy_symbol"],
         )
         return self.build_queryset()
 
