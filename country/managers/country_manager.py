@@ -105,11 +105,13 @@ class RestCountriesManager(CountryManager):
             return [
                 {
                     "ccy_code": currency,
-                    "ccy_name": details["name"],
-                    "ccy_symbol": details["symbol"],
+                    "ccy_name": details.get("name"),
+                    "ccy_symbol": details.get("symbol"),
                 }
                 for currency, details in data.items()
             ]
+
+        currencies_series = currencies_series.dropna()
 
         currency_list = [
             item
