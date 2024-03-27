@@ -66,3 +66,17 @@ class TestUploadCountriesRestCountries(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("country"))
+
+
+class TestCountryMapView(TestCase):
+    def setUp(self):
+        self.country_satellite = CountryStaticSatelliteFactory(
+            country_google_maps_url="https://goo.gl/maps/g7QxxSFsWyTPKuzd7"
+        )
+
+    def test_country_map_returns_correct_html(self):
+        url = reverse(
+            "country_map", kwargs={"pk": self.country_satellite.hub_entity.id}
+        )
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, "country_map.html")

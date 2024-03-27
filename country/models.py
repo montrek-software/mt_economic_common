@@ -25,6 +25,9 @@ class CountryStaticSatellite(baseclass_models.MontrekSatelliteABC):
     country_postal_code_format = models.CharField(max_length=255, null=True, blank=True)
     country_postal_code_regex = models.CharField(max_length=255, null=True, blank=True)
     country_google_maps_url = models.CharField(max_length=255, null=True, blank=True)
+    country_open_street_map_url = models.CharField(
+        max_length=255, null=True, blank=True
+    )
     identifier_fields = ["country_code"]
 
     def __str__(self):

@@ -56,6 +56,9 @@ class RestCountriesManager(CountryManager):
         countries_df["country_google_maps_url"] = countries_df["maps"].apply(
             lambda x: x["googleMaps"] if x else None
         )
+        countries_df["country_open_street_map_url"] = countries_df["maps"].apply(
+            lambda x: x["openStreetMaps"] if x else None
+        )
         countries_df["country_flag"] = countries_df["flags"].apply(
             lambda x: x["png"] if x else None
         )
@@ -81,6 +84,7 @@ class RestCountriesManager(CountryManager):
                 "country_postal_code_format",
                 "country_postal_code_regex",
                 "country_google_maps_url",
+                "country_open_street_map_url",
                 "country_flag",
             ]
             + list(rename_columns.values()),

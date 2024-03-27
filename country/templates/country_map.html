@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ title }}</h1>
+<div class="container">
+      <div class="col-md-6">
+    <div class="row">
+      <iframe src="{{ embedded_url }}" width="567" height="450" style="border:2;" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+    <div class="row">
+        <table>
+          <tr><td>
+        <a href={{ country_google_maps_url }} target="_blank">View On Google Maps</a>
+        </td>
+        <td>
+        <a href={{ country_open_street_map_url }} target="_blank" >View On OpenStreetMap</a>
+        </td>
+        </tr>
+        </table>
+      </div>
+</div>
+{% endblock %}
