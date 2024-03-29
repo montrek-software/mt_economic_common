@@ -33,7 +33,9 @@ class RestCountriesManager(CountryManager):
 
     def _countries_json_to_df(self, countries_json: list) -> pd.DataFrame:
         countries_df = pd.read_json(json.dumps(countries_json))
-        self._create_currencies(countries_df["currencies"])
+        countries_df["link_country_currency"] = self._create_currencies(
+            countries_df["currencies"]
+        )
         countries_df["country_name"] = countries_df["name"].apply(lambda x: x["common"])
         countries_df["country_official_name"] = countries_df["name"].apply(
             lambda x: x["official"]
@@ -91,6 +93,7 @@ class RestCountriesManager(CountryManager):
                 "country_google_maps_url",
                 "country_open_street_map_url",
                 "country_flag",
+                "link_country_currency",
             ]
             + list(rename_columns.values()),
         ]
@@ -100,7 +103,7 @@ class RestCountriesManager(CountryManager):
             return None
         return json_obj.get(field_name, None)
 
-    def _create_currencies(self, currencies_series: pd.Series):
+    def _create_currencies(self, currencies_series: pd.Series) -> pd.Series:
         def extract_currencies(data: list):
             return [
                 {
@@ -119,6 +122,12 @@ class RestCountriesManager(CountryManager):
             for item in sublist
         ]
         currency_df = pd.DataFrame(currency_list).drop_duplicates()
-        CurrencyRepository(
-            session_data=self.session_data
-        ).create_objects_from_data_frame(currency_df)
+        currency_repository = CurrencyRepository(session_data=self.session_data)
+        currency_repository.create_objects_from_data_frame(currency_df)
+        currency_hubs = currency_repository.std_queryset().all()
+        currency_hub_map = {c.ccy_code: c for c in currency_hubs}
+        return pd.Series(
+            currencies_series.apply(lambda x: [currency_hub_map[c] for c in x])
+        )
+
+        breakpoint()
