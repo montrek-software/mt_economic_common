@@ -85,9 +85,12 @@ class CountryDetailsView(MontrekDetailView):
                 name="Code",
                 attr="country_code",
             ),
-            table_elements.StringTableElement(
+            table_elements.LinkTextTableElement(
+                url="currency",
                 name="Currency",
-                attr="ccy_code",
+                text="ccy_code",
+                hover_text="View Currency",
+                kwargs={"filter": "ccy_code"},
             ),
             table_elements.ImageTableElement(
                 name="Flag",

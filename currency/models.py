@@ -14,7 +14,7 @@ class CurrencyStaticSatellite(baseclass_models.MontrekSatelliteABC):
     )
     ccy_name = models.CharField(max_length=50)
     ccy_code = models.CharField(max_length=3)
-    ccy_symbol = models.CharField(max_length=15, null=True)
+    ccy_symbol = models.CharField(max_length=15, null=True, blank=True)
     identifier_fields = ["ccy_code"]
 
     def __str__(self):
