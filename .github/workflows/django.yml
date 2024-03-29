@@ -56,7 +56,6 @@ jobs:
       run: |
         cd montrek/montrek
         echo $DB_NAME
-        python manage.py makemigrations
 
     - name: Run Tests and Coverage
       run: |
