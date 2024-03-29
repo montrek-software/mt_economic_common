@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('comment', models.CharField(blank=True, default='', max_length=255)),
                 ('hash_identifier', models.CharField(default='', max_length=64)),
                 ('hash_value', models.CharField(default='', max_length=64)),
-                ('ccy_name', models.CharField(max_length=30)),
+                ('ccy_name', models.CharField(max_length=50)),
                 ('ccy_code', models.CharField(max_length=3)),
             ],
             options={

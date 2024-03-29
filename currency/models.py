@@ -12,8 +12,9 @@ class CurrencyStaticSatellite(baseclass_models.MontrekSatelliteABC):
     hub_entity = models.ForeignKey(
         CurrencyHub, on_delete=models.CASCADE, related_name="currency_static_satellites"
     )
-    ccy_name = models.CharField(max_length=30)
+    ccy_name = models.CharField(max_length=50)
     ccy_code = models.CharField(max_length=3)
+    ccy_symbol = models.CharField(max_length=15, null=True, blank=True)
     identifier_fields = ["ccy_code"]
 
     def __str__(self):

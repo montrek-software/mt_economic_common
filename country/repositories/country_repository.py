@@ -1,6 +1,11 @@
 from django.utils import timezone
 from baseclasses.repositories.montrek_repository import MontrekRepository
-from mt_economic_common.country.models import CountryHub, CountryStaticSatellite
+from mt_economic_common.country.models import (
+    CountryHub,
+    CountryStaticSatellite,
+    LinkCountryCurrency,
+)
+from mt_economic_common.currency.models import CurrencyStaticSatellite
 
 
 class CountryRepository(MontrekRepository):
@@ -28,6 +33,13 @@ class CountryRepository(MontrekRepository):
                 "country_postal_code_regex",
                 "country_google_maps_url",
                 "country_open_street_map_url",
+            ],
+        )
+        self.add_linked_satellites_field_annotations(
+            CurrencyStaticSatellite,
+            LinkCountryCurrency,
+            [
+                "ccy_code",
             ],
         )
         return self.build_queryset().order_by("country_name")
