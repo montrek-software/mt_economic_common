@@ -4,7 +4,11 @@ from baseclasses import models as baseclass_models
 
 
 class CountryHub(baseclass_models.MontrekHubABC):
-    pass
+    link_country_currency = models.ManyToManyField(
+        "currency.CurrencyHub",
+        related_name="link_currency_country",
+        through="LinkCountryCurrency",
+    )
 
 
 class CountryStaticSatellite(baseclass_models.MontrekSatelliteABC):
@@ -32,3 +36,11 @@ class CountryStaticSatellite(baseclass_models.MontrekSatelliteABC):
 
     def __str__(self):
         return self.country_name
+
+
+class LinkCountryCurrency(baseclass_models.MontrekManyToManyLinkABC):
+    hub_in = models.ForeignKey(
+        "country.CountryHub",
+        on_delete=models.CASCADE,
+    )
+    hub_out = models.ForeignKey("currency.CurrencyHub", on_delete=models.CASCADE)

@@ -85,6 +85,10 @@ class CountryDetailsView(MontrekDetailView):
                 name="Code",
                 attr="country_code",
             ),
+            table_elements.StringTableElement(
+                name="Currency",
+                attr="ccy_code",
+            ),
             table_elements.ImageTableElement(
                 name="Flag",
                 attr="country_flag",
