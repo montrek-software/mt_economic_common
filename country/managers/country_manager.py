@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import json
+from baseclasses.managers.montrek_manager import MontrekManager
 from mt_economic_common.country.repositories.country_repository import CountryRepository
 from mt_economic_common.country.managers.country_request_manager import (
     CountryRequestManager,
@@ -11,13 +12,9 @@ from mt_economic_common.currency.repositories.currency_repository import (
 )
 
 
-class CountryManager:
+class CountryManager(MontrekManager):
     repository_class = CountryRepository
     request_manager = CountryRequestManager()
-
-    def __init__(self, session_data: dict):
-        self.repository = self.repository_class(session_data=session_data)
-        self.session_data = session_data
 
     def write_countries_to_db(self):
         countries_json = self.request_manager.get_countries_as_json()

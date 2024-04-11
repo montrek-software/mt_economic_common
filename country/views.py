@@ -15,11 +15,12 @@ from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
 from mt_economic_common.country.repositories.country_repository import CountryRepository
 from mt_economic_common.country.forms import CountryCreateForm
 from mt_economic_common.country.managers.country_manager import RestCountriesManager
+from mt_economic_common.country.managers.country_manager import CountryManager
 
 
 class CountryCreateView(MontrekCreateView):
     page_class = CountryOverviewPage
-    repository = CountryRepository
+    manager_class = CountryManager
     title = "Country"
     form_class = CountryCreateForm
     success_url = "country"
@@ -27,9 +28,9 @@ class CountryCreateView(MontrekCreateView):
 
 class CountryOverview(MontrekListView):
     page_class = CountryOverviewPage
+    manager_class = CountryManager
     tab = "tab_country_list"
     title = "Country Overview"
-    repository = CountryRepository
 
     @property
     def elements(self) -> tuple:
@@ -66,7 +67,7 @@ class CountryOverview(MontrekListView):
 
 class CountryDetailsView(MontrekDetailView):
     page_class = CountryPage
-    repository = CountryRepository
+    manager_class = CountryManager
     tab = "tab_details"
     title = "Country Details"
 
@@ -161,7 +162,7 @@ class CountryDetailsView(MontrekDetailView):
 
 class CountryUpdateView(MontrekUpdateView):
     page_class = CountryPage
-    repository = CountryRepository
+    manager_class = CountryManager
     title = "Country Update"
     form_class = CountryCreateForm
     success_url = "country"
@@ -176,12 +177,12 @@ def upload_countries_rest_countries(request):
 class CountryMapView(MontrekTemplateView):
     page_class = CountryPage
     template_name = "country_map.html"
-    repository = CountryRepository
+    manager_class = CountryManager
     title = "Map"
     tab = "tab_map"
 
     def get_template_context(self) -> dict:
-        country = self.repository().std_queryset().get(id=self.kwargs["pk"])
+        country = self.manager.repository.std_queryset().get(id=self.kwargs["pk"])
         long = country.country_long
         lat = country.country_lat
         long = long if long else 0
