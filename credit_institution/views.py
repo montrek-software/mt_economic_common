@@ -6,6 +6,9 @@ from baseclasses.dataclasses.table_elements import (
     LinkTableElement,
     LinkTextTableElement,
 )
+from mt_economic_common.credit_institution.managers.credit_institution_manager import (
+    CreditInstitutionManager,
+)
 from mt_economic_common.credit_institution.pages import (
     CreditInstitutionAppPage,
     CreditInstitutionPage,
@@ -22,7 +25,7 @@ class CreditInstitutionOverview(MontrekListView):
     page_class = CreditInstitutionAppPage
     tab = "tab_overview"
     title = "Overview Table"
-    repository = CreditInstitutionRepository
+    manager_class = CreditInstitutionManager
 
     @property
     def elements(self) -> dict:
@@ -59,7 +62,7 @@ class CreditInstitutionOverview(MontrekListView):
 
 class CreditInstitutionCreate(MontrekCreateView):
     page_class = CreditInstitutionAppPage
-    repository = CreditInstitutionRepository
+    manager_class = CreditInstitutionManager
     success_url = "credit_institution"
     form_class = CreditInstitutionCreateForm
 
@@ -67,7 +70,7 @@ class CreditInstitutionCreate(MontrekCreateView):
 class CreditIntitutionDetailView(MontrekDetailView):
     page_class = CreditInstitutionPage
     tab = "tab_details"
-    repository = CreditInstitutionRepository
+    manager_class = CreditInstitutionManager
     title = "Details"
 
     @property

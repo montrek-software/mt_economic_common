@@ -8,6 +8,7 @@ from baseclasses.dataclasses.table_elements import (
     LinkTableElement,
     FloatTableElement,
 )
+from mt_economic_common.currency.managers.currency_manager import CurrencyManager
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
@@ -22,7 +23,7 @@ class CurrencyOverview(MontrekListView):
     page_class = CurrencyAppPage
     tab = "tab_overview"
     title = "Overview Table"
-    repository = CurrencyRepository
+    manager_class = CurrencyManager
 
     @property
     def elements(self) -> dict:
@@ -54,7 +55,7 @@ class CurrencyOverview(MontrekListView):
 class CurrencyDetailView(MontrekDetailView):
     page_class = CurrencyPage
     tab = "tab_details"
-    repository = CurrencyRepository
+    manager_class = CurrencyManager
     title = "Details"
 
     @property
@@ -80,6 +81,6 @@ class CurrencyDetailView(MontrekDetailView):
 class CurrencyCreateView(MontrekCreateView):
     page_class = CurrencyAppPage
     title = "Overview Table"
-    repository = CurrencyRepository
+    manager_class = CurrencyManager
     form_class = CurrencyCreateForm
     success_url = "currency"
