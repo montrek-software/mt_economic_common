@@ -6,39 +6,37 @@ from mt_economic_common.currency.repositories.currency_repository import (
 from mt_economic_common.currency.tests.factories.currency_factories import (
     CurrencyStaticSatelliteFactory,
 )
+from mt_economic_common.currency import views
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
+from testing.test_cases import view_test_cases as vtc
 
 
-class TestCurrencyCreate(TestCase):
-    def setUp(self):
-        self.user = MontrekUserFactory()
-        self.client.force_login(self.user)
+class TestCurrencyCreate(vtc.MontrekCreateViewTestCase):
+    viewname = "currency_create"
+    view_class = views.CurrencyCreateView
 
-    def test_currency_create_returns_correct_html(self):
-        url = reverse("currency_create")
-        response = self.client.get(url)
-        self.assertTemplateUsed(response, "montrek_create.html")
-
-    def test_view_post_success(self):
-        url = reverse("currency_create")
-        response = self.client.post(
-            url,
-            {
-                "ccy_name": "test_currency",
-                "ccy_code": "USD",
-            },
-        )
-        self.assertEqual(response.status_code, 302)
-        currency = CurrencyRepository().std_queryset().first()
-        self.assertEqual(currency.ccy_name, "test_currency")
-        self.assertEqual(currency.ccy_code, "USD")
+    def creation_data(self) -> dict:
+        return {
+            "ccy_name": "test_currency",
+            "ccy_code": "USD",
+        }
 
 
-class TestCurrencyDetails(TestCase):
-    def setUp(self):
+class TestCurrencyDetails(vtc.MontrekDetailViewTestCase):
+    viewname = "currency_details"
+    view_class = views.CurrencyDetailView
+
+    def build_factories(self):
         self.ccy = CurrencyStaticSatelliteFactory()
 
-    def test_currency_details_returns_correct_html(self):
-        url = reverse("currency_details", kwargs={"pk": self.ccy.hub_entity.id})
-        response = self.client.get(url)
-        self.assertTemplateUsed(response, "montrek_details.html")
+    def url_kwargs(self) -> dict:
+        return {"pk": self.ccy.hub_entity.id}
+
+
+class TestCurrencyOverview(vtc.MontrekListViewTestCase):
+    viewname = "currency"
+    view_class = views.CurrencyOverview
+    expected_no_of_rows = 5
+
+    def build_factories(self):
+        CurrencyStaticSatelliteFactory.create_batch(5)
