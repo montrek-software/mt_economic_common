@@ -1,59 +1,54 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from mt_economic_common.country.repositories.country_repository import CountryRepository
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,
 )
+from mt_economic_common.country import views
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
+from testing.test_cases import view_test_cases as vtc
 
 
-class TestCountryOverview(TestCase):
-    def test_country_overview_returns_correct_html(self):
-        url = reverse("country")
-        response = self.client.get(url)
-        self.assertTemplateUsed(response, "montrek_table.html")
+class TestCountryOverview(vtc.MontrekListViewTestCase):
+    viewname = "country"
+    view_class = views.CountryOverview
+    expected_no_of_rows = 5
+
+    def build_factories(self):
+        CountryStaticSatelliteFactory.create_batch(5)
 
 
-class TestCountryCreateView(TestCase):
-    def setUp(self):
-        self.user = MontrekUserFactory()
-        self.client.force_login(self.user)
+class TestCountryCreateView(vtc.MontrekCreateViewTestCase):
+    viewname = "country_create"
+    view_class = views.CountryCreateView
 
-    def test_country_create_returns_correct_html(self):
-        url = reverse("country_create")
-        response = self.client.get(url)
-        self.assertTemplateUsed(response, "montrek_create.html")
-
-    def test_view_post_success(self):
-        url = reverse("country_create")
-        response = self.client.post(
-            url,
-            {
-                "country_name": "Germany",
-                "country_code": "DE",
-            },
-        )
-        self.assertEqual(response.status_code, 302)
-        country = CountryRepository().std_queryset().first()
-        self.assertEqual(country.country_name, "Germany")
-        self.assertEqual(country.country_code, "DE")
+    def creation_data(self) -> dict:
+        return {
+            "country_name": "Germany",
+            "country_code": "DE",
+        }
 
 
-class TestCountryDetailsView(TestCase):
-    def test_country_details_returns_correct_html(self):
-        country = CountryStaticSatelliteFactory()
-        url = reverse("country_details", kwargs={"pk": country.hub_entity.id})
-        response = self.client.get(url)
-        self.assertTemplateUsed(response, "montrek_details.html")
+class TestCountryDetailsView(vtc.MontrekDetailViewTestCase):
+    viewname = "country_details"
+    view_class = views.CountryDetailsView
+
+    def build_factories(self):
+        self.country = CountryStaticSatelliteFactory()
+
+    def url_kwargs(self) -> dict:
+        return {"pk": self.country.hub_entity.id}
 
 
-class TestCountryUpdateView(TestCase):
-    def test_country_update_returns_correct_html(self):
-        country = CountryStaticSatelliteFactory()
-        url = reverse("country_update", kwargs={"pk": country.hub_entity.id})
-        response = self.client.get(url)
-        self.assertTemplateUsed(response, "montrek_create.html")
+class TestCountryUpdateView(vtc.MontrekUpdateViewTestCase):
+    viewname = "country_update"
+    view_class = views.CountryUpdateView
+
+    def build_factories(self):
+        self.country = CountryStaticSatelliteFactory()
+
+    def url_kwargs(self) -> dict:
+        return {"pk": self.country.hub_entity.id}
 
 
 class TestUploadCountriesRestCountries(TestCase):
