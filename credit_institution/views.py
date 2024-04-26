@@ -3,8 +3,6 @@ from baseclasses.dataclasses.view_classes import ActionElement
 from baseclasses.views import MontrekListView, MontrekDetailView, MontrekCreateView
 from reporting.dataclasses.table_elements import (
     StringTableElement,
-    LinkTableElement,
-    LinkTextTableElement,
 )
 from mt_economic_common.credit_institution.managers.credit_institution_manager import (
     CreditInstitutionManager,
@@ -23,28 +21,6 @@ class CreditInstitutionOverview(MontrekListView):
     tab = "tab_overview"
     title = "Overview Table"
     manager_class = CreditInstitutionManager
-
-    @property
-    def elements(self) -> dict:
-        return (
-            StringTableElement(name="Name", attr="credit_institution_name"),
-            LinkTableElement(
-                name="Link",
-                url="credit_institution_details",
-                kwargs={"pk": "id"},
-                icon="chevron-right",
-                hover_text="Goto Credit Institution",
-            ),
-            StringTableElement(name="BIC", attr="credit_institution_bic"),
-            StringTableElement(name="Upload Method", attr="account_upload_method"),
-            LinkTextTableElement(
-                name="Country",
-                url="country_details",
-                kwargs={"pk": "country_id"},
-                text="country_name",
-                hover_text="Goto Country",
-            ),
-        )
 
     @property
     def actions(self) -> tuple:
