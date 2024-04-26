@@ -5,26 +5,37 @@ from mt_economic_common.credit_institution.tests.factories.credit_institution_fa
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,
 )
+from mt_economic_common.credit_institution import views
+from testing.test_cases import view_test_cases as vtc
 
 
-class TestCreditInstitutionOverview(TestCase):
-    def test_get(self):
-        response = self.client.get("/mt_economic_common/credit_institution/")
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "montrek_table.html")
+class TestCreditInstitutionOverview(vtc.MontrekListViewTestCase):
+    viewname = "credit_institution"
+    view_class = views.CreditInstitutionOverview
+    expected_no_of_rows = 5
+
+    def build_factories(self):
+        CreditInstitutionStaticSatelliteFactory.create_batch(5)
 
 
-class TestCreditInstitutionDetailView(TestCase):
-    def setUp(self):
-        self.credit_institution = CreditInstitutionStaticSatelliteFactory.create()
-        country = CountryStaticSatelliteFactory.create()
-        self.credit_institution.hub_entity.link_credit_institution_country.add(
-            country.hub_entity
-        )
+class TestCreditInstitutionDetailView(vtc.MontrekDetailViewTestCase):
+    viewname = "credit_institution_details"
+    view_class = views.CreditIntitutionDetailView
 
-    def test_get(self):
-        response = self.client.get(
-            f"/mt_economic_common/credit_institution/{self.credit_institution.hub_entity.id}/details"
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "montrek_details.html")
+    def build_factories(self):
+        self.credit_institution = CreditInstitutionStaticSatelliteFactory()
+
+    def url_kwargs(self) -> dict:
+        return {"pk": self.credit_institution.hub_entity.pk}
+
+
+class TestCreditInstitutionCreateView(vtc.MontrekCreateViewTestCase):
+    viewname = "credit_institution_create"
+    view_class = views.CreditInstitutionCreate
+
+    def creation_data(self) -> dict:
+        return {
+            "credit_institution_name": "Test Credit Institution",
+            "credit_institution_bic": "TESTBIC",
+            "account_upload_method": "none",
+        }

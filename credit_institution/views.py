@@ -13,9 +13,6 @@ from mt_economic_common.credit_institution.pages import (
     CreditInstitutionAppPage,
     CreditInstitutionPage,
 )
-from mt_economic_common.credit_institution.repositories.credit_institution_repository import (
-    CreditInstitutionRepository,
-)
 from mt_economic_common.credit_institution.forms import CreditInstitutionCreateForm
 
 # Create your views here.
