@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import json
 from baseclasses.managers.montrek_manager import MontrekManager
+from reporting.managers.montrek_table_manager import MontrekTableManager
 from mt_economic_common.country.repositories.country_repository import CountryRepository
 from mt_economic_common.country.managers.country_request_manager import (
     CountryRequestManager,
@@ -10,6 +11,27 @@ from mt_economic_common.country.managers.country_request_manager import (
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
+from reporting.dataclasses import table_elements
+
+
+class CountryTableManager(MontrekTableManager):
+    repository_class = CountryRepository
+
+    @property
+    def table_elements(self) -> tuple:
+        return (
+            table_elements.LinkTextTableElement(
+                name="Country Name",
+                url="country_details",
+                kwargs={"pk": "id"},
+                text="country_name",
+                hover_text="View Country",
+            ),
+            table_elements.StringTableElement(
+                name="Country Code",
+                attr="country_code",
+            ),
+        )
 
 
 class CountryManager(MontrekManager):

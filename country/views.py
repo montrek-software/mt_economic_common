@@ -8,12 +8,15 @@ from baseclasses.views import (
     MontrekUpdateView,
     MontrekTemplateView,
 )
-from baseclasses.dataclasses import table_elements
+from reporting.dataclasses import table_elements
 from baseclasses.dataclasses.view_classes import ActionElement
 from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
 from mt_economic_common.country.forms import CountryCreateForm
 from mt_economic_common.country.managers.country_manager import RestCountriesManager
-from mt_economic_common.country.managers.country_manager import CountryManager
+from mt_economic_common.country.managers.country_manager import (
+    CountryManager,
+    CountryTableManager,
+)
 
 
 class CountryCreateView(MontrekCreateView):
@@ -26,25 +29,9 @@ class CountryCreateView(MontrekCreateView):
 
 class CountryOverview(MontrekListView):
     page_class = CountryOverviewPage
-    manager_class = CountryManager
+    manager_class = CountryTableManager
     tab = "tab_country_list"
     title = "Country Overview"
-
-    @property
-    def elements(self) -> tuple:
-        return (
-            table_elements.LinkTextTableElement(
-                name="Country Name",
-                url="country_details",
-                kwargs={"pk": "id"},
-                text="country_name",
-                hover_text="View Country",
-            ),
-            table_elements.StringTableElement(
-                name="Country Code",
-                attr="country_code",
-            ),
-        )
 
     @property
     def actions(self) -> tuple:

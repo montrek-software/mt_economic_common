@@ -3,7 +3,7 @@ from baseclasses.dataclasses.view_classes import ActionElement
 from baseclasses.views import MontrekListView
 from baseclasses.views import MontrekDetailView
 from baseclasses.views import MontrekCreateView
-from baseclasses.dataclasses.table_elements import (
+from reporting.dataclasses.table_elements import (
     StringTableElement,
     LinkTableElement,
     FloatTableElement,
