@@ -1,7 +1,7 @@
 from django.urls import reverse
 from baseclasses.dataclasses.view_classes import ActionElement
 from baseclasses.views import MontrekListView, MontrekDetailView, MontrekCreateView
-from baseclasses.dataclasses.table_elements import (
+from reporting.dataclasses.table_elements import (
     StringTableElement,
     LinkTableElement,
     LinkTextTableElement,

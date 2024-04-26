@@ -8,7 +8,7 @@ from baseclasses.views import (
     MontrekUpdateView,
     MontrekTemplateView,
 )
-from baseclasses.dataclasses import table_elements
+from reporting.dataclasses import table_elements
 from baseclasses.dataclasses.view_classes import ActionElement
 from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
 from mt_economic_common.country.forms import CountryCreateForm
