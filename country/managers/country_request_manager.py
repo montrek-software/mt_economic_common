@@ -1,4 +1,4 @@
-from baseclasses.managers.request_manager import RequestManager
+from api_upload.managers.request_manager import RequestManager
 
 
 class CountryRequestManager(RequestManager):
