@@ -1,4 +1,5 @@
 from reporting.managers.montrek_table_manager import MontrekTableManager
+from reporting.managers.montrek_details_manager import MontrekDetailsManager
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
@@ -26,4 +27,17 @@ class CurrencyManager(MontrekTableManager):
                 icon="chevron-right",
                 hover_text="Goto Currency",
             ),
+        )
+
+
+class CurrencyDetailsManager(MontrekDetailsManager):
+    repository_class = CurrencyRepository
+
+    @property
+    def table_elements(self) -> dict:
+        return (
+            StringTableElement(name="Name", attr="ccy_name"),
+            StringTableElement(name="Code", attr="ccy_code"),
+            StringTableElement(name="Symbol", attr="ccy_symbol"),
+            FloatTableElement(name="FX Rate", attr="fx_rate"),
         )

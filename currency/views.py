@@ -8,7 +8,10 @@ from reporting.dataclasses.table_elements import (
     LinkTableElement,
     FloatTableElement,
 )
-from mt_economic_common.currency.managers.currency_manager import CurrencyManager
+from mt_economic_common.currency.managers.currency_manager import (
+    CurrencyManager,
+    CurrencyDetailsManager,
+)
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
@@ -26,22 +29,6 @@ class CurrencyOverview(MontrekListView):
     manager_class = CurrencyManager
 
     @property
-    def elements(self) -> dict:
-        return (
-            StringTableElement(name="Name", attr="ccy_name"),
-            StringTableElement(name="Code", attr="ccy_code"),
-            StringTableElement(name="Symbol", attr="ccy_symbol"),
-            FloatTableElement(name="FX Rate", attr="fx_rate"),
-            LinkTableElement(
-                name="Link",
-                url="currency_details",
-                kwargs={"pk": "id"},
-                icon="chevron-right",
-                hover_text="Goto Currency",
-            ),
-        )
-
-    @property
     def actions(self) -> tuple:
         action_new_currency = ActionElement(
             icon="plus",
@@ -55,7 +42,7 @@ class CurrencyOverview(MontrekListView):
 class CurrencyDetailView(MontrekDetailView):
     page_class = CurrencyPage
     tab = "tab_details"
-    manager_class = CurrencyManager
+    manager_class = CurrencyDetailsManager
     title = "Details"
 
     @property
