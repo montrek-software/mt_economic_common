@@ -1,4 +1,5 @@
 from reporting.managers.montrek_table_manager import MontrekTableManager
+from reporting.managers.montrek_details_manager import MontrekDetailsManager
 from mt_economic_common.credit_institution.repositories.credit_institution_repository import (
     CreditInstitutionRepository,
 )
@@ -32,4 +33,16 @@ class CreditInstitutionManager(MontrekTableManager):
                 text="country_name",
                 hover_text="Goto Country",
             ),
+        )
+
+
+class CreditInstitutionDetailsManager(MontrekDetailsManager):
+    repository_class = CreditInstitutionRepository
+
+    @property
+    def table_elements(self) -> tuple:
+        return (
+            StringTableElement(name="Name", attr="credit_institution_name"),
+            StringTableElement(name="BIC", attr="credit_institution_bic"),
+            StringTableElement(name="Upload Method", attr="account_upload_method"),
         )

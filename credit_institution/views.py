@@ -6,6 +6,7 @@ from reporting.dataclasses.table_elements import (
 )
 from mt_economic_common.credit_institution.managers.credit_institution_manager import (
     CreditInstitutionManager,
+    CreditInstitutionDetailsManager,
 )
 from mt_economic_common.credit_institution.pages import (
     CreditInstitutionAppPage,
@@ -43,16 +44,8 @@ class CreditInstitutionCreate(MontrekCreateView):
 class CreditIntitutionDetailView(MontrekDetailView):
     page_class = CreditInstitutionPage
     tab = "tab_details"
-    manager_class = CreditInstitutionManager
+    manager_class = CreditInstitutionDetailsManager
     title = "Details"
-
-    @property
-    def elements(self) -> tuple:
-        return (
-            StringTableElement(name="Name", attr="credit_institution_name"),
-            StringTableElement(name="BIC", attr="credit_institution_bic"),
-            StringTableElement(name="Upload Method", attr="account_upload_method"),
-        )
 
     @property
     def actions(self) -> tuple:
