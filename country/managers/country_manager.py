@@ -225,5 +225,3 @@ class RestCountriesManager(CountryManager):
         return pd.Series(
             currencies_series.apply(lambda x: [currency_hub_map[c] for c in x])
         )
-
-        breakpoint()
