@@ -3,7 +3,6 @@ import json
 from django.test import TestCase
 from unittest.mock import patch, Mock
 from mt_economic_common.oecd_api.managers.oecd_request_manager import OecdRequestManager
-from mt_economic_common.oecd_api.utils.sdmx_json_reader import SdmxJsonReader
 
 
 class TestOecdRequestManager(TestCase):
@@ -26,11 +25,7 @@ class TestOecdRequestManager(TestCase):
             mock_response.json.return_value = json.loads(f.read())
         mock_get.return_value = mock_response
         manager = OecdRequestManager()
-        test_json = manager.get_json(
-            "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE4,1.0/A....EXC_A.......?startPeriod=2000"
-        )
-        reader = SdmxJsonReader(json_data=test_json)
-        result_df = reader.to_data_frame()
+        result_df = manager.get_average_annual_fx_rates()
         self.assertEqual(result_df.shape, (16, 10))
         self.assertEqual(
             result_df.columns.tolist(),
