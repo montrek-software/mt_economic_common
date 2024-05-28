@@ -2,7 +2,10 @@ import pandas as pd
 
 
 class SdmxJsonReader:
-    def __init__(self, json_data: dict):
+    def __init__(self, json_data: dict, dimension_out: str = "name"):
+        if dimension_out not in ["name", "id"]:
+            raise ValueError("dimension_out must be either 'name' or 'id'")
+        self.dimension_out = dimension_out
         self.json_data = json_data
 
     def to_data_frame(self) -> pd.DataFrame:
@@ -12,11 +15,11 @@ class SdmxJsonReader:
 
         # Mapping dimension IDs to their names
         dimension_names = {
-            dim["id"]: [val["name"] for val in dim["values"]]
+            dim["id"]: [val[self.dimension_out] for val in dim["values"]]
             for dim in dimensions["series"]
         }
         time_periods = {
-            str(i): val["name"]
+            str(i): val[self.dimension_out]
             for i, val in enumerate(dimensions["observation"][0]["values"])
         }
 
