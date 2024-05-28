@@ -1,4 +1,7 @@
+import os
+import json
 from django.test import TestCase
+from unittest.mock import patch, Mock
 from mt_economic_common.oecd_api.managers.oecd_request_manager import OecdRequestManager
 from mt_economic_common.oecd_api.utils.sdmx_json_reader import SdmxJsonReader
 
@@ -12,11 +15,36 @@ class TestOecdRequestManager(TestCase):
         )
         self.assertEqual(manager.get_endpoint_url(endpoint), expected_url)
 
-    def test_get_fx_annual(self):
+    @patch("api_upload.managers.request_manager.requests.get")
+    def test_get_fx_annual(self, mock_get):
+        mock_response = Mock()
+        with open(
+            os.path.join(
+                os.path.dirname(__file__), "../test_data/fx_annual_example.json"
+            )
+        ) as f:
+            mock_response.json.return_value = json.loads(f.read())
+        mock_get.return_value = mock_response
         manager = OecdRequestManager()
         test_json = manager.get_json(
             "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE4,1.0/A....EXC_A.......?startPeriod=2000"
         )
         reader = SdmxJsonReader(json_data=test_json)
         result_df = reader.to_data_frame()
-        breakpoint()
+        self.assertEqual(result_df.shape, (16, 10))
+        self.assertEqual(
+            result_df.columns.tolist(),
+            [
+                "REF_AREA",
+                "FREQ",
+                "METHODOLOGY",
+                "MEASURE",
+                "UNIT_MEASURE",
+                "EXPENDITURE",
+                "ADJUSTMENT",
+                "TRANSFORMATION",
+                "TIME_PERIOD",
+                "VALUE",
+            ],
+        )
+        self.assertEqual(result_df["VALUE"].sum(), 1143.22449)

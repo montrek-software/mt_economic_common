@@ -1,3 +1,4 @@
+from io import StringIO
 import pandas as pd
 import numpy as np
 import json
@@ -128,7 +129,7 @@ class RestCountriesManager(CountryManager):
     request_manager = RestCountriesRequestManager()
 
     def _countries_json_to_df(self, countries_json: list) -> pd.DataFrame:
-        countries_df = pd.read_json(json.dumps(countries_json))
+        countries_df = pd.read_json(json.dumps(StringIO(str(countries_json))))
         countries_df["link_country_currency"] = self._create_currencies(
             countries_df["currencies"]
         )
