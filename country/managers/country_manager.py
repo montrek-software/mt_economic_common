@@ -129,7 +129,7 @@ class RestCountriesManager(CountryManager):
     request_manager = RestCountriesRequestManager()
 
     def _countries_json_to_df(self, countries_json: list) -> pd.DataFrame:
-        countries_df = pd.read_json(json.dumps(StringIO(str(countries_json))))
+        countries_df = pd.read_json(json.dumps(countries_json))
         countries_df["link_country_currency"] = self._create_currencies(
             countries_df["currencies"]
         )
@@ -167,7 +167,7 @@ class RestCountriesManager(CountryManager):
             lambda x: x["png"] if x else None
         )
         rename_columns = {
-            "cca2": "country_code",
+            "cca3": "country_code",
             "capital": "country_capital",
             "unMember": "country_un_member",
             "region": "country_region",

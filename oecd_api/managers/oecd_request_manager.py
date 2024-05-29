@@ -22,7 +22,7 @@ class OecdRequestManager(RequestManager):
     def _map_to_currency_code(self, df: pd.DataFrame) -> pd.DataFrame:
         country_queryset = CountryRepository().std_queryset()
         country_queryset = country_queryset.filter(
-            country_name__in=df["REF_AREA"].unique()
+            country_code__in=df["REF_AREA"].unique()
         )
         country_currency_map = {c.country_code: c.ccy_code for c in country_queryset}
         df["CCY_CODE"] = df["REF_AREA"].map(country_currency_map)

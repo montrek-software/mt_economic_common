@@ -1,0 +1,39 @@
+{
+    "data": {
+        "dataSets": [{
+            "series": {
+                "0:0:0:0:0:0:0:0": {"observations": {"0": [67.75933, 0], "1": [71.33834, 0], "2": [74.59615, 0], "3": [76.78634, 0]}},
+                "1:0:0:0:0:0:0:0": {"observations": {"0": [51.96151, 0], "1": [56.69874, 0], "2": [59.68419, 0], "3": [62.46608, 0]}},
+                "2:0:0:0:0:0:0:0": {"observations": {"0": [75.35555, 0], "1": [77.25836, 0], "2": [79.00316, 0], "3": [81.18251, 0]}},
+                "3:0:0:0:0:0:0:0": {"observations": {"0": [74.95354, 0], "1": [76.80434, 0], "2": [78.06794, 0], "3": [79.30841, 0]}}
+            }
+        }],
+        "structures": [{
+            "dimensions": {
+                "series": [
+                    {"id": "REF_AREA", "values": [
+                        {"id": "AUS", "name": "Australia"},
+                        {"id": "AUT", "name": "Austria"},
+                        {"id": "BEL", "name": "Belgium"},
+                        {"id": "CAN", "name": "Canada"}
+                    ]},
+                    {"id": "FREQ", "values": [{"id": "A", "name": "Annual"}]},
+                    {"id": "METHODOLOGY", "values": [{"id": "N", "name": "National"}]},
+                    {"id": "MEASURE", "values": [{"id": "CPI", "name": "Consumer price index"}]},
+                    {"id": "UNIT_MEASURE", "values": [{"id": "IX", "name": "Index"}]},
+                    {"id": "EXPENDITURE", "values": [{"id": "_T", "name": "Total"}]},
+                    {"id": "ADJUSTMENT", "values": [{"id": "N", "name": "Neither seasonally adjusted nor calendar adjusted"}]},
+                    {"id": "TRANSFORMATION", "values": [{"id": "_Z", "name": "Not applicable"}]}
+                ],
+                "observation": [
+                    {"id": "TIME_PERIOD", "values": [
+                        {"id": "2000", "name": "2000"},
+                        {"id": "2001", "name": "2001"},
+                        {"id": "2002", "name": "2002"},
+                        {"id": "2003", "name": "2003"}
+                    ]}
+                ]
+            }
+        }]
+    }
+}

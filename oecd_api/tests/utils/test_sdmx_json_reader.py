@@ -7,7 +7,9 @@ from mt_economic_common.oecd_api.utils.sdmx_json_reader import SdmxJsonReader
 class TestSdmxJsonReader(TestCase):
     def test_read_fx_annual_example(self):
         with open(
-            os.path.join(os.path.dirname(__file__), "test_data/fx_annual_example.json")
+            os.path.join(
+                os.path.dirname(__file__), "../test_data/fx_annual_example.json"
+            )
         ) as f:
             data = json.loads(f.read())
         reader = SdmxJsonReader(json_data=data)
