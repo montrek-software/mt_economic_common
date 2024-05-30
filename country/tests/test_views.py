@@ -1,5 +1,8 @@
+import os
+import json
 from django.test import TestCase
 from django.urls import reverse
+from unittest.mock import patch, Mock
 
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,
@@ -56,7 +59,16 @@ class TestUploadCountriesRestCountries(TestCase):
         self.user = MontrekUserFactory()
         self.client.force_login(self.user)
 
-    def test_upload_countries_rest_countries_returns_correct_html(self):
+    @patch("api_upload.managers.request_manager.requests.get")
+    def test_upload_countries_rest_countries_returns_correct_html(self, mock_get):
+        mock_response = Mock()
+        with open(
+            os.path.join(
+                os.path.dirname(__file__), "test_data/rest_countries_example.json"
+            )
+        ) as f:
+            mock_response.json.return_value = json.loads(f.read())
+        mock_get.return_value = mock_response
         url = reverse("upload_countries_rest_countries")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
