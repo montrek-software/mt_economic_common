@@ -76,6 +76,25 @@ class TestUploadCountriesRestCountries(TestCase):
         self.assertEqual(response.url, reverse("country"))
 
 
+class TestUploadOecdCountryData(TestCase):
+    def setUp(self):
+        self.user = MontrekUserFactory()
+        self.client.force_login(self.user)
+
+    @patch("api_upload.managers.request_manager.requests.get")
+    def test_upload_countries_rest_countries_returns_correct_html(self, mock_get):
+        mock_response = Mock()
+        with open(
+            os.path.join(os.path.dirname(__file__), "test_data/fx_annual_example.json")
+        ) as f:
+            mock_response.json.return_value = json.loads(f.read())
+        mock_get.return_value = mock_response
+        url = reverse("upload_oecd_country_data")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("country"))
+
+
 class TestCountryMapView(vtc.MontrekViewTestCase):
     viewname = "country_map"
     view_class = views.CountryMapView

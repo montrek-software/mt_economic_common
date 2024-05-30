@@ -32,4 +32,9 @@ urlpatterns = [
         views.CountryMapView.as_view(),
         name="country_map",
     ),
+    path(
+        "upload_oecd_country_data",
+        views.upload_oecd_country_data,
+        name="upload_oecd_country_data",
+    ),
 ]

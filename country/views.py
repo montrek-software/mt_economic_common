@@ -18,6 +18,7 @@ from mt_economic_common.country.managers.country_manager import (
     CountryTableManager,
     CountryDetailsManager,
 )
+from mt_economic_common.country.managers.country_oecd_manager import CountryOecdManager
 
 
 class CountryCreateView(MontrekCreateView):
@@ -48,7 +49,13 @@ class CountryOverview(MontrekListView):
             action_id="id_upload_countries",
             hover_text="Upload countries from RestCountries.com",
         )
-        return (action_new_country, action_upload_countries)
+        action_upload_oecd_data = ActionElement(
+            icon="upload",
+            link=reverse("upload_oecd_country_data"),
+            action_id="id_upload_oecd_country_data",
+            hover_text="Upload OECD data",
+        )
+        return (action_new_country, action_upload_countries, action_upload_oecd_data)
 
 
 class CountryDetailsView(MontrekDetailView):
@@ -85,6 +92,12 @@ class CountryUpdateView(MontrekUpdateView):
 def upload_countries_rest_countries(request):
     man = RestCountriesManager(session_data={"user_id": request.user.id})
     man.write_countries_to_db()
+    return HttpResponseRedirect(reverse("country"))
+
+
+def upload_oecd_country_data(request):
+    man = CountryOecdManager(session_data={"user_id": request.user.id})
+    man.write_oecd_annual_fx_average_to_db()
     return HttpResponseRedirect(reverse("country"))
 
 
