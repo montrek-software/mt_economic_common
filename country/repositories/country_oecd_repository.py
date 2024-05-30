@@ -16,7 +16,12 @@ class CountryOecdRepository(MontrekRepository):
         )
         return self.build_queryset()
 
-    def get_country_oecd_ts(self, country_id: int):
-        return self.build_time_series_queryset(
+
+class CountryOecdTableRepository(MontrekRepository):
+    hub_class = CountryHub
+
+    def std_queryset(self, **kwargs):
+        queryset = self.build_time_series_queryset(
             CountryOecdTSSatellite, self.reference_date
-        ).filter(hub_entity_id=country_id)
+        )
+        return queryset.filter(hub_entity_id=self.session_data["pk"])

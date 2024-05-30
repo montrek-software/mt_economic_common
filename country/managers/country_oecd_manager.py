@@ -1,7 +1,9 @@
 import pandas as pd
 from baseclasses.managers.montrek_manager import MontrekManager
+from reporting.managers.montrek_table_manager import MontrekTableManager
 from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdRepository,
+    CountryOecdTableRepository,
 )
 from mt_economic_common.oecd_api.managers.oecd_request_manager import OecdRequestManager
 
@@ -39,3 +41,7 @@ class CountryOecdManager(MontrekManager):
             ~pd.isnull(df["hub_entity_id"]),
             ["hub_entity_id", "year", "annual_fx_average", "value_date"],
         ]
+
+
+class CountryOecdTableManager(MontrekTableManager):
+    repository_class = CountryOecdTableRepository

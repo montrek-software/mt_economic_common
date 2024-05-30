@@ -6,6 +6,8 @@ from unittest.mock import patch, Mock
 
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,
+    CountryOecdTSSatelliteFactory,
+    CountryHubFactory,
 )
 from mt_economic_common.country import views
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
@@ -106,3 +108,17 @@ class TestCountryMapView(vtc.MontrekViewTestCase):
 
     def url_kwargs(self) -> dict:
         return {"pk": self.country_satellite.hub_entity.id}
+
+
+class TestCountryOecdDataView(vtc.MontrekListViewTestCase):
+    viewname = "country_oecd_data"
+    view_class = views.CountryOecdDataView
+    expected_no_of_rows = 5
+
+    def build_factories(self):
+        self.country = CountryHubFactory()
+        for _ in range(5):
+            CountryOecdTSSatelliteFactory(hub_entity=self.country)
+
+    def url_kwargs(self) -> dict:
+        return {"pk": self.country.id}

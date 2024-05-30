@@ -18,7 +18,10 @@ from mt_economic_common.country.managers.country_manager import (
     CountryTableManager,
     CountryDetailsManager,
 )
-from mt_economic_common.country.managers.country_oecd_manager import CountryOecdManager
+from mt_economic_common.country.managers.country_oecd_manager import (
+    CountryOecdManager,
+    CountryOecdTableManager,
+)
 
 
 class CountryCreateView(MontrekCreateView):
@@ -131,6 +134,23 @@ class CountryMapView(MontrekTemplateView):
             "country_open_street_map_url": open_street_map_url,
             "embedded_url": embedded_url,
         }
+
+    @property
+    def actions(self) -> tuple:
+        action_back = ActionElement(
+            icon="arrow-left",
+            link=reverse("country"),
+            action_id="back_to_overview",
+            hover_text="Back to Overview",
+        )
+        return (action_back,)
+
+
+class CountryOecdDataView(MontrekListView):
+    page_class = CountryPage
+    manager_class = CountryOecdTableManager
+    tab = "tab_oecd_data"
+    title = "OECD Data"
 
     @property
     def actions(self) -> tuple:
