@@ -15,10 +15,12 @@ from mt_economic_common.country.managers.country_oecd_manager import (
 class TestOecdCountryManager(TestCase):
     def setUp(self):
         self.user = MontrekUserFactory()
-        CountryStaticSatelliteFactory(country_name="Austria", country_code="AUS")
-        CountryStaticSatelliteFactory(country_name="Australia", country_code="AUT")
-        CountryStaticSatelliteFactory(country_name="Belgium", country_code="BEL")
-        CountryStaticSatelliteFactory(country_name="Germany", country_code="DEU")
+        self.country_factories = [
+            CountryStaticSatelliteFactory(country_name="Austria", country_code="AUS"),
+            CountryStaticSatelliteFactory(country_name="Australia", country_code="AUT"),
+            CountryStaticSatelliteFactory(country_name="Belgium", country_code="BEL"),
+            CountryStaticSatelliteFactory(country_name="Germany", country_code="DEU"),
+        ]
 
     @patch("api_upload.managers.request_manager.requests.get")
     def test_get_oecd_annual_fx_average(self, mock_get):
@@ -41,3 +43,8 @@ class TestOecdCountryManager(TestCase):
             [test_query[i].annual_fx_average for i in range(4)],
             [76.78634, 62.46608, 81.18251, None],
         )
+        for country in self.country_factories[:-1]:
+            test_query = country_manager.repository.get_country_oecd_ts(
+                country.hub_entity_id
+            )
+            self.assertEqual(test_query.count(), 4)

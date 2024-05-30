@@ -15,3 +15,8 @@ class CountryOecdRepository(MontrekRepository):
             CountryOecdTSSatellite, ["year", "annual_fx_average", "hub_entity_id"]
         )
         return self.build_queryset()
+
+    def get_country_oecd_ts(self, country_id: int):
+        return self.build_time_series_queryset(
+            CountryOecdTSSatellite, self.reference_date
+        ).filter(hub_entity_id=country_id)
