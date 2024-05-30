@@ -49,7 +49,7 @@ class TestOecdRequestManager(TestCase):
         mock_get.return_value = mock_response
         manager = OecdRequestManager()
         result_df = manager.get_average_annual_fx_rates()
-        self.assertEqual(result_df.shape, (16, 11))
+        self.assertEqual(result_df.shape, (16, 10))
         self.assertEqual(
             result_df.columns.tolist(),
             [
@@ -63,7 +63,6 @@ class TestOecdRequestManager(TestCase):
                 "TRANSFORMATION",
                 "TIME_PERIOD",
                 "VALUE",
-                "CCY_CODE",
             ],
         )
         self.assertEqual(result_df["VALUE"].sum(), 1143.22449)
