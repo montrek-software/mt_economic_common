@@ -14,6 +14,7 @@ class CountryHub(baseclass_models.MontrekHubABC):
 class CountryStaticSatellite(baseclass_models.MontrekSatelliteABC):
     hub_entity = models.ForeignKey(CountryHub, on_delete=models.CASCADE)
     country_code = models.CharField(max_length=3)
+    country_code_2 = models.CharField(max_length=2, null=True, blank=True)
     country_name = models.CharField(max_length=255, null=True)
     country_official_name = models.CharField(max_length=255, null=True, blank=True)
     country_capital = models.CharField(max_length=100, null=True, blank=True)

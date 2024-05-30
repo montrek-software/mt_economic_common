@@ -168,6 +168,7 @@ class RestCountriesManager(CountryManager):
         )
         rename_columns = {
             "cca3": "country_code",
+            "cca2": "country_code_2",
             "capital": "country_capital",
             "unMember": "country_un_member",
             "region": "country_region",

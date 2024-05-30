@@ -28,7 +28,8 @@ class TestCountryCreateView(vtc.MontrekCreateViewTestCase):
     def creation_data(self) -> dict:
         return {
             "country_name": "Germany",
-            "country_code": "DE",
+            "country_code": "DEU",
+            "country_code_2": "DE",
         }
 
 

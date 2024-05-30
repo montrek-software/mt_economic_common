@@ -18,6 +18,7 @@ class CountryRepository(MontrekRepository):
                 "country_name",
                 "country_official_name",
                 "country_code",
+                "country_code_2",
                 "country_flag",
                 "country_lat",
                 "country_long",
