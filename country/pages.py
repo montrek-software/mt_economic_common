@@ -18,6 +18,8 @@ class CountryOverviewPage(MontrekPage):
 
 
 class CountryPage(MontrekPage):
+    show_date_range_selector = True
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if "pk" not in kwargs:
@@ -36,4 +38,9 @@ class CountryPage(MontrekPage):
             link=reverse("country_map", args=[self.obj.id]),
             html_id="tab_map",
         )
-        return [details_tab, map_tab]
+        oecd_tab = TabElement(
+            name="OECD Data",
+            link=reverse("country_oecd_data", args=[self.obj.id]),
+            html_id="tab_oecd_data",
+        )
+        return [details_tab, map_tab, oecd_tab]

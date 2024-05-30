@@ -119,6 +119,9 @@ class TestCountryOecdDataView(vtc.MontrekListViewTestCase):
         self.country = CountryHubFactory()
         for _ in range(5):
             CountryOecdTSSatelliteFactory(hub_entity=self.country)
+        country_2 = CountryHubFactory()
+        for _ in range(5):
+            CountryOecdTSSatelliteFactory(hub_entity=country_2)
 
     def url_kwargs(self) -> dict:
         return {"pk": self.country.id}

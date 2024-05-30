@@ -1,3 +1,4 @@
+from os import walk
 import pandas as pd
 from baseclasses.managers.montrek_manager import MontrekManager
 from reporting.managers.montrek_table_manager import MontrekTableManager
@@ -6,6 +7,7 @@ from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdTableRepository,
 )
 from mt_economic_common.oecd_api.managers.oecd_request_manager import OecdRequestManager
+from reporting.dataclasses import table_elements as te
 
 
 class CountryOecdManager(MontrekManager):
@@ -43,5 +45,17 @@ class CountryOecdManager(MontrekManager):
         ]
 
 
+class YearTableElement(te.IntTableElement):
+    def _format_value(self, value: int) -> str:
+        return str(value)
+
+
 class CountryOecdTableManager(MontrekTableManager):
     repository_class = CountryOecdTableRepository
+
+    @property
+    def table_elements(self) -> list:
+        return [
+            YearTableElement(name="Year", attr="year"),
+            te.FloatTableElement(name="Annual FX Average", attr="annual_fx_average"),
+        ]
