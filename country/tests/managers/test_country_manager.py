@@ -6,6 +6,9 @@ from mt_economic_common.country.managers.country_manager import (
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
+from mt_economic_common.country.tests.factories.country_factories import (
+    CountryStaticSatelliteFactory,
+)
 
 
 class MockCountryRequestManager:
