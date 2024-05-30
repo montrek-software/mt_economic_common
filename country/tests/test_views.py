@@ -1,5 +1,8 @@
+import os
+import json
 from django.test import TestCase
 from django.urls import reverse
+from unittest.mock import patch, Mock
 
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,
@@ -25,7 +28,8 @@ class TestCountryCreateView(vtc.MontrekCreateViewTestCase):
     def creation_data(self) -> dict:
         return {
             "country_name": "Germany",
-            "country_code": "DE",
+            "country_code": "DEU",
+            "country_code_2": "DE",
         }
 
 
@@ -56,22 +60,30 @@ class TestUploadCountriesRestCountries(TestCase):
         self.user = MontrekUserFactory()
         self.client.force_login(self.user)
 
-    def test_upload_countries_rest_countries_returns_correct_html(self):
+    @patch("api_upload.managers.request_manager.requests.get")
+    def test_upload_countries_rest_countries_returns_correct_html(self, mock_get):
+        mock_response = Mock()
+        with open(
+            os.path.join(
+                os.path.dirname(__file__), "test_data/rest_countries_example.json"
+            )
+        ) as f:
+            mock_response.json.return_value = json.loads(f.read())
+        mock_get.return_value = mock_response
         url = reverse("upload_countries_rest_countries")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("country"))
 
 
-class TestCountryMapView(TestCase):
-    def setUp(self):
+class TestCountryMapView(vtc.MontrekViewTestCase):
+    viewname = "country_map"
+    view_class = views.CountryMapView
+
+    def build_factories(self):
         self.country_satellite = CountryStaticSatelliteFactory(
             country_google_maps_url="https://goo.gl/maps/g7QxxSFsWyTPKuzd7"
         )
 
-    def test_country_map_returns_correct_html(self):
-        url = reverse(
-            "country_map", kwargs={"pk": self.country_satellite.hub_entity.id}
-        )
-        response = self.client.get(url)
-        self.assertTemplateUsed(response, "country_map.html")
+    def url_kwargs(self) -> dict:
+        return {"pk": self.country_satellite.hub_entity.id}

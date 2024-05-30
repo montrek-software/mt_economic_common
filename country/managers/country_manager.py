@@ -1,3 +1,4 @@
+from io import StringIO
 import pandas as pd
 import numpy as np
 import json
@@ -166,7 +167,8 @@ class RestCountriesManager(CountryManager):
             lambda x: x["png"] if x else None
         )
         rename_columns = {
-            "cca2": "country_code",
+            "cca3": "country_code",
+            "cca2": "country_code_2",
             "capital": "country_capital",
             "unMember": "country_un_member",
             "region": "country_region",
@@ -225,5 +227,3 @@ class RestCountriesManager(CountryManager):
         return pd.Series(
             currencies_series.apply(lambda x: [currency_hub_map[c] for c in x])
         )
-
-        breakpoint()
