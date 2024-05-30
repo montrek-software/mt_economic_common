@@ -1,4 +1,3 @@
-from os import walk
 import pandas as pd
 from baseclasses.managers.montrek_manager import MontrekManager
 from reporting.managers.montrek_table_manager import MontrekTableManager
