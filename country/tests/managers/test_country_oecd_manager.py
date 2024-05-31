@@ -4,6 +4,7 @@ from django.test import TestCase
 from unittest.mock import patch, Mock
 from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdRepository,
+    CountryOecdTableRepository,
 )
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from mt_economic_common.country.tests.factories.country_factories import (
@@ -51,7 +52,8 @@ class TestOecdCountryManager(TestCase):
             [76.78634, 62.46608, 81.18251, None],
         )
         for country in self.country_factories[:-1]:
-            test_query = country_manager.repository.get_country_oecd_ts(
-                country.hub_entity_id
+            country_oecd_repository = CountryOecdTableRepository(
+                {"pk": country.hub_entity.id}
             )
+            test_query = country_oecd_repository.std_queryset()
             self.assertEqual(test_query.count(), 4)

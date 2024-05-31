@@ -298,6 +298,7 @@ class TestCountryManager(TestCase):
         # Assert
         registry_query = country_manager.repository.std_queryset()
         self.assertEqual(registry_query.count(), 1)
+        self.assertEqual(registry_query[0].upload_status, "processed")
 
         test_query = CountryRepository().std_queryset()
         self.assertEqual(test_query.count(), 2)
