@@ -42,4 +42,5 @@ class CountryOecdTableManager(MontrekTableManager):
         return [
             YearTableElement(name="Year", attr="year"),
             te.FloatTableElement(name="Annual FX Average", attr="annual_fx_average"),
+            te.FloatTableElement(name="Inflation", attr="inflation"),
         ]

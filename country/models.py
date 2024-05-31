@@ -42,7 +42,8 @@ class CountryStaticSatellite(baseclass_models.MontrekSatelliteABC):
 class CountryOecdTSSatellite(baseclass_models.MontrekTimeSeriesSatelliteABC):
     hub_entity = models.ForeignKey(CountryHub, on_delete=models.CASCADE)
     year = models.IntegerField()
-    annual_fx_average = models.FloatField()
+    annual_fx_average = models.FloatField(null=True, blank=True)
+    inflation = models.FloatField(null=True, blank=True)
     identifier_fields = ["year", "hub_entity_id"]
 
     def __str__(self):
