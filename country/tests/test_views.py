@@ -8,6 +8,7 @@ from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,
     CountryOecdTSSatelliteFactory,
     CountryHubFactory,
+    CountryApiUploadRegistryStaticSatelliteFactory,
 )
 from mt_economic_common.country import views
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
@@ -125,3 +126,12 @@ class TestCountryOecdDataView(vtc.MontrekListViewTestCase):
 
     def url_kwargs(self) -> dict:
         return {"pk": self.country.id}
+
+
+class TestCountryApiRegistryListView(vtc.MontrekListViewTestCase):
+    viewname = "country_api_registry_list"
+    view_class = views.CountryApiRegistryListView
+    expected_no_of_rows = 5
+
+    def build_factories(self):
+        CountryApiUploadRegistryStaticSatelliteFactory.create_batch(5)

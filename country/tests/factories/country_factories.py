@@ -1,5 +1,9 @@
 import datetime
 import factory
+from api_upload.tests.factories import (
+    ApiUploadRegistryHubFactory,
+    ApiUploadRegistryStaticSatelliteFactory,
+)
 
 
 class CountryHubFactory(factory.django.DjangoModelFactory):
@@ -24,3 +28,17 @@ class CountryOecdTSSatelliteFactory(factory.django.DjangoModelFactory):
     year = factory.Sequence(lambda n: 2000 + n)
     annual_fx_average = 1.0
     value_date = factory.LazyAttribute(lambda obj: datetime.date(obj.year, 1, 1))
+
+
+class CountryApiUploadRegistryHubFactory(ApiUploadRegistryHubFactory):
+    class Meta:
+        model = "country.CountryApiUploadRegistryHub"
+
+
+class CountryApiUploadRegistryStaticSatelliteFactory(
+    ApiUploadRegistryStaticSatelliteFactory
+):
+    class Meta:
+        model = "country.CountryApiUploadRegistryStaticSatellite"
+
+    hub_entity = factory.SubFactory(CountryApiUploadRegistryHubFactory)

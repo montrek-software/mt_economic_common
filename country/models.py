@@ -1,6 +1,7 @@
 from contextlib import nullcontext
 from django.db import models
 from baseclasses import models as baseclass_models
+from api_upload import models as api_upload_models
 
 
 class CountryHub(baseclass_models.MontrekHubABC):
@@ -55,3 +56,15 @@ class LinkCountryCurrency(baseclass_models.MontrekManyToManyLinkABC):
         on_delete=models.CASCADE,
     )
     hub_out = models.ForeignKey("currency.CurrencyHub", on_delete=models.CASCADE)
+
+
+class CountryApiUploadRegistryHub(api_upload_models.ApiUploadRegistryHubABC):
+    pass
+
+
+class CountryApiUploadRegistryStaticSatellite(
+    api_upload_models.ApiUploadRegistryStaticSatelliteABC
+):
+    hub_entity = models.ForeignKey(
+        CountryApiUploadRegistryHub, on_delete=models.CASCADE
+    )

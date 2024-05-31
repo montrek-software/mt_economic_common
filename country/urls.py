@@ -23,6 +23,11 @@ urlpatterns = [
         name="country_update",
     ),
     path(
+        "api_registry",
+        views.CountryApiRegistryListView.as_view(),
+        name="country_api_registry_list",
+    ),
+    path(
         "upload_countries_rest_countries",
         views.upload_countries_rest_countries,
         name="upload_countries_rest_countries",

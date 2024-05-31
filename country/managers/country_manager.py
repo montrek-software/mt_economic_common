@@ -5,7 +5,10 @@ import json
 from baseclasses.managers.montrek_manager import MontrekManager
 from reporting.managers.montrek_table_manager import MontrekTableManager
 from reporting.managers.montrek_details_manager import MontrekDetailsManager
-from mt_economic_common.country.repositories.country_repository import CountryRepository
+from mt_economic_common.country.repositories.country_repository import (
+    CountryRepository,
+    CountryApiRegistryRepository,
+)
 from mt_economic_common.country.managers.country_request_manager import (
     CountryRequestManager,
     RestCountriesRequestManager,
@@ -226,4 +229,25 @@ class RestCountriesManager(CountryManager):
         currency_hub_map = {c.ccy_code: c for c in currency_hubs}
         return pd.Series(
             currencies_series.apply(lambda x: [currency_hub_map[c] for c in x])
+        )
+
+
+class CountryApiRegistryManager(MontrekTableManager):
+    repository_class = CountryApiRegistryRepository
+
+    @property
+    def table_elements(self) -> tuple:
+        return (
+            table_elements.StringTableElement(
+                name="URL",
+                attr="url",
+            ),
+            table_elements.StringTableElement(
+                name="Upload Status",
+                attr="upload_status",
+            ),
+            table_elements.StringTableElement(
+                name="Upload Message",
+                attr="upload_message",
+            ),
         )

@@ -17,6 +17,7 @@ from mt_economic_common.country.managers.country_manager import (
     CountryManager,
     CountryTableManager,
     CountryDetailsManager,
+    CountryApiRegistryManager,
 )
 from mt_economic_common.country.managers.country_oecd_manager import (
     CountryOecdManager,
@@ -59,6 +60,13 @@ class CountryOverview(MontrekListView):
             hover_text="Upload OECD data",
         )
         return (action_new_country, action_upload_countries, action_upload_oecd_data)
+
+
+class CountryApiRegistryListView(MontrekListView):
+    page_class = CountryOverviewPage
+    manager_class = CountryApiRegistryManager
+    title = "Country API Registry"
+    tab = "tab_country_api_registry"
 
 
 class CountryDetailsView(MontrekDetailView):

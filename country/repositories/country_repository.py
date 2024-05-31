@@ -4,8 +4,13 @@ from mt_economic_common.country.models import (
     CountryHub,
     CountryStaticSatellite,
     LinkCountryCurrency,
+    CountryApiUploadRegistryHub,
+    CountryApiUploadRegistryStaticSatellite,
 )
 from mt_economic_common.currency.models import CurrencyStaticSatellite
+from api_upload.repositories.api_upload_registry_repository import (
+    ApiUploadRepositoryABC,
+)
 
 
 class CountryRepository(MontrekRepository):
@@ -44,3 +49,8 @@ class CountryRepository(MontrekRepository):
             ],
         )
         return self.build_queryset().order_by("country_name")
+
+
+class CountryApiRegistryRepository(ApiUploadRepositoryABC):
+    hub_class = CountryApiUploadRegistryHub
+    static_satellite_class = CountryApiUploadRegistryStaticSatellite
