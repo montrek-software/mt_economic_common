@@ -5,6 +5,8 @@ from mt_economic_common.currency.repositories.currency_repository import (
 )
 from mt_economic_common.country.repositories.country_repository import CountryRepository
 from mt_economic_common.country.repositories.country_oecd_repository import (
+    CountryOecdFxAnnualRepository,
+    CountryOecdInflationRepository,
     CountryOecdRepository,
 )
 from mt_economic_common.oecd_api.utils.sdmx_json_reader import SdmxJsonReader
@@ -135,7 +137,7 @@ class RestCountriesUploadProcessor:
 
 
 class OecdCountriesUploadProcessor:
-    repository_class = CountryOecdRepository
+    repository_class = None
     value_field = ""
 
     def __init__(self, api_upload_registry, session_data: dict):
@@ -197,7 +199,9 @@ class OecdCountriesUploadProcessor:
 
 class OecdAnnualFxUploadProcessor(OecdCountriesUploadProcessor):
     value_field = "annual_fx_average"
+    repository_class = CountryOecdFxAnnualRepository
 
 
 class OecdInflationUploadProcessor(OecdCountriesUploadProcessor):
     value_field = "inflation"
+    repository_class = CountryOecdInflationRepository

@@ -3,6 +3,7 @@ import json
 from django.test import TestCase
 from unittest.mock import patch, Mock
 from mt_economic_common.country.repositories.country_oecd_repository import (
+    CountryOecdInflationRepository,
     CountryOecdRepository,
     CountryOecdTableRepository,
 )
@@ -64,18 +65,12 @@ class TestOecdCountryManager(TestCase):
         # Assert
         registry_query = country_manager.repository.std_queryset()
         self.assertEqual(registry_query.count(), 1)
-        test_query = CountryOecdRepository().std_queryset()
+        test_query = CountryOecdInflationRepository().std_queryset()
         self.assertEqual(test_query.count(), 4)
         self.assertEqual(
             [test_query[i].inflation for i in range(4)],
             [76.78634, 62.46608, 81.18251, None],
         )
-        for country in self.country_factories[:-1]:
-            country_oecd_repository = CountryOecdTableRepository(
-                {"pk": country.hub_entity.id}
-            )
-            test_query = country_oecd_repository.std_queryset()
-            self.assertEqual(test_query.count(), 4)
 
     def _setup_mock_get(self, mock_get):
         mock_response = Mock()

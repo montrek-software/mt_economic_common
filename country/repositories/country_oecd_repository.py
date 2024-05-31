@@ -41,3 +41,27 @@ class CountryOecdTableRepository(MontrekRepository):
             )
         )
         return queryset.filter(hub_entity_id=self.session_data["pk"])
+
+
+class CountryOecdFxAnnualRepository(MontrekRepository):
+    hub_class = CountryHub
+
+    def std_queryset(self, **kwargs):
+        self.add_satellite_fields_annotations(CountryStaticSatellite, ["country_code"])
+        self.add_last_ts_satellite_fields_annotations(
+            CountryOecdFxAnnualTSSatellite,
+            ["year", "annual_fx_average", "hub_entity_id"],
+        )
+        return self.build_queryset()
+
+
+class CountryOecdInflationRepository(MontrekRepository):
+    hub_class = CountryHub
+
+    def std_queryset(self, **kwargs):
+        self.add_satellite_fields_annotations(CountryStaticSatellite, ["country_code"])
+        self.add_last_ts_satellite_fields_annotations(
+            CountryOecdInflationTSSatellite,
+            ["year", "inflation", "hub_entity_id"],
+        )
+        return self.build_queryset()
