@@ -102,7 +102,7 @@ class TestUploadOecdCountryData(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("country"))
         registry_query = CountryApiUploadRegistryRepository().std_queryset()
-        self.assertEqual(registry_query.count(), 1)
+        self.assertEqual(registry_query.count(), 2)
 
 
 class TestCountryMapView(vtc.MontrekViewTestCase):

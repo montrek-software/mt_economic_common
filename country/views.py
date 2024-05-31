@@ -21,6 +21,7 @@ from mt_economic_common.country.managers.country_manager import (
 )
 from mt_economic_common.country.managers.country_oecd_manager import (
     CountryOecdAnnualFxUploadManager,
+    CountryOecdInflationUploadManager,
     CountryOecdTableManager,
 )
 
@@ -109,10 +110,15 @@ def upload_countries_rest_countries(request):
 
 
 def upload_oecd_country_data(request):
-    man = CountryOecdAnnualFxUploadManager(session_data={"user_id": request.user.id})
-    man.upload_and_process()
-    for m in man.messages:
-        getattr(messages, m.message_type)(request, m.message)
+    session_data = {"user_id": request.user.id}
+    managers = (
+        CountryOecdAnnualFxUploadManager(session_data=session_data),
+        CountryOecdInflationUploadManager(session_data=session_data),
+    )
+    for man in managers:
+        man.upload_and_process()
+        for m in man.messages:
+            getattr(messages, m.message_type)(request, m.message)
     return HttpResponseRedirect(reverse("country"))
 
 

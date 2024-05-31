@@ -36,7 +36,7 @@ class CountryOecdTableRepository(MontrekRepository):
                 self.build_time_series_queryset(
                     CountryOecdInflationTSSatellite, self.reference_date
                 )
-                .filter(year=OuterRef("year"), hub_entity=OuterRef("hub_entity"))
+                .filter(year=OuterRef("year"), hub_entity_id=OuterRef("hub_entity_id"))
                 .values("inflation")
             )
         )
