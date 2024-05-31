@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.urls import reverse
 from django.views.generic.base import HttpResponseRedirect
 
@@ -12,9 +13,9 @@ from reporting.dataclasses import table_elements
 from baseclasses.dataclasses.view_classes import ActionElement
 from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
 from mt_economic_common.country.forms import CountryCreateForm
-from mt_economic_common.country.managers.country_manager import RestCountriesManager
 from mt_economic_common.country.managers.country_manager import (
     CountryManager,
+    RestCountriesUploadManager,
     CountryTableManager,
     CountryDetailsManager,
     CountryApiUploadRegistryManager,
@@ -101,8 +102,10 @@ class CountryUpdateView(MontrekUpdateView):
 
 
 def upload_countries_rest_countries(request):
-    man = RestCountriesManager(session_data={"user_id": request.user.id})
-    man.write_countries_to_db()
+    man = RestCountriesUploadManager(session_data={"user_id": request.user.id})
+    man.upload_and_process()
+    for m in man.messages:
+        getattr(messages, m.message_type)(request, m.message)
     return HttpResponseRedirect(reverse("country"))
 
 

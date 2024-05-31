@@ -1,20 +1,22 @@
 from django.test import TestCase
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from mt_economic_common.country.managers.country_manager import (
-    RestCountriesManager,
+    RestCountriesUploadManager,
 )
+from mt_economic_common.country.repositories.country_repository import CountryRepository
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
-from mt_economic_common.country.tests.factories.country_factories import (
-    CountryStaticSatelliteFactory,
+from mt_economic_common.country.managers.country_request_manager import (
+    RestCountriesRequestManager,
 )
 
 
-class MockCountryRequestManager:
+class MockCountryRequestManager(RestCountriesRequestManager):
     base_url = "test_url"
 
-    def get_countries_as_json(self):
+    def get_json(self, endpoint: str):
+        self.status_code = 200
         return [
             {
                 "name": {
@@ -278,8 +280,8 @@ class MockCountryRequestManager:
         ]
 
 
-class MockRestCountriesManager(RestCountriesManager):
-    request_manager = MockCountryRequestManager()
+class MockRestCountriesManager(RestCountriesUploadManager):
+    request_manager_class = MockCountryRequestManager
 
 
 class TestCountryManager(TestCase):
@@ -292,9 +294,12 @@ class TestCountryManager(TestCase):
             session_data={"user_id": self.user.id}
         )
         # Act
-        country_manager.write_countries_to_db()
+        country_manager.upload_and_process()
         # Assert
-        test_query = country_manager.repository.std_queryset()
+        registry_query = country_manager.repository.std_queryset()
+        self.assertEqual(registry_query.count(), 1)
+
+        test_query = CountryRepository().std_queryset()
         self.assertEqual(test_query.count(), 2)
         self.assertEqual(test_query[0].country_name, "France")
         self.assertEqual(test_query[0].country_code, "FRA")
