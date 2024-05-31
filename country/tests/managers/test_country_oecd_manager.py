@@ -2,13 +2,16 @@ import os
 import json
 from django.test import TestCase
 from unittest.mock import patch, Mock
+from mt_economic_common.country.repositories.country_oecd_repository import (
+    CountryOecdRepository,
+)
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,
 )
 
 from mt_economic_common.country.managers.country_oecd_manager import (
-    CountryOecdManager,
+    CountryOecdUploadManager,
 )
 
 
@@ -33,11 +36,15 @@ class TestOecdCountryManager(TestCase):
             mock_response.json.return_value = json.loads(f.read())
         mock_get.return_value = mock_response
         # Arrange
-        country_manager = CountryOecdManager(session_data={"user_id": self.user.id})
+        country_manager = CountryOecdUploadManager(
+            session_data={"user_id": self.user.id}
+        )
         # Act
-        country_manager.write_oecd_annual_fx_average_to_db()
+        country_manager.upload_and_process()
         # Assert
-        test_query = country_manager.repository.std_queryset()
+        registry_query = country_manager.repository.std_queryset()
+        self.assertEqual(registry_query.count(), 1)
+        test_query = CountryOecdRepository().std_queryset()
         self.assertEqual(test_query.count(), 4)
         self.assertEqual(
             [test_query[i].annual_fx_average for i in range(4)],

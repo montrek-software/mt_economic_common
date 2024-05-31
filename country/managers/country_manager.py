@@ -140,4 +140,6 @@ class CountryApiUploadRegistryManager(MontrekTableManager):
                 name="Upload Message",
                 attr="upload_message",
             ),
+            table_elements.DateTimeTableElement(name="Created At", attr="created_at"),
+            table_elements.StringTableElement(name="Created By", attr="created_by"),
         )
