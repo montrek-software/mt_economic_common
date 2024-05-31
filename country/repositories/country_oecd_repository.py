@@ -1,7 +1,9 @@
+from django.db.models import OuterRef, Subquery
 from baseclasses.repositories.montrek_repository import MontrekRepository
 from mt_economic_common.country.models import (
     CountryHub,
     CountryOecdFxAnnualTSSatellite,
+    CountryOecdInflationTSSatellite,
     CountryStaticSatellite,
 )
 
@@ -24,5 +26,14 @@ class CountryOecdTableRepository(MontrekRepository):
     def std_queryset(self, **kwargs):
         queryset = self.build_time_series_queryset(
             CountryOecdFxAnnualTSSatellite, self.reference_date
+        )
+        queryset = queryset.annotate(
+            inflation=Subquery(
+                self.build_time_series_queryset(
+                    CountryOecdInflationTSSatellite, self.reference_date
+                )
+                .filter(year=OuterRef("year"), hub_entity=OuterRef("hub_entity"))
+                .values("inflation")
+            )
         )
         return queryset.filter(hub_entity_id=self.session_data["pk"])
