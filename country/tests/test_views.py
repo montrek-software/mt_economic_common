@@ -11,6 +11,9 @@ from mt_economic_common.country.tests.factories.country_factories import (
     CountryApiUploadRegistryStaticSatelliteFactory,
 )
 from mt_economic_common.country import views
+from mt_economic_common.country.repositories.country_repository import (
+    CountryApiUploadRegistryRepository,
+)
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from testing.test_cases import view_test_cases as vtc
 
@@ -96,6 +99,8 @@ class TestUploadOecdCountryData(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("country"))
+        registry_query = CountryApiUploadRegistryRepository().std_queryset()
+        self.assertEqual(registry_query.count(), 1)
 
 
 class TestCountryMapView(vtc.MontrekViewTestCase):
@@ -130,7 +135,7 @@ class TestCountryOecdDataView(vtc.MontrekListViewTestCase):
 
 class TestCountryApiRegistryListView(vtc.MontrekListViewTestCase):
     viewname = "country_api_registry_list"
-    view_class = views.CountryApiRegistryListView
+    view_class = views.CountryApiUploadRegistryListView
     expected_no_of_rows = 5
 
     def build_factories(self):

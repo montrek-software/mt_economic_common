@@ -7,7 +7,7 @@ from reporting.managers.montrek_table_manager import MontrekTableManager
 from reporting.managers.montrek_details_manager import MontrekDetailsManager
 from mt_economic_common.country.repositories.country_repository import (
     CountryRepository,
-    CountryApiRegistryRepository,
+    CountryApiUploadRegistryRepository,
 )
 from mt_economic_common.country.managers.country_request_manager import (
     CountryRequestManager,
@@ -232,8 +232,8 @@ class RestCountriesManager(CountryManager):
         )
 
 
-class CountryApiRegistryManager(MontrekTableManager):
-    repository_class = CountryApiRegistryRepository
+class CountryApiUploadRegistryManager(MontrekTableManager):
+    repository_class = CountryApiUploadRegistryRepository
 
     @property
     def table_elements(self) -> tuple:

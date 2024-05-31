@@ -51,6 +51,6 @@ class CountryRepository(MontrekRepository):
         return self.build_queryset().order_by("country_name")
 
 
-class CountryApiRegistryRepository(ApiUploadRepositoryABC):
+class CountryApiUploadRegistryRepository(ApiUploadRepositoryABC):
     hub_class = CountryApiUploadRegistryHub
     static_satellite_class = CountryApiUploadRegistryStaticSatellite

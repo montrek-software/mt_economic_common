@@ -24,7 +24,7 @@ urlpatterns = [
     ),
     path(
         "api_registry",
-        views.CountryApiRegistryListView.as_view(),
+        views.CountryApiUploadRegistryListView.as_view(),
         name="country_api_registry_list",
     ),
     path(
