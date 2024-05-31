@@ -39,15 +39,24 @@ class CountryStaticSatellite(baseclass_models.MontrekSatelliteABC):
         return self.country_name
 
 
-class CountryOecdTSSatellite(baseclass_models.MontrekTimeSeriesSatelliteABC):
+class CountryOecdTSSatelliteABC(baseclass_models.MontrekTimeSeriesSatelliteABC):
+    class Meta:
+        abstract = True
+
     hub_entity = models.ForeignKey(CountryHub, on_delete=models.CASCADE)
     year = models.IntegerField()
-    annual_fx_average = models.FloatField(null=True, blank=True)
-    inflation = models.FloatField(null=True, blank=True)
     identifier_fields = ["year", "hub_entity_id"]
 
     def __str__(self):
         return f"{self.hub_entity} {self.year}"
+
+
+class CountryOecdFxAnnualTSSatellite(CountryOecdTSSatelliteABC):
+    annual_fx_average = models.FloatField(null=True, blank=True)
+
+
+class CountryOecdInflationTSSatellite(CountryOecdTSSatelliteABC):
+    inflation = models.FloatField(null=True, blank=True)
 
 
 class LinkCountryCurrency(baseclass_models.MontrekManyToManyLinkABC):

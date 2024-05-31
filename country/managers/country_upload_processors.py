@@ -151,18 +151,29 @@ class OecdCountriesUploadProcessor:
 
     def process(self, json_response: dict | list) -> bool:
         reader = SdmxJsonReader(json_data=json_response, dimension_out="id")
-        annual_fx_df = reader.to_data_frame()
-        annual_fx_df = self._map_country_hub(annual_fx_df)
-        annual_fx_df = self._prepare_df(annual_fx_df)
+        data_df = reader.to_data_frame()
+        data_df = self.convert_data_df(data_df)
         try:
-            self.repository.create_objects_from_data_frame(annual_fx_df)
-            self.message = f"Successfully uploaded {len(annual_fx_df)} data points"
+            self.repository.create_objects_from_data_frame(data_df)
+            self.message = f"Successfully uploaded {len(data_df)} data points"
         except Exception as e:
             self.message = (
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
             return False
         return True
+
+    def convert_data_df(self, data_df: pd.DataFrame) -> pd.DataFrame:
+        raise NotImplementedError(
+            f"{self.__class__.__name__} needs convert_data_df method."
+        )
+
+
+class OecdAnnualFxUploadProcessor(OecdCountriesUploadProcessor):
+    def convert_data_df(self, data_df: pd.DataFrame) -> pd.DataFrame:
+        data_df = self._map_country_hub(data_df)
+        data_df = self._prepare_df(data_df)
+        return data_df
 
     def _map_country_hub(self, df: pd.DataFrame) -> pd.DataFrame:
         unique_country_codes = df["REF_AREA"].unique()

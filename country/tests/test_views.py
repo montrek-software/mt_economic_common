@@ -5,8 +5,8 @@ from django.urls import reverse
 from unittest.mock import patch, Mock
 
 from mt_economic_common.country.tests.factories.country_factories import (
+    CountryOecdFxAnnualTSSatelliteFactory,
     CountryStaticSatelliteFactory,
-    CountryOecdTSSatelliteFactory,
     CountryHubFactory,
     CountryApiUploadRegistryStaticSatelliteFactory,
 )
@@ -126,10 +126,10 @@ class TestCountryOecdDataView(vtc.MontrekListViewTestCase):
     def build_factories(self):
         self.country = CountryHubFactory()
         for _ in range(5):
-            CountryOecdTSSatelliteFactory(hub_entity=self.country)
+            CountryOecdFxAnnualTSSatelliteFactory(hub_entity=self.country)
         country_2 = CountryHubFactory()
         for _ in range(5):
-            CountryOecdTSSatelliteFactory(hub_entity=country_2)
+            CountryOecdFxAnnualTSSatelliteFactory(hub_entity=country_2)
 
     def url_kwargs(self) -> dict:
         return {"pk": self.country.id}

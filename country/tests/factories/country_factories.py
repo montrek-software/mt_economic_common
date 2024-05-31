@@ -21,13 +21,23 @@ class CountryStaticSatelliteFactory(factory.django.DjangoModelFactory):
 
 
 class CountryOecdTSSatelliteFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = "country.CountryOecdTSSatellite"
-
     hub_entity = factory.SubFactory(CountryHubFactory)
     year = factory.Sequence(lambda n: 2000 + n)
-    annual_fx_average = 1.0
     value_date = factory.LazyAttribute(lambda obj: datetime.date(obj.year, 1, 1))
+
+
+class CountryOecdFxAnnualTSSatelliteFactory(CountryOecdTSSatelliteFactory):
+    class Meta:
+        model = "country.CountryOecdFxAnnualTSSatellite"
+
+    annual_fx_average = 1.0
+
+
+class CountryOecdInflationTSSatelliteFactory(CountryOecdTSSatelliteFactory):
+    class Meta:
+        model = "country.CountryOecdInflationTSSatellite"
+
+    inflation = 100.0
 
 
 class CountryApiUploadRegistryHubFactory(ApiUploadRegistryHubFactory):

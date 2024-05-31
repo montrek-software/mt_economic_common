@@ -12,7 +12,7 @@ from mt_economic_common.country.tests.factories.country_factories import (
 )
 
 from mt_economic_common.country.managers.country_oecd_manager import (
-    CountryOecdUploadManager,
+    CountryOecdAnnualFxUploadManager,
 )
 
 
@@ -37,7 +37,7 @@ class TestOecdCountryManager(TestCase):
             mock_response.json.return_value = json.loads(f.read())
         mock_get.return_value = mock_response
         # Arrange
-        country_manager = CountryOecdUploadManager(
+        country_manager = CountryOecdAnnualFxUploadManager(
             session_data={"user_id": self.user.id}
         )
         # Act

@@ -10,7 +10,7 @@ from mt_economic_common.country.repositories.country_repository import (
     CountryApiUploadRegistryRepository,
 )
 from mt_economic_common.country.managers.country_upload_processors import (
-    OecdCountriesUploadProcessor,
+    OecdAnnualFxUploadProcessor,
 )
 from mt_economic_common.oecd_api.managers.oecd_request_manager import OecdRequestManager
 from reporting.dataclasses import table_elements as te
@@ -20,10 +20,10 @@ class CountryOecdManager(MontrekManager):
     repository_class = CountryOecdRepository
 
 
-class CountryOecdUploadManager(ApiUploadManager):
+class CountryOecdAnnualFxUploadManager(ApiUploadManager):
     repository_class = CountryApiUploadRegistryRepository
     request_manager_class = OecdRequestManager
-    api_upload_processor_class = OecdCountriesUploadProcessor
+    api_upload_processor_class = OecdAnnualFxUploadProcessor
     endpoint = (
         "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE4,1.0/A....EXC_A.......?startPeriod=2000"
     )

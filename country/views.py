@@ -20,7 +20,7 @@ from mt_economic_common.country.managers.country_manager import (
     CountryApiUploadRegistryManager,
 )
 from mt_economic_common.country.managers.country_oecd_manager import (
-    CountryOecdUploadManager,
+    CountryOecdAnnualFxUploadManager,
     CountryOecdTableManager,
 )
 
@@ -109,7 +109,7 @@ def upload_countries_rest_countries(request):
 
 
 def upload_oecd_country_data(request):
-    man = CountryOecdUploadManager(session_data={"user_id": request.user.id})
+    man = CountryOecdAnnualFxUploadManager(session_data={"user_id": request.user.id})
     man.upload_and_process()
     for m in man.messages:
         getattr(messages, m.message_type)(request, m.message)
