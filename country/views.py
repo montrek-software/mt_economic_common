@@ -9,7 +9,6 @@ from baseclasses.views import (
     MontrekUpdateView,
     MontrekTemplateView,
 )
-from reporting.dataclasses import table_elements
 from baseclasses.dataclasses.view_classes import ActionElement
 from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
 from mt_economic_common.country.forms import CountryCreateForm
@@ -21,7 +20,7 @@ from mt_economic_common.country.managers.country_manager import (
     CountryApiUploadRegistryManager,
 )
 from mt_economic_common.country.managers.country_oecd_manager import (
-    CountryOecdManager,
+    CountryOecdUploadManager,
     CountryOecdTableManager,
 )
 
@@ -110,8 +109,10 @@ def upload_countries_rest_countries(request):
 
 
 def upload_oecd_country_data(request):
-    man = CountryOecdManager(session_data={"user_id": request.user.id})
-    man.write_oecd_annual_fx_average_to_db()
+    man = CountryOecdUploadManager(session_data={"user_id": request.user.id})
+    man.upload_and_process()
+    for m in man.messages:
+        getattr(messages, m.message_type)(request, m.message)
     return HttpResponseRedirect(reverse("country"))
 
 
