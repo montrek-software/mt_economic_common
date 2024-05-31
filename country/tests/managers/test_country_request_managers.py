@@ -25,7 +25,7 @@ class TestRestCountriesRequestManager(TestCase):
             rest_countries_request_manager.base_url, "https://restcountries.com/v3.1/"
         )
         # Act
-        countries = rest_countries_request_manager.get_countries_as_json()
+        countries = rest_countries_request_manager.get_json("all")
         # Assert
         self.assertIsNotNone(countries)
         self.assertGreater(len(countries), 0)

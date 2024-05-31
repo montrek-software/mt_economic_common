@@ -6,8 +6,14 @@ from unittest.mock import patch, Mock
 
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,
+    CountryOecdTSSatelliteFactory,
+    CountryHubFactory,
+    CountryApiUploadRegistryStaticSatelliteFactory,
 )
 from mt_economic_common.country import views
+from mt_economic_common.country.repositories.country_repository import (
+    CountryApiUploadRegistryRepository,
+)
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from testing.test_cases import view_test_cases as vtc
 
@@ -74,6 +80,29 @@ class TestUploadCountriesRestCountries(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("country"))
+        registry_query = CountryApiUploadRegistryRepository().std_queryset()
+        self.assertEqual(registry_query.count(), 1)
+
+
+class TestUploadOecdCountryData(TestCase):
+    def setUp(self):
+        self.user = MontrekUserFactory()
+        self.client.force_login(self.user)
+
+    @patch("api_upload.managers.request_manager.requests.get")
+    def test_upload_countries_rest_countries_returns_correct_html(self, mock_get):
+        mock_response = Mock()
+        with open(
+            os.path.join(os.path.dirname(__file__), "test_data/fx_annual_example.json")
+        ) as f:
+            mock_response.json.return_value = json.loads(f.read())
+        mock_get.return_value = mock_response
+        url = reverse("upload_oecd_country_data")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("country"))
+        registry_query = CountryApiUploadRegistryRepository().std_queryset()
+        self.assertEqual(registry_query.count(), 1)
 
 
 class TestCountryMapView(vtc.MontrekViewTestCase):
@@ -87,3 +116,29 @@ class TestCountryMapView(vtc.MontrekViewTestCase):
 
     def url_kwargs(self) -> dict:
         return {"pk": self.country_satellite.hub_entity.id}
+
+
+class TestCountryOecdDataView(vtc.MontrekListViewTestCase):
+    viewname = "country_oecd_data"
+    view_class = views.CountryOecdDataView
+    expected_no_of_rows = 5
+
+    def build_factories(self):
+        self.country = CountryHubFactory()
+        for _ in range(5):
+            CountryOecdTSSatelliteFactory(hub_entity=self.country)
+        country_2 = CountryHubFactory()
+        for _ in range(5):
+            CountryOecdTSSatelliteFactory(hub_entity=country_2)
+
+    def url_kwargs(self) -> dict:
+        return {"pk": self.country.id}
+
+
+class TestCountryApiRegistryListView(vtc.MontrekListViewTestCase):
+    viewname = "country_api_registry_list"
+    view_class = views.CountryApiUploadRegistryListView
+    expected_no_of_rows = 5
+
+    def build_factories(self):
+        CountryApiUploadRegistryStaticSatelliteFactory.create_batch(5)

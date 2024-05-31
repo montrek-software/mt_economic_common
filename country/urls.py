@@ -23,6 +23,11 @@ urlpatterns = [
         name="country_update",
     ),
     path(
+        "api_registry",
+        views.CountryApiUploadRegistryListView.as_view(),
+        name="country_api_registry_list",
+    ),
+    path(
         "upload_countries_rest_countries",
         views.upload_countries_rest_countries,
         name="upload_countries_rest_countries",
@@ -31,5 +36,15 @@ urlpatterns = [
         "map/<int:pk>",
         views.CountryMapView.as_view(),
         name="country_map",
+    ),
+    path(
+        "upload_oecd_country_data",
+        views.upload_oecd_country_data,
+        name="upload_oecd_country_data",
+    ),
+    path(
+        "country_oecd_data/<int:pk>",
+        views.CountryOecdDataView.as_view(),
+        name="country_oecd_data",
     ),
 ]

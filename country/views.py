@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.urls import reverse
 from django.views.generic.base import HttpResponseRedirect
 
@@ -8,15 +9,19 @@ from baseclasses.views import (
     MontrekUpdateView,
     MontrekTemplateView,
 )
-from reporting.dataclasses import table_elements
 from baseclasses.dataclasses.view_classes import ActionElement
 from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
 from mt_economic_common.country.forms import CountryCreateForm
-from mt_economic_common.country.managers.country_manager import RestCountriesManager
 from mt_economic_common.country.managers.country_manager import (
     CountryManager,
+    RestCountriesUploadManager,
     CountryTableManager,
     CountryDetailsManager,
+    CountryApiUploadRegistryManager,
+)
+from mt_economic_common.country.managers.country_oecd_manager import (
+    CountryOecdUploadManager,
+    CountryOecdTableManager,
 )
 
 
@@ -48,7 +53,20 @@ class CountryOverview(MontrekListView):
             action_id="id_upload_countries",
             hover_text="Upload countries from RestCountries.com",
         )
-        return (action_new_country, action_upload_countries)
+        action_upload_oecd_data = ActionElement(
+            icon="upload",
+            link=reverse("upload_oecd_country_data"),
+            action_id="id_upload_oecd_country_data",
+            hover_text="Upload OECD data",
+        )
+        return (action_new_country, action_upload_countries, action_upload_oecd_data)
+
+
+class CountryApiUploadRegistryListView(MontrekListView):
+    page_class = CountryOverviewPage
+    manager_class = CountryApiUploadRegistryManager
+    title = "Country API Registry"
+    tab = "tab_country_api_registry"
 
 
 class CountryDetailsView(MontrekDetailView):
@@ -83,8 +101,18 @@ class CountryUpdateView(MontrekUpdateView):
 
 
 def upload_countries_rest_countries(request):
-    man = RestCountriesManager(session_data={"user_id": request.user.id})
-    man.write_countries_to_db()
+    man = RestCountriesUploadManager(session_data={"user_id": request.user.id})
+    man.upload_and_process()
+    for m in man.messages:
+        getattr(messages, m.message_type)(request, m.message)
+    return HttpResponseRedirect(reverse("country"))
+
+
+def upload_oecd_country_data(request):
+    man = CountryOecdUploadManager(session_data={"user_id": request.user.id})
+    man.upload_and_process()
+    for m in man.messages:
+        getattr(messages, m.message_type)(request, m.message)
     return HttpResponseRedirect(reverse("country"))
 
 
@@ -118,6 +146,23 @@ class CountryMapView(MontrekTemplateView):
             "country_open_street_map_url": open_street_map_url,
             "embedded_url": embedded_url,
         }
+
+    @property
+    def actions(self) -> tuple:
+        action_back = ActionElement(
+            icon="arrow-left",
+            link=reverse("country"),
+            action_id="back_to_overview",
+            hover_text="Back to Overview",
+        )
+        return (action_back,)
+
+
+class CountryOecdDataView(MontrekListView):
+    page_class = CountryPage
+    manager_class = CountryOecdTableManager
+    tab = "tab_oecd_data"
+    title = "OECD Data"
 
     @property
     def actions(self) -> tuple:
