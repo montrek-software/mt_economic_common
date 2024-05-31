@@ -11,6 +11,7 @@ from mt_economic_common.country.repositories.country_repository import (
 )
 from mt_economic_common.country.managers.country_upload_processors import (
     OecdAnnualFxUploadProcessor,
+    OecdInflationUploadProcessor,
 )
 from mt_economic_common.oecd_api.managers.oecd_request_manager import OecdRequestManager
 from reporting.dataclasses import table_elements as te
@@ -26,6 +27,15 @@ class CountryOecdAnnualFxUploadManager(ApiUploadManager):
     api_upload_processor_class = OecdAnnualFxUploadProcessor
     endpoint = (
         "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE4,1.0/A....EXC_A.......?startPeriod=2000"
+    )
+
+
+class CountryOecdInflationUploadManager(ApiUploadManager):
+    repository_class = CountryApiUploadRegistryRepository
+    request_manager_class = OecdRequestManager
+    api_upload_processor_class = OecdInflationUploadProcessor
+    endpoint = (
+        "OECD.SDD.TPS,DSD_PRICES@DF_PRICES_ALL,1.0/.A.N.CPI.IX._T.N.?startPeriod=2000"
     )
 
 

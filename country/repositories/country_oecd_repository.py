@@ -17,6 +17,10 @@ class CountryOecdRepository(MontrekRepository):
             CountryOecdFxAnnualTSSatellite,
             ["year", "annual_fx_average", "hub_entity_id"],
         )
+        self.add_last_ts_satellite_fields_annotations(
+            CountryOecdInflationTSSatellite,
+            ["inflation"],
+        )
         return self.build_queryset()
 
 

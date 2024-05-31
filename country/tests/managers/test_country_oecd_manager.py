@@ -13,6 +13,7 @@ from mt_economic_common.country.tests.factories.country_factories import (
 
 from mt_economic_common.country.managers.country_oecd_manager import (
     CountryOecdAnnualFxUploadManager,
+    CountryOecdInflationUploadManager,
 )
 
 
@@ -28,14 +29,7 @@ class TestOecdCountryManager(TestCase):
 
     @patch("api_upload.managers.request_manager.requests.get")
     def test_get_oecd_annual_fx_average(self, mock_get):
-        mock_response = Mock()
-        with open(
-            os.path.join(
-                os.path.dirname(__file__), "../test_data/fx_annual_example.json"
-            )
-        ) as f:
-            mock_response.json.return_value = json.loads(f.read())
-        mock_get.return_value = mock_response
+        self._setup_mock_get(mock_get)
         # Arrange
         country_manager = CountryOecdAnnualFxUploadManager(
             session_data={"user_id": self.user.id}
@@ -57,3 +51,39 @@ class TestOecdCountryManager(TestCase):
             )
             test_query = country_oecd_repository.std_queryset()
             self.assertEqual(test_query.count(), 4)
+
+    @patch("api_upload.managers.request_manager.requests.get")
+    def test_get_oecd_inflation_average(self, mock_get):
+        self._setup_mock_get(mock_get)
+        # Arrange
+        country_manager = CountryOecdInflationUploadManager(
+            session_data={"user_id": self.user.id}
+        )
+        # Act
+        country_manager.upload_and_process()
+        # Assert
+        registry_query = country_manager.repository.std_queryset()
+        self.assertEqual(registry_query.count(), 1)
+        test_query = CountryOecdRepository().std_queryset()
+        self.assertEqual(test_query.count(), 4)
+        self.assertEqual(
+            [test_query[i].inflation for i in range(4)],
+            [76.78634, 62.46608, 81.18251, None],
+        )
+        for country in self.country_factories[:-1]:
+            country_oecd_repository = CountryOecdTableRepository(
+                {"pk": country.hub_entity.id}
+            )
+            test_query = country_oecd_repository.std_queryset()
+            self.assertEqual(test_query.count(), 4)
+
+    def _setup_mock_get(self, mock_get):
+        mock_response = Mock()
+        with open(
+            os.path.join(
+                os.path.dirname(__file__), "../test_data/fx_annual_example.json"
+            )
+        ) as f:
+            mock_response.json.return_value = json.loads(f.read())
+        mock_get.return_value = mock_response
+        return mock_response

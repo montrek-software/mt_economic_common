@@ -136,6 +136,7 @@ class RestCountriesUploadProcessor:
 
 class OecdCountriesUploadProcessor:
     repository_class = CountryOecdRepository
+    value_field = ""
 
     def __init__(self, api_upload_registry, session_data: dict):
         self.api_upload_registry = api_upload_registry
@@ -164,13 +165,6 @@ class OecdCountriesUploadProcessor:
         return True
 
     def convert_data_df(self, data_df: pd.DataFrame) -> pd.DataFrame:
-        raise NotImplementedError(
-            f"{self.__class__.__name__} needs convert_data_df method."
-        )
-
-
-class OecdAnnualFxUploadProcessor(OecdCountriesUploadProcessor):
-    def convert_data_df(self, data_df: pd.DataFrame) -> pd.DataFrame:
         data_df = self._map_country_hub(data_df)
         data_df = self._prepare_df(data_df)
         return data_df
@@ -191,11 +185,19 @@ class OecdAnnualFxUploadProcessor(OecdCountriesUploadProcessor):
             columns={
                 "REF_AREA": "hub_entity_id",
                 "TIME_PERIOD": "year",
-                "VALUE": "annual_fx_average",
+                "VALUE": self.value_field,
             }
         )
         df["value_date"] = pd.to_datetime(df["year"], format="%Y")
         return df.loc[
             ~pd.isnull(df["hub_entity_id"]),
-            ["hub_entity_id", "year", "annual_fx_average", "value_date"],
+            ["hub_entity_id", "year", self.value_field, "value_date"],
         ]
+
+
+class OecdAnnualFxUploadProcessor(OecdCountriesUploadProcessor):
+    value_field = "annual_fx_average"
+
+
+class OecdInflationUploadProcessor(OecdCountriesUploadProcessor):
+    value_field = "inflation"
