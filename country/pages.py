@@ -14,7 +14,12 @@ class CountryOverviewPage(MontrekPage):
             html_id="tab_country_list",
             active="active",
         )
-        return (overview_tab,)
+        api_registry_tab = TabElement(
+            name="API Registry",
+            link=reverse("country_api_registry_list"),
+            html_id="tab_country_api_registry",
+        )
+        return (overview_tab, api_registry_tab)
 
 
 class CountryPage(MontrekPage):
