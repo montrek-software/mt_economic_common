@@ -14,10 +14,17 @@ class CountryOverviewPage(MontrekPage):
             html_id="tab_country_list",
             active="active",
         )
-        return (overview_tab,)
+        api_registry_tab = TabElement(
+            name="API Registry",
+            link=reverse("country_api_registry_list"),
+            html_id="tab_country_api_registry",
+        )
+        return (overview_tab, api_registry_tab)
 
 
 class CountryPage(MontrekPage):
+    show_date_range_selector = True
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if "pk" not in kwargs:
@@ -36,4 +43,9 @@ class CountryPage(MontrekPage):
             link=reverse("country_map", args=[self.obj.id]),
             html_id="tab_map",
         )
-        return [details_tab, map_tab]
+        oecd_tab = TabElement(
+            name="OECD Data",
+            link=reverse("country_oecd_data", args=[self.obj.id]),
+            html_id="tab_oecd_data",
+        )
+        return [details_tab, map_tab, oecd_tab]
