@@ -152,10 +152,8 @@ class OecdCountriesUploadProcessor:
     def post_check(self, json_response: dict | list) -> bool:
         return True
 
-    def process(self, json_response: dict | list) -> bool:
-        reader = SdmxJsonReader(json_data=json_response, dimension_out="id")
-        data_df = reader.to_data_frame()
-        data_df = self.convert_data_df(data_df)
+    def process(self, response_df: pd.DataFrame) -> bool:
+        data_df = self.convert_data_df(response_df)
         try:
             self.repository.create_objects_from_data_frame(data_df)
             self.message = f"Successfully uploaded {len(data_df)} data points"

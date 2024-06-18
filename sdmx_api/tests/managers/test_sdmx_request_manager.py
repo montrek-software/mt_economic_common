@@ -29,3 +29,16 @@ class TestSdmxRequestManager(TestCase):
             mock_get_endpoint_url.assert_called_once_with("TEST")
             mock_read_url.assert_called_once_with("http://example.com/TEST")
             self.assertEqual(response, expected_data)
+
+    def test_failings_get_sdmx_request(self):
+        # Arrange
+        test_request_manager = SdmxRequestManager()
+        with patch("sdmx.read_url", side_effect=Exception("Test error")):
+            # Act
+            response = test_request_manager.get_response("TEST")
+            # Assert
+            self.assertTrue(response.empty)
+            self.assertEqual(
+                test_request_manager.message,
+                "Error raised during object creation: Exception: Test error",
+            )
