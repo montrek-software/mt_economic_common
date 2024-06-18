@@ -2,16 +2,18 @@ import pandas as pd
 
 
 class SdmxJsonReader:
-    def __init__(self, json_data: dict, dimension_out: str = "name"):
+    def __init__(self, dimension_out: str = "name"):
         if dimension_out not in ["name", "id"]:
             raise ValueError("dimension_out must be either 'name' or 'id'")
         self.dimension_out = dimension_out
-        self.json_data = json_data
 
-    def to_data_frame(self) -> pd.DataFrame:
+    def get_json_response(self, response) -> dict:
+        return {}
+
+    def to_data_frame(self, json_data) -> pd.DataFrame:
         # Extracting the relevant data for the DataFrame
-        series_data = self.json_data["data"]["dataSets"][0]["series"]
-        dimensions = self.json_data["data"]["structures"][0]["dimensions"]
+        series_data = json_data["data"]["dataSets"][0]["series"]
+        dimensions = json_data["data"]["structures"][0]["dimensions"]
 
         # Mapping dimension IDs to their names
         dimension_names = {
