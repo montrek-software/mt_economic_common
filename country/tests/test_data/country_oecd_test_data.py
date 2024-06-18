@@ -1,0 +1,165 @@
+import pandas as pd
+
+
+def get_test_oecd_country_data():
+    # Define the data
+    data = {
+        (
+            "FREQ",
+            "REF_AREA",
+            "SECTOR",
+            "COUNTERPART_SECTOR",
+            "TRANSACTION",
+            "INSTR_ASSET",
+            "ACTIVITY",
+            "EXPENDITURE",
+            "UNIT_MEASURE",
+            "PRICE_BASE",
+            "TRANSFORMATION",
+            "TABLE_IDENTIFIER",
+            "TIME_PERIOD",
+        ): [
+            (
+                "A",
+                "DEU",
+                "S1",
+                "S1",
+                "EXC_A",
+                "F21",
+                "_Z",
+                "_Z",
+                "XDC_USD",
+                "_Z",
+                "N",
+                "T001",
+                2009,
+            ),
+            (
+                "A",
+                "DEU",
+                "S1",
+                "S1",
+                "EXC_A",
+                "F21",
+                "_Z",
+                "_Z",
+                "XDC_USD",
+                "_Z",
+                "N",
+                "T001",
+                2019,
+            ),
+            (
+                "A",
+                "AUT",
+                "S1",
+                "S1",
+                "EXC_A",
+                "F21",
+                "_Z",
+                "_Z",
+                "XDC_USD",
+                "_Z",
+                "N",
+                "T001",
+                2008,
+            ),
+            (
+                "A",
+                "BEL",
+                "S1",
+                "S1",
+                "EXC_A",
+                "F21",
+                "_Z",
+                "_Z",
+                "XDC_USD",
+                "_Z",
+                "N",
+                "T001",
+                2022,
+            ),
+            (
+                "A",
+                "ZMB",
+                "S1",
+                "S1",
+                "EXC_A",
+                "F21",
+                "_Z",
+                "_Z",
+                "XDC_USD",
+                "_Z",
+                "N",
+                "T001",
+                2023,
+            ),
+            (
+                "A",
+                "EA20",
+                "S1",
+                "S1",
+                "EXC_A",
+                "F21",
+                "_Z",
+                "_Z",
+                "XDC_USD",
+                "_Z",
+                "N",
+                "T001",
+                2016,
+            ),
+        ],
+        "value": [
+            94.978120,
+            585.911013,
+            446.000041,
+            16.355853,
+            20.212018,
+            0.903421,
+        ],
+    }
+
+    # Create the MultiIndex
+    index = pd.MultiIndex.from_tuples(
+        data[
+            (
+                "FREQ",
+                "REF_AREA",
+                "SECTOR",
+                "COUNTERPART_SECTOR",
+                "TRANSACTION",
+                "INSTR_ASSET",
+                "ACTIVITY",
+                "EXPENDITURE",
+                "UNIT_MEASURE",
+                "PRICE_BASE",
+                "TRANSFORMATION",
+                "TABLE_IDENTIFIER",
+                "TIME_PERIOD",
+            )
+        ],
+        names=[
+            "FREQ",
+            "REF_AREA",
+            "SECTOR",
+            "COUNTERPART_SECTOR",
+            "TRANSACTION",
+            "INSTR_ASSET",
+            "ACTIVITY",
+            "EXPENDITURE",
+            "UNIT_MEASURE",
+            "PRICE_BASE",
+            "TRANSFORMATION",
+            "TABLE_IDENTIFIER",
+            "TIME_PERIOD",
+        ],
+    )
+
+    # Create the Series
+    series = pd.Series(data["value"], index=index)
+    series.name = "value"
+    return series
+
+
+TEST_OECD_COUNTRY_DATA = get_test_oecd_country_data()

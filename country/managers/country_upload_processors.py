@@ -165,6 +165,7 @@ class OecdCountriesUploadProcessor:
         return True
 
     def convert_data_df(self, data_df: pd.DataFrame) -> pd.DataFrame:
+        data_df = data_df.reset_index()
         data_df = self._map_country_hub(data_df)
         data_df = self._prepare_df(data_df)
         return data_df
@@ -185,7 +186,7 @@ class OecdCountriesUploadProcessor:
             columns={
                 "REF_AREA": "hub_entity_id",
                 "TIME_PERIOD": "year",
-                "VALUE": self.value_field,
+                "value": self.value_field,
             }
         )
         df["value_date"] = pd.to_datetime(df["year"], format="%Y")

@@ -13,6 +13,7 @@ class SdmxRequestManager(RequestManagerABC):
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
             return pd.DataFrame()
+        self.status_code = 1
         return response_df
 
     def _get_data_message(self, endpoint: str) -> sdmx.message.DataMessage:
