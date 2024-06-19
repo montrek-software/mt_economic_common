@@ -39,7 +39,8 @@ jobs:
           path: ./montrek/montrek/${{ vars.MONTREK_PROJECT }}
       - name: Install Tex Live
         run: |
-          sudo apt-get update && apt-get install texlive-xetex texlive-fonts-recommended
+          sudo apt-get update 
+          sudo apt-get install texlive-xetex texlive-fonts-recommended
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
