@@ -7,9 +7,7 @@ from mt_economic_common.country.repositories.country_repository import CountryRe
 from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdFxAnnualRepository,
     CountryOecdInflationRepository,
-    CountryOecdRepository,
 )
-from mt_economic_common.oecd_api.utils.sdmx_json_reader import SdmxJsonReader
 
 
 class RestCountriesUploadProcessor:
@@ -152,10 +150,8 @@ class OecdCountriesUploadProcessor:
     def post_check(self, json_response: dict | list) -> bool:
         return True
 
-    def process(self, json_response: dict | list) -> bool:
-        reader = SdmxJsonReader(json_data=json_response, dimension_out="id")
-        data_df = reader.to_data_frame()
-        data_df = self.convert_data_df(data_df)
+    def process(self, response_df: pd.DataFrame) -> bool:
+        data_df = self.convert_data_df(response_df)
         try:
             self.repository.create_objects_from_data_frame(data_df)
             self.message = f"Successfully uploaded {len(data_df)} data points"
@@ -167,6 +163,7 @@ class OecdCountriesUploadProcessor:
         return True
 
     def convert_data_df(self, data_df: pd.DataFrame) -> pd.DataFrame:
+        data_df = data_df.reset_index()
         data_df = self._map_country_hub(data_df)
         data_df = self._prepare_df(data_df)
         return data_df
@@ -187,7 +184,7 @@ class OecdCountriesUploadProcessor:
             columns={
                 "REF_AREA": "hub_entity_id",
                 "TIME_PERIOD": "year",
-                "VALUE": self.value_field,
+                "value": self.value_field,
             }
         )
         df["value_date"] = pd.to_datetime(df["year"], format="%Y")

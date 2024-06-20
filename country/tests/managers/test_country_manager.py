@@ -15,7 +15,7 @@ from mt_economic_common.country.managers.country_request_manager import (
 class MockCountryRequestManager(RestCountriesRequestManager):
     base_url = "test_url"
 
-    def get_json(self, endpoint: str):
+    def get_response(self, endpoint: str):
         self.status_code = 200
         return [
             {

@@ -1,5 +1,5 @@
-from api_upload.managers.request_manager import RequestManager
+from api_upload.managers.request_manager import RequestJsonManager
 
 
-class RestCountriesRequestManager(RequestManager):
+class RestCountriesRequestManager(RequestJsonManager):
     base_url = "https://restcountries.com/v3.1/"

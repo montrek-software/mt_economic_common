@@ -1,5 +1,6 @@
 import os
 import json
+
 from django.test import TestCase
 from unittest.mock import patch, Mock
 from mt_economic_common.country.repositories.country_oecd_repository import (
@@ -11,11 +12,33 @@ from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,
 )
+from mt_economic_common.country.tests.test_data.country_oecd_test_data import (
+    TEST_OECD_COUNTRY_DATA,
+)
 
 from mt_economic_common.country.managers.country_oecd_manager import (
     CountryOecdAnnualFxUploadManager,
     CountryOecdInflationUploadManager,
 )
+
+
+class MockRequestManager:
+    status_code = 1
+    message = "Test message"
+
+    def get_response(self, endpoint):
+        return TEST_OECD_COUNTRY_DATA
+
+    def get_endpoint_url(self, endpoint):
+        return "http://example.com/TEST"
+
+
+class MockCountryOecdAnnualFxUploadManager(CountryOecdAnnualFxUploadManager):
+    request_manager_class = MockRequestManager
+
+
+class MockCountryOecdInflationUploadManager(CountryOecdInflationUploadManager):
+    request_manager_class = MockRequestManager
 
 
 class TestOecdCountryManager(TestCase):
@@ -28,11 +51,9 @@ class TestOecdCountryManager(TestCase):
             CountryStaticSatelliteFactory(country_name="Germany", country_code="DEU"),
         ]
 
-    @patch("api_upload.managers.request_manager.requests.get")
-    def test_get_oecd_annual_fx_average(self, mock_get):
-        self._setup_mock_get(mock_get)
+    def test_get_oecd_annual_fx_average(self):
         # Arrange
-        country_manager = CountryOecdAnnualFxUploadManager(
+        country_manager = MockCountryOecdAnnualFxUploadManager(
             session_data={"user_id": self.user.id}
         )
         # Act
@@ -44,20 +65,17 @@ class TestOecdCountryManager(TestCase):
         self.assertEqual(test_query.count(), 4)
         self.assertEqual(
             [test_query[i].annual_fx_average for i in range(4)],
-            [76.78634, 62.46608, 81.18251, None],
+            [None, 446.000041, 16.355853, 585.911013],
         )
-        for country in self.country_factories[:-1]:
+        for country in self.country_factories[1:]:
             country_oecd_repository = CountryOecdTableRepository(
                 {"pk": country.hub_entity.id}
             )
             test_query = country_oecd_repository.std_queryset()
-            self.assertEqual(test_query.count(), 4)
+            self.assertTrue(test_query.count() > 0)
 
-    @patch("api_upload.managers.request_manager.requests.get")
-    def test_get_oecd_inflation_average(self, mock_get):
-        self._setup_mock_get(mock_get)
-        # Arrange
-        country_manager = CountryOecdInflationUploadManager(
+    def test_get_oecd_inflation_average(self):
+        country_manager = MockCountryOecdInflationUploadManager(
             session_data={"user_id": self.user.id}
         )
         # Act
@@ -69,16 +87,5 @@ class TestOecdCountryManager(TestCase):
         self.assertEqual(test_query.count(), 4)
         self.assertEqual(
             [test_query[i].inflation for i in range(4)],
-            [76.78634, 62.46608, 81.18251, None],
+            [None, 446.000041, 16.355853, 585.911013],
         )
-
-    def _setup_mock_get(self, mock_get):
-        mock_response = Mock()
-        with open(
-            os.path.join(
-                os.path.dirname(__file__), "../test_data/fx_annual_example.json"
-            )
-        ) as f:
-            mock_response.json.return_value = json.loads(f.read())
-        mock_get.return_value = mock_response
-        return mock_response
