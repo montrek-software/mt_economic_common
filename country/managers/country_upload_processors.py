@@ -39,11 +39,10 @@ class RestCountriesUploadProcessor:
             lambda x: x[1] if x else None
         )
         countries_df["country_continent"] = countries_df["continents"].apply(
-            lambda x: ", ".join(x) if x else None
+            lambda x: ", ".join(x) if isinstance(x, list) else None
         )
-        countries_df["capital"] = countries_df["capital"].fillna("None")
         countries_df["country_capital"] = countries_df["capital"].apply(
-            lambda x: ", ".join(x)
+            lambda x: ", ".join(x) if isinstance(x, list) else None
         )
         countries_df["country_postal_code_format"] = countries_df["postalCode"].apply(
             lambda x: self._get_json_field(x, "format")
@@ -63,7 +62,6 @@ class RestCountriesUploadProcessor:
         rename_columns = {
             "cca3": "country_code",
             "cca2": "country_code_2",
-            "capital": "country_capital",
             "unMember": "country_un_member",
             "region": "country_region",
             "subregion": "country_subregion",
@@ -75,6 +73,7 @@ class RestCountriesUploadProcessor:
             :,
             [
                 "country_name",
+                "country_capital",
                 "country_official_name",
                 "comment",
                 "country_lat",
