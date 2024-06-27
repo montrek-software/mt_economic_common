@@ -1,8 +1,12 @@
 from django.test import TestCase
+import pandas as pd
 from mt_economic_common.country.managers.country_upload_processors import (
     RestCountriesUploadProcessor,
 )
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
+from mt_economic_common.currency.repositories.currency_repository import (
+    CurrencyRepository,
+)
 
 
 class TestRestCountryUploadProcessor(TestCase):
@@ -14,7 +18,7 @@ class TestRestCountryUploadProcessor(TestCase):
         mailicious_json = [
             {
                 "currencies": {
-                    "ABC": {"name": "First name", "symbol": "AB"},
+                    "ABC": {"namex": "First name", "symbol": "AB"},
                 }
             },
             {
@@ -26,5 +30,20 @@ class TestRestCountryUploadProcessor(TestCase):
         processor.process(mailicious_json)
         self.assertEqual(
             processor.message,
-            "Error raised during object creation: ValueError: Duplicated entries found for CurrencyStaticSatellite with fields ['ccy_code']\n",
+            "Error raised during object creation: IntegrityError: (1048, \"Column 'ccy_name' cannot be null\")",
         )
+
+    def test_create_currencies__return_list_of_currency_objects(self):
+        processor = RestCountriesUploadProcessor(None, {"user_id": self.user.id})
+        currencies = pd.Series(
+            [
+                {"ABC": {"name": "First name", "symbol": "AB"}},
+                {"DEF": {"name": "Second name", "symbol": "DE"}},
+                {"ABC": {"name": "Third name", "symbol": "AB"}},
+            ]
+        )
+        result_sr = processor.create_currencies(currencies)
+        self.assertEqual(result_sr.iloc[0], result_sr.iloc[2])
+        currencies = CurrencyRepository().std_queryset().all()
+        self.assertEqual(len(currencies), 2)
+        self.assertEqual(currencies[0].ccy_name, "First name")

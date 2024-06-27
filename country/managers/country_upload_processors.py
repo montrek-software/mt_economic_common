@@ -25,7 +25,7 @@ class RestCountriesUploadProcessor:
     def process(self, json_response: dict | list) -> bool:
         countries_df = pd.read_json(json.dumps(json_response))
         try:
-            countries_df["link_country_currency"] = self._create_currencies(
+            countries_df["link_country_currency"] = self.create_currencies(
                 countries_df["currencies"]
             )
         except Exception as e:
@@ -111,7 +111,7 @@ class RestCountriesUploadProcessor:
             return None
         return json_obj.get(field_name, None)
 
-    def _create_currencies(self, currencies_series: pd.Series) -> pd.Series:
+    def create_currencies(self, currencies_series: pd.Series) -> pd.Series:
         def extract_currencies(data: list):
             return [
                 {
