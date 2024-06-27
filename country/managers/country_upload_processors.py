@@ -24,9 +24,15 @@ class RestCountriesUploadProcessor:
 
     def process(self, json_response: dict | list) -> bool:
         countries_df = pd.read_json(json.dumps(json_response))
-        countries_df["link_country_currency"] = self._create_currencies(
-            countries_df["currencies"]
-        )
+        try:
+            countries_df["link_country_currency"] = self._create_currencies(
+                countries_df["currencies"]
+            )
+        except Exception as e:
+            self.message = (
+                f"Error raised during object creation: {e.__class__.__name__}: {e}"
+            )
+            return False
         countries_df["country_name"] = countries_df["name"].apply(lambda x: x["common"])
         countries_df["country_official_name"] = countries_df["name"].apply(
             lambda x: x["official"]
