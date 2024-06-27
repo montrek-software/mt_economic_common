@@ -130,7 +130,7 @@ class RestCountriesUploadProcessor:
             for sublist in currencies_series.apply(extract_currencies)
             for item in sublist
         ]
-        currency_df = pd.DataFrame(currency_list).drop_duplicates()
+        currency_df = pd.DataFrame(currency_list).drop_duplicates(subset=["ccy_code"])
         currency_repository = CurrencyRepository(session_data=self.session_data)
         currency_repository.create_objects_from_data_frame(currency_df)
         currency_hubs = currency_repository.std_queryset().all()
