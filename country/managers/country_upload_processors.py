@@ -24,9 +24,15 @@ class RestCountriesUploadProcessor:
 
     def process(self, json_response: dict | list) -> bool:
         countries_df = pd.read_json(json.dumps(json_response))
-        countries_df["link_country_currency"] = self._create_currencies(
-            countries_df["currencies"]
-        )
+        try:
+            countries_df["link_country_currency"] = self.create_currencies(
+                countries_df["currencies"]
+            )
+        except Exception as e:
+            self.message = (
+                f"Error raised during object creation: {e.__class__.__name__}: {e}"
+            )
+            return False
         countries_df["country_name"] = countries_df["name"].apply(lambda x: x["common"])
         countries_df["country_official_name"] = countries_df["name"].apply(
             lambda x: x["official"]
@@ -105,7 +111,7 @@ class RestCountriesUploadProcessor:
             return None
         return json_obj.get(field_name, None)
 
-    def _create_currencies(self, currencies_series: pd.Series) -> pd.Series:
+    def create_currencies(self, currencies_series: pd.Series) -> pd.Series:
         def extract_currencies(data: list):
             return [
                 {
@@ -123,7 +129,7 @@ class RestCountriesUploadProcessor:
             for sublist in currencies_series.apply(extract_currencies)
             for item in sublist
         ]
-        currency_df = pd.DataFrame(currency_list).drop_duplicates()
+        currency_df = pd.DataFrame(currency_list).drop_duplicates(subset=["ccy_code"])
         currency_repository = CurrencyRepository(session_data=self.session_data)
         currency_repository.create_objects_from_data_frame(currency_df)
         currency_hubs = currency_repository.std_queryset().all()
