@@ -28,19 +28,13 @@ class CountryOecdTableRepository(MontrekRepository):
     hub_class = CountryHub
 
     def std_queryset(self, **kwargs):
-        queryset = self.build_time_series_queryset(
-            CountryOecdFxAnnualTSSatellite, self.reference_date
+        self.add_satellite_fields_annotations(
+            CountryOecdFxAnnualTSSatellite, ["year", "annual_fx_average"]
         )
-        queryset = queryset.annotate(
-            inflation=Subquery(
-                self.build_time_series_queryset(
-                    CountryOecdInflationTSSatellite, self.reference_date
-                )
-                .filter(year=OuterRef("year"), hub_entity_id=OuterRef("hub_entity_id"))
-                .values("inflation")
-            )
+        self.add_satellite_fields_annotations(
+            CountryOecdInflationTSSatellite, ["year", "inflation"]
         )
-        return queryset.filter(hub_entity_id=self.session_data["pk"])
+        return self.build_queryset().filter(pk=self.session_data["pk"])
 
 
 class CountryOecdFxAnnualRepository(MontrekRepository):
