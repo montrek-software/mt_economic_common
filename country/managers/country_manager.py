@@ -36,6 +36,10 @@ class CountryTableManager(MontrekTableManager):
                 name="Country Code",
                 attr="country_code",
             ),
+            table_elements.StringTableElement(
+                name="Code2",
+                attr="country_code_2",
+            ),
         )
 
 
@@ -56,6 +60,10 @@ class CountryDetailsManager(MontrekDetailsManager):
             table_elements.StringTableElement(
                 name="Code",
                 attr="country_code",
+            ),
+            table_elements.StringTableElement(
+                name="Code2",
+                attr="country_code_2",
             ),
             table_elements.LinkTextTableElement(
                 url="currency",
