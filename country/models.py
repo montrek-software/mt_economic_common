@@ -44,7 +44,7 @@ class CountryOecdTSSatelliteABC(baseclass_models.MontrekTimeSeriesSatelliteABC):
         abstract = True
 
     hub_entity = models.ForeignKey(CountryHub, on_delete=models.CASCADE)
-    year = models.IntegerField()
+    year = models.IntegerField(null=True, blank=True)
     identifier_fields = ["year", "hub_entity_id"]
 
     def __str__(self):
