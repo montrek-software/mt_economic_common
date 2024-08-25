@@ -34,7 +34,7 @@ class CountryReportManager(MontrekReportManager):
         self.append_report_element(CountryDetailsManager(self.session_data))
         self.append_report_element(rt.ReportingHeader1("Country Informations"))
 
-        self.append_report_element(rt.ReportingParagraph("Blummsi"))
+        self.append_report_element(rt.ReportingParagraph(self.get_wikipedia_section()))
 
     def get_wikipedia_section(self):
         country_summary = WikipediaRequestManager().get_response(self.obj.country_name)
