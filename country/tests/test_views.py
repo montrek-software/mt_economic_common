@@ -149,10 +149,11 @@ class TestCountryReportView(vtc.MontrekViewTestCase):
     view_class = views.CountryReportView
 
     def build_factories(self):
-        self.country = CountryStaticSatelliteFactory()
+        self.country = CountryStaticSatelliteFactory(country_name="Test Country")
 
     def url_kwargs(self) -> dict:
         return {"pk": self.country.hub_entity.id}
 
-    def test_graph_context_data(self):
-        ...
+    def test_report_html_output(self):
+        html_output = self.response.content.decode("utf-8")
+        self.assertIn("<h1>Country Report: <b>Test Country</b></h1>", html_output)
