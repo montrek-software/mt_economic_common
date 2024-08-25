@@ -1,3 +1,4 @@
+from api_upload.managers.request_manager import RequestJsonManager
 from mt_economic_common.country.managers.country_manager import (
     CountryDetailsManager,
 )
@@ -8,6 +9,10 @@ from reporting.core import reporting_text as rt
 from reporting.managers.montrek_report_manager import (
     MontrekReportManager,
 )
+
+
+class WikipediaRequestManager(RequestJsonManager):
+    base_url = "https://en.wikipedia.org/api/rest_v1/page/summary/"
 
 
 class CountryReportManager(MontrekReportManager):
@@ -30,3 +35,7 @@ class CountryReportManager(MontrekReportManager):
         self.append_report_element(rt.ReportingHeader1("Country Informations"))
 
         self.append_report_element(rt.ReportingParagraph("Blummsi"))
+
+    def get_wikipedia_section(self):
+        country_summary = WikipediaRequestManager().get_response(self.obj.country_name)
+        return country_summary.get("extract", "No summary found")
