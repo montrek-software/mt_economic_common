@@ -47,4 +47,9 @@ urlpatterns = [
         views.CountryOecdDataView.as_view(),
         name="country_oecd_data",
     ),
+    path(
+        "country_report/<int:pk>",
+        views.CountryReportView.as_view(),
+        name="country_report",
+    ),
 ]

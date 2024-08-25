@@ -6,6 +6,7 @@ from baseclasses.views import (
     MontrekCreateView,
     MontrekListView,
     MontrekDetailView,
+    MontrekReportView,
     MontrekUpdateView,
     MontrekTemplateView,
 )
@@ -23,6 +24,9 @@ from mt_economic_common.country.managers.country_oecd_manager import (
     CountryOecdAnnualFxUploadManager,
     CountryOecdInflationUploadManager,
     CountryOecdTableManager,
+)
+from mt_economic_common.country.managers.country_report_manager import (
+    CountryReportManager,
 )
 
 
@@ -169,6 +173,23 @@ class CountryOecdDataView(MontrekListView):
     manager_class = CountryOecdTableManager
     tab = "tab_oecd_data"
     title = "OECD Data"
+
+    @property
+    def actions(self) -> tuple:
+        action_back = ActionElement(
+            icon="arrow-left",
+            link=reverse("country"),
+            action_id="back_to_overview",
+            hover_text="Back to Overview",
+        )
+        return (action_back,)
+
+
+class CountryReportView(MontrekReportView):
+    page_class = CountryPage
+    manager_class = CountryReportManager
+    title = "Report"
+    tab = "tab_report"
 
     @property
     def actions(self) -> tuple:
