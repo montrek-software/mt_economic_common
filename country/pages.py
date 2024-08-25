@@ -48,4 +48,9 @@ class CountryPage(MontrekPage):
             link=reverse("country_oecd_data", args=[self.obj.id]),
             html_id="tab_oecd_data",
         )
-        return [details_tab, map_tab, oecd_tab]
+        report_tab = TabElement(
+            name="Country Report",
+            link=reverse("country_report", args=[self.obj.id]),
+            html_id="tab_report",
+        )
+        return [details_tab, map_tab, oecd_tab, report_tab]
