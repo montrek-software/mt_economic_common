@@ -5,7 +5,6 @@ from mt_economic_common.country.repositories.country_report_repository import (
     CountryReportRepository,
 )
 from reporting.core import reporting_text as rt
-from reporting.lib.protocols import ReportElementProtocol
 from reporting.managers.montrek_report_manager import (
     MontrekReportManager,
 )
@@ -28,3 +27,6 @@ class CountryReportManager(MontrekReportManager):
     def collect_report_elements(self):
         self.append_report_element(rt.ReportingHeader1("Country Details"))
         self.append_report_element(CountryDetailsManager(self.session_data))
+        self.append_report_element(rt.ReportingHeader1("Country Informations"))
+
+        self.append_report_element(rt.ReportingParagraph("Blummsi"))
