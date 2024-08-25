@@ -1,11 +1,18 @@
 from api_upload.managers.request_manager import RequestJsonManager
+from django_pandas.io import read_frame
 from mt_economic_common.country.managers.country_manager import (
     CountryDetailsManager,
+)
+from mt_economic_common.country.repositories.country_oecd_repository import (
+    CountryOecdTableRepository,
 )
 from mt_economic_common.country.repositories.country_report_repository import (
     CountryReportRepository,
 )
 from reporting.core import reporting_text as rt
+from reporting.core.reporting_data import ReportingData
+from reporting.core.reporting_grid_layout import ReportGridLayout
+from reporting.core.reporting_plots import ReportingPlot
 from reporting.managers.montrek_report_manager import (
     MontrekReportManager,
 )
@@ -33,9 +40,36 @@ class CountryReportManager(MontrekReportManager):
         self.append_report_element(rt.ReportingHeader1("Country Details"))
         self.append_report_element(CountryDetailsManager(self.session_data))
         self.append_report_element(rt.ReportingHeader1("Country Informations"))
-
         self.append_report_element(rt.ReportingParagraph(self.get_wikipedia_section()))
+        self.append_report_element(rt.ReportingHeader1("OECD Data"))
+        self.append_report_element(self._plot_oecd_data())
 
     def get_wikipedia_section(self):
         country_summary = WikipediaRequestManager().get_response(self.obj.country_name)
         return country_summary.get("extract", "No summary found")
+
+    def _plot_oecd_data(self):
+        grid = ReportGridLayout(1, 2)
+        oecd_data = CountryOecdTableRepository(self.session_data).std_queryset()
+        oecd_df = read_frame(oecd_data)
+        oecd_reporting_data = ReportingData(
+            oecd_df,
+            "Annual FX Average",
+            "year",
+            y_axis_columns=["annual_fx_average"],
+            plot_types=["line"],
+        )
+        plot = ReportingPlot()
+        plot.generate(oecd_reporting_data)
+        grid.add_report_grid_element(plot, 0, 0)
+        oecd_reporting_data = ReportingData(
+            oecd_df,
+            "Inflation",
+            "year",
+            y_axis_columns=["inflation"],
+            plot_types=["line"],
+        )
+        plot = ReportingPlot()
+        plot.generate(oecd_reporting_data)
+        grid.add_report_grid_element(plot, 0, 1)
+        return grid
