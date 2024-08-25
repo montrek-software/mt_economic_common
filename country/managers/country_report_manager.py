@@ -42,14 +42,13 @@ class CountryReportManager(MontrekReportManager):
         self.append_report_element(rt.ReportingHeader1("Country Informations"))
         self.append_report_element(rt.ReportingParagraph(self.get_wikipedia_section()))
         self.append_report_element(rt.ReportingHeader1("OECD Data"))
-        self.append_report_element(self._plot_oecd_data())
+        self._plot_oecd_data()
 
     def get_wikipedia_section(self):
         country_summary = WikipediaRequestManager().get_response(self.obj.country_name)
         return country_summary.get("extract", "No summary found")
 
     def _plot_oecd_data(self):
-        grid = ReportGridLayout(1, 2)
         oecd_data = CountryOecdTableRepository(self.session_data).std_queryset()
         oecd_df = read_frame(oecd_data)
         oecd_reporting_data = ReportingData(
@@ -61,7 +60,7 @@ class CountryReportManager(MontrekReportManager):
         )
         plot = ReportingPlot()
         plot.generate(oecd_reporting_data)
-        grid.add_report_grid_element(plot, 0, 0)
+        self.append_report_element(plot)
         oecd_reporting_data = ReportingData(
             oecd_df,
             "Inflation",
@@ -71,5 +70,4 @@ class CountryReportManager(MontrekReportManager):
         )
         plot = ReportingPlot()
         plot.generate(oecd_reporting_data)
-        grid.add_report_grid_element(plot, 0, 1)
-        return grid
+        self.append_report_element(plot)
