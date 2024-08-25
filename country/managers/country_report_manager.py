@@ -1,3 +1,6 @@
+from mt_economic_common.country.managers.country_manager import (
+    CountryDetailsManager,
+)
 from mt_economic_common.country.repositories.country_report_repository import (
     CountryReportRepository,
 )
@@ -23,5 +26,5 @@ class CountryReportManager(MontrekReportManager):
         return f"Country Report: {self.obj.country_name}"
 
     def collect_report_elements(self):
-        # self.append_report_element(rt.ReportingHeader1(self.document_title))
-        ...
+        self.append_report_element(rt.ReportingHeader1("Country Details"))
+        self.append_report_element(CountryDetailsManager(self.session_data))
