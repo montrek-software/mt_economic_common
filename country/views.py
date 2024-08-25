@@ -188,7 +188,6 @@ class CountryOecdDataView(MontrekListView):
 class CountryReportView(MontrekReportView):
     page_class = CountryPage
     manager_class = CountryReportManager
-    title = "Report"
     tab = "tab_report"
 
     @property

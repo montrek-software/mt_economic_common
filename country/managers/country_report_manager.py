@@ -20,7 +20,8 @@ class CountryReportManager(MontrekReportManager):
 
     @property
     def document_title(self) -> str:
-        return f"Country Report: <b>{self.obj.country_name}</b>"
+        return f"Country Report: {self.obj.country_name}"
 
     def collect_report_elements(self):
-        self.append_report_element(rt.ReportingHeader1(self.document_title))
+        # self.append_report_element(rt.ReportingHeader1(self.document_title))
+        ...

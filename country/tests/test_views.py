@@ -156,4 +156,4 @@ class TestCountryReportView(vtc.MontrekViewTestCase):
 
     def test_report_html_output(self):
         html_output = self.response.content.decode("utf-8")
-        self.assertIn("<h1>Country Report: <b>Test Country</b></h1>", html_output)
+        self.assertIn("<h2>Country Report: Test Country</h2>", html_output)
