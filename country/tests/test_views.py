@@ -142,3 +142,18 @@ class TestCountryApiRegistryListView(vtc.MontrekListViewTestCase):
 
     def build_factories(self):
         CountryApiUploadRegistryStaticSatelliteFactory.create_batch(5)
+
+
+class TestCountryReportView(vtc.MontrekViewTestCase):
+    viewname = "country_report"
+    view_class = views.CountryReportView
+
+    def build_factories(self):
+        self.country = CountryStaticSatelliteFactory(country_name="Test Country")
+
+    def url_kwargs(self) -> dict:
+        return {"pk": self.country.hub_entity.id}
+
+    def test_report_html_output(self):
+        html_output = self.response.content.decode("utf-8")
+        self.assertIn("<h2>Country Report: Test Country</h2>", html_output)

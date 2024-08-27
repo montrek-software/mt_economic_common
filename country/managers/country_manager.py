@@ -112,14 +112,6 @@ class CountryDetailsManager(MontrekDetailsManager):
                 name="UN Member",
                 attr="country_un_member",
             ),
-            table_elements.StringTableElement(
-                name="Postal Code Format",
-                attr="country_postal_code_format",
-            ),
-            table_elements.StringTableElement(
-                name="Postal Code Regex",
-                attr="country_postal_code_regex",
-            ),
         )
 
 
