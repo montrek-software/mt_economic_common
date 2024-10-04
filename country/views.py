@@ -7,6 +7,7 @@ from baseclasses.views import (
     MontrekListView,
     MontrekDetailView,
     MontrekReportView,
+    MontrekRestApiView,
     MontrekUpdateView,
     MontrekTemplateView,
 )
@@ -24,6 +25,7 @@ from mt_economic_common.country.managers.country_oecd_manager import (
     CountryOecdAnnualFxUploadManager,
     CountryOecdInflationUploadManager,
     CountryOecdTableManager,
+    CountryOecdDataApiManager,
 )
 from mt_economic_common.country.managers.country_report_manager import (
     CountryReportManager,
@@ -199,3 +201,7 @@ class CountryReportView(MontrekReportView):
             hover_text="Back to Overview",
         )
         return (action_back,)
+
+
+class CountryOecdDataApiView(MontrekRestApiView):
+    manager_class = CountryOecdDataApiManager

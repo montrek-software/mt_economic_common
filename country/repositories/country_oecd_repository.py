@@ -59,3 +59,21 @@ class CountryOecdInflationRepository(MontrekRepository):
             ["year", "inflation", "hub_entity_id"],
         )
         return self.build_queryset()
+
+
+class CountryOecdApiRepository(MontrekRepository):
+    hub_class = CountryHub
+
+    def std_queryset(self, **kwargs):
+        self.add_satellite_fields_annotations(
+            CountryStaticSatellite, ["country_code_2"]
+        )
+        self.add_last_ts_satellite_fields_annotations(
+            CountryOecdFxAnnualTSSatellite,
+            ["year", "annual_fx_average", "hub_entity_id"],
+        )
+        self.add_last_ts_satellite_fields_annotations(
+            CountryOecdInflationTSSatellite,
+            ["inflation"],
+        )
+        return self.build_queryset()
