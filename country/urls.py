@@ -55,6 +55,6 @@ urlpatterns = [
     path(
         "country_oecd_data/api",
         views.CountryOecdDataApiView.as_view(),
-        "country_oecd_data_api",
+        name="country_oecd_data_api",
     ),
 ]
