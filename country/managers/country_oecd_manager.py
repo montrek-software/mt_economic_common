@@ -5,6 +5,7 @@ from reporting.managers.montrek_table_manager import MontrekTableManager
 from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdRepository,
     CountryOecdTableRepository,
+    CountryOecdApiRepository,
 )
 from mt_economic_common.country.repositories.country_repository import (
     CountryApiUploadRegistryRepository,
@@ -52,6 +53,19 @@ class CountryOecdTableManager(MontrekTableManager):
     @property
     def table_elements(self) -> list:
         return [
+            YearTableElement(name="Year", attr="year"),
+            te.FloatTableElement(name="Annual FX Average", attr="annual_fx_average"),
+            te.FloatTableElement(name="Inflation", attr="inflation"),
+        ]
+
+
+class CountryOecdDataApiManager(MontrekTableManager):
+    repository_class = CountryOecdApiRepository
+
+    @property
+    def table_elements(self) -> list:
+        return [
+            te.StringTableElement(name="Country Code", attr="country_code_2"),
             YearTableElement(name="Year", attr="year"),
             te.FloatTableElement(name="Annual FX Average", attr="annual_fx_average"),
             te.FloatTableElement(name="Inflation", attr="inflation"),
