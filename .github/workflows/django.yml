@@ -15,16 +15,16 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: [3.12]
-
     services:
-      mariadb:
-        image: mariadb:10.9
+      postgres:
+        image: postgres:latest
         env:
-          MYSQL_ROOT_PASSWORD: ci_pipe_pssw
-          MYSQL_DATABASE: montrek_ci_pipe_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci_pipe_pssw
+          POSTGRES_DB: montrek_ci_pipe_db
         ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 
 
     steps:
       - name: Clone Montrek Repository
