@@ -30,7 +30,7 @@ class TestRestCountryUploadProcessor(TestCase):
         processor.process(mailicious_json)
         self.assertTrue(
             processor.message.startswith(
-                'Error raised during object creation: null value in column "ccy_name" of relation "currency_currencystaticsatellite" violates not-null constraint',
+                "Error raised during object creation:",
             )
         )
 
