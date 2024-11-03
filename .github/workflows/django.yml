@@ -52,11 +52,14 @@ jobs:
           pip install -r requirements.txt
       - name: Setup env
         run: |
-          echo "DB_USER=root" >> .env
-          echo "DB_PASSWORD=ci_pipe_pssw" >> .env
-          echo "DB_NAME=montrek_ci_pipe_db" >> .env
-          echo "DB_HOST=0.0.0.0" >> .env
-          echo "INSTALLED_APPS=${{ vars.INSTALLED_APPS }} " >> .env
+          ENVPATH="./montrek/.env"
+          echo "DB_ENGINE=postgres" >> $ENVPATH
+          echo "DB_PORT=5432" >> $ENVPATH
+          echo "DB_USER=postgres" >> $ENVPATH
+          echo "DB_PASSWORD=ci_pipe_pssw" >> $ENVPATH
+          echo "DB_NAME=montrek_ci_pipe_db" >> $ENVPATH
+          echo "DB_HOST=0.0.0.0" >> $ENVPATH
+          echo "INSTALLED_APPS=${{ vars.INSTALLED_APPS }} " >> $ENVPATH
 
       - name: Install Arial font
         run: |
