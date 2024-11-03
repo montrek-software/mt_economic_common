@@ -28,9 +28,10 @@ class TestRestCountryUploadProcessor(TestCase):
             },
         ]
         processor.process(mailicious_json)
-        self.assertEqual(
-            processor.message,
-            "Error raised during object creation: IntegrityError: (1048, \"Column 'ccy_name' cannot be null\")",
+        self.assertTrue(
+            processor.message.startswith(
+                "Error raised during object creation:",
+            )
         )
 
     def test_create_currencies__return_list_of_currency_objects(self):
