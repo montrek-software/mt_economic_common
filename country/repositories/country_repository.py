@@ -15,7 +15,8 @@ from api_upload.repositories.api_upload_registry_repository import (
 
 class CountryRepository(MontrekRepository):
     hub_class = CountryHub
-    default_order_by = ("country_name",)
+    default_order_fields = ("country_name",)
+    latest_ts = True
 
     def set_annotations(self):
         self.add_satellite_fields_annotations(

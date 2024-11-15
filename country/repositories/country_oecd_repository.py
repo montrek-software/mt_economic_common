@@ -1,3 +1,4 @@
+from django.db.models import QuerySet
 from django.utils import timezone
 from baseclasses.repositories.montrek_repository import MontrekRepository
 from mt_economic_common.country.models import (
@@ -33,6 +34,10 @@ class CountryOecdTableRepository(MontrekRepository):
         self.add_satellite_fields_annotations(
             CountryOecdInflationTSSatellite, ["year", "inflation"]
         )
+
+    def receive(self) -> QuerySet:
+        hub = self._get_hub_by_id(pk=self.session_data.get("pk"))
+        return super().receive().filter(hub=hub)
 
 
 class CountryOecdFxAnnualRepository(MontrekRepository):
