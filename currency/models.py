@@ -1,11 +1,16 @@
 from django.db import models
 from baseclasses import models as baseclass_models
+from baseclasses.fields import HubForeignKey
 
 # Create your models here.
 
 
 class CurrencyHub(baseclass_models.MontrekHubABC):
     pass
+
+
+class CurrencyHubValueDate(baseclass_models.HubValueDate):
+    hub = HubForeignKey(CurrencyHub)
 
 
 class CurrencyStaticSatellite(baseclass_models.MontrekSatelliteABC):
@@ -22,8 +27,8 @@ class CurrencyStaticSatellite(baseclass_models.MontrekSatelliteABC):
 
 
 class CurrencyTimeSeriesSatellite(baseclass_models.MontrekTimeSeriesSatelliteABC):
-    hub_entity = models.ForeignKey(
-        CurrencyHub,
+    hub_value_date = models.ForeignKey(
+        CurrencyHubValueDate,
         on_delete=models.CASCADE,
         related_name="currency_time_series_satellites",
     )

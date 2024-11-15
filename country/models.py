@@ -1,5 +1,6 @@
 from django.db import models
 from baseclasses import models as baseclass_models
+from baseclasses.fields import HubForeignKey
 from api_upload import models as api_upload_models
 
 
@@ -9,6 +10,10 @@ class CountryHub(baseclass_models.MontrekHubABC):
         related_name="link_currency_country",
         through="LinkCountryCurrency",
     )
+
+
+class CountryHubValueDate(baseclass_models.HubValueDate):
+    hub = HubForeignKey(CountryHub)
 
 
 class CountryStaticSatellite(baseclass_models.MontrekSatelliteABC):
@@ -43,7 +48,7 @@ class CountryOecdTSSatelliteABC(baseclass_models.MontrekTimeSeriesSatelliteABC):
     class Meta:
         abstract = True
 
-    hub_entity = models.ForeignKey(CountryHub, on_delete=models.CASCADE)
+    hub_value_date = models.ForeignKey(CountryHubValueDate, on_delete=models.CASCADE)
     year = models.IntegerField(null=True, blank=True)
     identifier_fields = ["year", "hub_entity_id"]
 
