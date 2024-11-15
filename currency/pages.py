@@ -25,7 +25,7 @@ class CurrencyPage(MontrekPage):
         super().__init__(**kwargs)
         if "pk" not in kwargs:
             raise ValueError("CurrencyPage needs pk specified in url!")
-        self.obj = CurrencyRepository().std_queryset().get(pk=kwargs["pk"])
+        self.obj = CurrencyRepository().receive().get(pk=kwargs["pk"])
         self.page_title = self.obj.ccy_name
 
     def get_tabs(self):

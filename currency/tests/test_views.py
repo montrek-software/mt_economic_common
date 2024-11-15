@@ -1,13 +1,7 @@
-from django.test import TestCase
-from django.urls import reverse
-from mt_economic_common.currency.repositories.currency_repository import (
-    CurrencyRepository,
-)
 from mt_economic_common.currency.tests.factories.currency_factories import (
     CurrencyStaticSatelliteFactory,
 )
 from mt_economic_common.currency import views
-from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from testing.test_cases import view_test_cases as vtc
 
 
@@ -30,7 +24,7 @@ class TestCurrencyDetails(vtc.MontrekDetailViewTestCase):
         self.ccy = CurrencyStaticSatelliteFactory()
 
     def url_kwargs(self) -> dict:
-        return {"pk": self.ccy.hub_entity.id}
+        return {"pk": self.ccy.get_hub_value_date().id}
 
 
 class TestCurrencyOverview(vtc.MontrekListViewTestCase):

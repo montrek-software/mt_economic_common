@@ -16,8 +16,8 @@ def currency_time_series_satellite():
 class CurrencyRepository(MontrekRepository):
     hub_class = CurrencyHub
 
-    def std_queryset(self, **kwargs) -> QuerySet:
-        self.add_last_ts_satellite_fields_annotations(
+    def set_annotations(self, **kwargs) -> QuerySet:
+        self.add_satellite_fields_annotations(
             CurrencyTimeSeriesSatellite,
             ["fx_rate"],
         )
@@ -25,7 +25,6 @@ class CurrencyRepository(MontrekRepository):
             CurrencyStaticSatellite,
             ["ccy_name", "ccy_code", "ccy_symbol"],
         )
-        return self.build_queryset()
 
 
 # TODO: Move to CurrencyRepository

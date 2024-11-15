@@ -33,4 +33,3 @@ class CurrencyTimeSeriesSatellite(baseclass_models.MontrekTimeSeriesSatelliteABC
         related_name="currency_time_series_satellites",
     )
     fx_rate = models.DecimalField(max_digits=10, decimal_places=4, default=0.0)
-    identifier_fields = ["value_date", "hub_entity"]

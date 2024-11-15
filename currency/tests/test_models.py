@@ -3,7 +3,7 @@ from mt_economic_common.currency.tests.factories.currency_factories import (
     CurrencyStaticSatelliteFactory,
     CurrencyTimeSeriesSatelliteFactory,
 )
-from mt_economic_common.currency.models import CurrencyHub
+from mt_economic_common.currency.models import CurrencyHub, CurrencyHubValueDate
 
 
 class TestCurrencyModels(TestCase):
@@ -13,4 +13,6 @@ class TestCurrencyModels(TestCase):
 
     def test_time_series_satellite_hub(self):
         time_series_satellite = CurrencyTimeSeriesSatelliteFactory()
-        self.assertTrue(isinstance(time_series_satellite.hub_entity, CurrencyHub))
+        self.assertTrue(
+            isinstance(time_series_satellite.hub_value_date, CurrencyHubValueDate)
+        )
