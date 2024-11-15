@@ -50,7 +50,6 @@ class CountryOecdTSSatelliteABC(baseclass_models.MontrekTimeSeriesSatelliteABC):
 
     hub_value_date = models.ForeignKey(CountryHubValueDate, on_delete=models.CASCADE)
     year = models.IntegerField(null=True, blank=True)
-    identifier_fields = ["year", "hub_entity_id"]
 
     def __str__(self):
         return f"{self.hub_entity} {self.year}"
@@ -74,6 +73,10 @@ class LinkCountryCurrency(baseclass_models.MontrekManyToManyLinkABC):
 
 class CountryApiUploadRegistryHub(api_upload_models.ApiUploadRegistryHubABC):
     pass
+
+
+class CountryApiUploadRegistryHubValueDate(baseclass_models.HubValueDate):
+    hub = HubForeignKey(CountryApiUploadRegistryHub)
 
 
 class CountryApiUploadRegistryStaticSatellite(

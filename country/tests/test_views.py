@@ -48,7 +48,7 @@ class TestCountryDetailsView(vtc.MontrekDetailViewTestCase):
         self.country = CountryStaticSatelliteFactory()
 
     def url_kwargs(self) -> dict:
-        return {"pk": self.country.hub_entity.id}
+        return {"pk": self.country.get_hub_value_date().id}
 
 
 class TestCountryUpdateView(vtc.MontrekUpdateViewTestCase):
@@ -59,7 +59,7 @@ class TestCountryUpdateView(vtc.MontrekUpdateViewTestCase):
         self.country = CountryStaticSatelliteFactory()
 
     def url_kwargs(self) -> dict:
-        return {"pk": self.country.hub_entity.id}
+        return {"pk": self.country.get_hub_value_date().id}
 
 
 class TestUploadCountriesRestCountries(TestCase):
@@ -81,7 +81,7 @@ class TestUploadCountriesRestCountries(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("country"))
-        registry_query = CountryApiUploadRegistryRepository().std_queryset()
+        registry_query = CountryApiUploadRegistryRepository().receive()
         self.assertEqual(registry_query.count(), 1)
 
 
@@ -102,7 +102,7 @@ class TestUploadOecdCountryData(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("country"))
-        registry_query = CountryApiUploadRegistryRepository().std_queryset()
+        registry_query = CountryApiUploadRegistryRepository().receive()
         self.assertEqual(registry_query.count(), 2)
 
 
@@ -116,7 +116,7 @@ class TestCountryMapView(vtc.MontrekViewTestCase):
         )
 
     def url_kwargs(self) -> dict:
-        return {"pk": self.country_satellite.hub_entity.id}
+        return {"pk": self.country_satellite.get_hub_value_date().id}
 
 
 class TestCountryOecdDataView(vtc.MontrekListViewTestCase):
@@ -127,13 +127,13 @@ class TestCountryOecdDataView(vtc.MontrekListViewTestCase):
     def build_factories(self):
         self.country = CountryHubFactory()
         for _ in range(5):
-            CountryOecdFxAnnualTSSatelliteFactory(hub_entity=self.country)
+            CountryOecdFxAnnualTSSatelliteFactory(hub_value_date__hub=self.country)
         country_2 = CountryHubFactory()
         for _ in range(5):
-            CountryOecdFxAnnualTSSatelliteFactory(hub_entity=country_2)
+            CountryOecdFxAnnualTSSatelliteFactory(hub_value_date__hub=country_2)
 
     def url_kwargs(self) -> dict:
-        return {"pk": self.country.id}
+        return {"pk": self.country.get_hub_value_date().pk}
 
 
 class TestCountryApiRegistryListView(vtc.MontrekListViewTestCase):
@@ -153,7 +153,7 @@ class TestCountryReportView(vtc.MontrekViewTestCase):
         self.country = CountryStaticSatelliteFactory(country_name="Test Country")
 
     def url_kwargs(self) -> dict:
-        return {"pk": self.country.hub_entity.id}
+        return {"pk": self.country.get_hub_value_date().id}
 
     def test_report_html_output(self):
         html_output = self.response.content.decode("utf-8")

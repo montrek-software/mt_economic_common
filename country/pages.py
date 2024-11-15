@@ -29,7 +29,7 @@ class CountryPage(MontrekPage):
         super().__init__(**kwargs)
         if "pk" not in kwargs:
             raise ValueError("CountryPage needs pk specified in url!")
-        self.obj = CountryRepository().std_queryset().get(pk=kwargs["pk"])
+        self.obj = CountryRepository().receive().get(pk=kwargs["pk"])
         self.page_title = self.obj.country_name
 
     def get_tabs(self):

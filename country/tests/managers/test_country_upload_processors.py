@@ -45,6 +45,6 @@ class TestRestCountryUploadProcessor(TestCase):
         )
         result_sr = processor.create_currencies(currencies)
         self.assertEqual(result_sr.iloc[0], result_sr.iloc[2])
-        currencies = CurrencyRepository().std_queryset().all()
+        currencies = CurrencyRepository().receive().all()
         self.assertEqual(len(currencies), 2)
         self.assertEqual(currencies[0].ccy_name, "First name")
