@@ -15,6 +15,7 @@ def currency_time_series_satellite():
 
 class CurrencyRepository(MontrekRepository):
     hub_class = CurrencyHub
+    latest_ts = True
 
     def set_annotations(self, **kwargs) -> QuerySet:
         self.add_satellite_fields_annotations(

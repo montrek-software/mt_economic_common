@@ -14,11 +14,11 @@ class CountryOecdRepository(MontrekRepository):
 
     def set_annotations(self, **kwargs):
         self.add_satellite_fields_annotations(CountryStaticSatellite, ["country_code"])
-        self.add_last_ts_satellite_fields_annotations(
+        self.add_satellite_fields_annotations(
             CountryOecdFxAnnualTSSatellite,
             ["year", "annual_fx_average"],
         )
-        self.add_last_ts_satellite_fields_annotations(
+        self.add_satellite_fields_annotations(
             CountryOecdInflationTSSatellite,
             ["inflation"],
         )
@@ -36,7 +36,7 @@ class CountryOecdTableRepository(MontrekRepository):
         )
 
     def receive(self) -> QuerySet:
-        hub = self._get_hub_by_id(pk=self.session_data.get("pk"))
+        hub = self.get_hub_by_id(pk=self.session_data.get("pk"))
         return super().receive().filter(hub=hub)
 
 
@@ -45,7 +45,7 @@ class CountryOecdFxAnnualRepository(MontrekRepository):
 
     def set_annotations(self, **kwargs):
         self.add_satellite_fields_annotations(CountryStaticSatellite, ["country_code"])
-        self.add_last_ts_satellite_fields_annotations(
+        self.add_satellite_fields_annotations(
             CountryOecdFxAnnualTSSatellite,
             ["year", "annual_fx_average"],
         )
@@ -56,7 +56,7 @@ class CountryOecdInflationRepository(MontrekRepository):
 
     def set_annotations(self, **kwargs):
         self.add_satellite_fields_annotations(CountryStaticSatellite, ["country_code"])
-        self.add_last_ts_satellite_fields_annotations(
+        self.add_satellite_fields_annotations(
             CountryOecdInflationTSSatellite,
             ["year", "inflation"],
         )
