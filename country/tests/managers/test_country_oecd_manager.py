@@ -59,9 +59,9 @@ class TestOecdCountryManager(TestCase):
         # Act
         country_manager.upload_and_process()
         # Assert
-        registry_query = country_manager.repository.std_queryset()
+        registry_query = country_manager.repository.receive()
         self.assertEqual(registry_query.count(), 1)
-        test_query = CountryOecdRepository().std_queryset()
+        test_query = CountryOecdRepository().receive()
         self.assertEqual(test_query.count(), 4)
         self.assertEqual(
             [test_query[i].annual_fx_average for i in range(4)],
@@ -71,7 +71,7 @@ class TestOecdCountryManager(TestCase):
             country_oecd_repository = CountryOecdTableRepository(
                 {"pk": country.hub_entity.id}
             )
-            test_query = country_oecd_repository.std_queryset()
+            test_query = country_oecd_repository.receive()
             self.assertTrue(test_query.count() > 0)
 
     def test_get_oecd_inflation_average(self):
@@ -81,9 +81,9 @@ class TestOecdCountryManager(TestCase):
         # Act
         country_manager.upload_and_process()
         # Assert
-        registry_query = country_manager.repository.std_queryset()
+        registry_query = country_manager.repository.receive()
         self.assertEqual(registry_query.count(), 1)
-        test_query = CountryOecdInflationRepository().std_queryset()
+        test_query = CountryOecdInflationRepository().receive()
         self.assertEqual(test_query.count(), 4)
         self.assertEqual(
             [test_query[i].inflation for i in range(4)],

@@ -13,7 +13,7 @@ class CountryRepositoryTest(TestCase):
         self.user = MontrekUserFactory()
 
     def test_std_queryset(self):
-        test_countries = CountryRepository().std_queryset()
+        test_countries = CountryRepository().receive()
         self.assertEqual(len(test_countries), 3)
         for i in range(3):
             self.assertEqual(
@@ -27,13 +27,13 @@ class CountryRepositoryTest(TestCase):
         input_data = {"country_name": "TestCountry", "country_code": "TST"}
         repository = CountryRepository(session_data={"user_id": self.user.id})
         repository.std_create_object(input_data)
-        test_countries = repository.std_queryset()
+        test_countries = repository.receive()
         self.assertEqual(len(test_countries), 4)
         self.assertEqual(test_countries[3].country_name, "TestCountry")
         self.assertEqual(test_countries[3].country_code, "TST")
         input_data = {"country_name": "UnitedTestCountry", "country_code": "TST"}
         repository.std_create_object(input_data)
-        test_countries = repository.std_queryset()
+        test_countries = repository.receive()
         self.assertEqual(len(test_countries), 4)
         self.assertEqual(test_countries[3].country_name, "UnitedTestCountry")
         self.assertEqual(test_countries[3].country_code, "TST")

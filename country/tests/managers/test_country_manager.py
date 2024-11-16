@@ -296,11 +296,11 @@ class TestCountryManager(TestCase):
         # Act
         country_manager.upload_and_process()
         # Assert
-        registry_query = country_manager.repository.std_queryset()
+        registry_query = country_manager.repository.receive()
         self.assertEqual(registry_query.count(), 1)
         self.assertEqual(registry_query[0].upload_status, "processed")
 
-        test_query = CountryRepository().std_queryset()
+        test_query = CountryRepository().receive()
         self.assertEqual(test_query.count(), 2)
         self.assertEqual(test_query[0].country_name, "France")
         self.assertEqual(test_query[0].country_code, "FRA")
@@ -308,7 +308,7 @@ class TestCountryManager(TestCase):
         self.assertEqual(test_query[1].country_name, "Germany")
         self.assertEqual(test_query[1].country_code, "DEU")
         self.assertEqual(test_query[1].country_code_2, "DE")
-        ccy_query = CurrencyRepository().std_queryset().all()
+        ccy_query = CurrencyRepository().receive().all()
         self.assertEqual(ccy_query.count(), 2)
         self.assertEqual(ccy_query[0].ccy_code, "EUR")
         self.assertEqual(ccy_query[0].ccy_name, "Euro")

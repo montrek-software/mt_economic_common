@@ -10,7 +10,7 @@ from mt_economic_common.country.tests.factories.country_factories import (
 class TestCountryReportManager(TestCase):
     def setUp(self) -> None:
         country = CountryStaticSatelliteFactory(country_name="Italy")
-        session_data = {"pk": country.hub_entity.id}
+        session_data = {"pk": country.hub_entity.get_hub_value_date().id}
         self.country_report_manager = CountryReportManager(session_data)
 
     def test_document_title(self):
