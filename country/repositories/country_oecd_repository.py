@@ -11,6 +11,7 @@ from mt_economic_common.country.models import (
 
 class CountryOecdRepository(MontrekRepository):
     hub_class = CountryHub
+    latest_ts = True
 
     def set_annotations(self, **kwargs):
         self.add_satellite_fields_annotations(CountryStaticSatellite, ["country_code"])
@@ -42,6 +43,7 @@ class CountryOecdTableRepository(MontrekRepository):
 
 class CountryOecdFxAnnualRepository(MontrekRepository):
     hub_class = CountryHub
+    latest_ts = True
 
     def set_annotations(self, **kwargs):
         self.add_satellite_fields_annotations(CountryStaticSatellite, ["country_code"])
@@ -53,6 +55,7 @@ class CountryOecdFxAnnualRepository(MontrekRepository):
 
 class CountryOecdInflationRepository(MontrekRepository):
     hub_class = CountryHub
+    latest_ts = True
 
     def set_annotations(self, **kwargs):
         self.add_satellite_fields_annotations(CountryStaticSatellite, ["country_code"])

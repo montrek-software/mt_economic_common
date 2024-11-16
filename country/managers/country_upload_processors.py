@@ -176,7 +176,7 @@ class OecdCountriesUploadProcessor:
     def _map_country_hub(self, df: pd.DataFrame) -> pd.DataFrame:
         unique_country_codes = df["REF_AREA"].unique()
         cnt_code_hub_map = {
-            c.country_code: c.id
+            c.country_code: c.hub.id
             for c in self.repository.receive().filter(
                 country_code__in=unique_country_codes
             )
