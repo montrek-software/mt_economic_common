@@ -7,4 +7,9 @@ urlpatterns = [
     path(
         "<int:pk>/details", views.CurrencyDetailView.as_view(), name="currency_details"
     ),
+    path(
+        "upload_yahoo_fx_rates",
+        views.upload_yahoo_fx_rates,
+        name="upload_yahoo_fx_rates",
+    ),
 ]

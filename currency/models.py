@@ -32,4 +32,6 @@ class CurrencyTimeSeriesSatellite(baseclass_models.MontrekTimeSeriesSatelliteABC
         on_delete=models.CASCADE,
         related_name="currency_time_series_satellites",
     )
-    fx_rate = models.DecimalField(max_digits=10, decimal_places=4, default=0.0)
+    fx_rate = models.DecimalField(
+        max_digits=10, decimal_places=4, null=True, blank=True
+    )

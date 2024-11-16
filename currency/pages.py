@@ -9,6 +9,7 @@ from mt_economic_common.currency.repositories.currency_repository import (
 
 class CurrencyAppPage(MontrekPage):
     page_title = "Currencies"
+    show_date_range_selector = True
 
     def get_tabs(self):
         return [
@@ -21,6 +22,8 @@ class CurrencyAppPage(MontrekPage):
 
 
 class CurrencyPage(MontrekPage):
+    show_date_range_selector = True
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if "pk" not in kwargs:

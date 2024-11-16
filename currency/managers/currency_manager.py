@@ -28,19 +28,28 @@ class FxUploadManager(MontrekManager):
     def update_fx_rates(self, value_date: timezone.datetime):
         currency_code_list = self._get_all_currency_codes_from_db()
         fx_rates = self.fx_update_strategy.get_fx_rates_from_source(
-            currency_code_list, value_date
+            list(currency_code_list.keys()), value_date
         )
-        self._add_fx_rates_to_db(fx_rates, value_date)
+        hub_fx_rates = self._map_hub_ids(fx_rates, currency_code_list)
+        self._add_fx_rates_to_db(hub_fx_rates, value_date)
 
-    def _get_all_currency_codes_from_db(self) -> list[str]:
-        return [obj.ccy_code for obj in self.repository.receive()]
+    def _get_all_currency_codes_from_db(self) -> dict[str, int]:
+        return {obj.ccy_code: obj.hub.id for obj in self.repository.receive()}
+
+    def _map_hub_ids(
+        self, fx_rates: dict[str, float], currency_code_list: dict[str, int]
+    ) -> dict[int, float]:
+        return {
+            currency_code_list[ccy_code]: fx_rate
+            for ccy_code, fx_rate in fx_rates.items()
+        }
 
     def _add_fx_rates_to_db(
-        self, fx_rates: dict[str, float], value_date: timezone.datetime
+        self, fx_rates: dict[int, float], value_date: timezone.datetime
     ):
         input_data = pd.DataFrame(
             {
-                "ccy_code": list(fx_rates.keys()),
+                "hub_entity_id": list(fx_rates.keys()),
                 "fx_rate": list(fx_rates.values()),
                 "value_date": [value_date] * len(fx_rates.keys()),
             }

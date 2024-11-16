@@ -1,19 +1,18 @@
+from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils import timezone
 from baseclasses.dataclasses.view_classes import ActionElement
 from baseclasses.views import MontrekListView
 from baseclasses.views import MontrekDetailView
 from baseclasses.views import MontrekCreateView
 from reporting.dataclasses.table_elements import (
     StringTableElement,
-    LinkTableElement,
     FloatTableElement,
 )
 from mt_economic_common.currency.managers.currency_manager import (
     CurrencyManager,
     CurrencyDetailsManager,
-)
-from mt_economic_common.currency.repositories.currency_repository import (
-    CurrencyRepository,
+    YahooFxUploadManager,
 )
 from mt_economic_common.currency.pages import CurrencyAppPage
 from mt_economic_common.currency.pages import CurrencyPage
@@ -36,7 +35,13 @@ class CurrencyOverview(MontrekListView):
             action_id="id_create_currency",
             hover_text="Create Currency",
         )
-        return (action_new_currency,)
+        action_yahoo_upload = ActionElement(
+            icon="upload",
+            link=reverse("upload_yahoo_fx_rates"),
+            action_id="id_upload_yahoo_fx_rates",
+            hover_text="Yahoo FX Rates Upload",
+        )
+        return (action_new_currency, action_yahoo_upload)
 
 
 class CurrencyDetailView(MontrekDetailView):
@@ -71,3 +76,11 @@ class CurrencyCreateView(MontrekCreateView):
     manager_class = CurrencyManager
     form_class = CurrencyCreateForm
     success_url = "currency"
+
+
+def upload_yahoo_fx_rates(request):
+    yahoo_manager = YahooFxUploadManager(session_data={"user_id": request.user.id})
+    yahoo_manager.update_fx_rates(
+        (timezone.datetime.now() - timezone.timedelta(days=1)).date()
+    )
+    return HttpResponseRedirect(reverse("currency"))
