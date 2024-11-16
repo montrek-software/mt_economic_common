@@ -1,3 +1,4 @@
+from io import StringIO
 import pandas as pd
 import json
 from mt_economic_common.currency.repositories.currency_repository import (
@@ -23,7 +24,7 @@ class RestCountriesUploadProcessor:
         return True
 
     def process(self, json_response: dict | list) -> bool:
-        countries_df = pd.read_json(json.dumps(json_response))
+        countries_df = pd.read_json(StringIO(json.dumps(json_response)))
         try:
             countries_df["link_country_currency"] = self.create_currencies(
                 countries_df["currencies"]
