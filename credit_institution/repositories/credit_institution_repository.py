@@ -3,7 +3,6 @@ from mt_economic_common.credit_institution.models import (
     CreditInstitutionStaticSatellite,
     LinkCreditInstitutionCountry,
 )
-from baseclasses.repositories.db_helper import get_satellite_from_hub_query
 from baseclasses.repositories.montrek_repository import MontrekRepository
 from mt_economic_common.country.models import CountryStaticSatellite
 
@@ -29,12 +28,3 @@ class CreditInstitutionRepository(MontrekRepository):
             ],
         )
         self.rename_field("hub_entity_id", "country_id")
-
-    def get_queryset_with_account(self):
-        self.annotations["account_name"] = get_satellite_from_hub_query(
-            "accountstaticsatellite", "account_name", "link_credit_institution_account"
-        )
-        self.annotations["account_id"] = get_satellite_from_hub_query(
-            "accountstaticsatellite", "hub_entity.id", "link_credit_institution_account"
-        )
-        return self.receive()
