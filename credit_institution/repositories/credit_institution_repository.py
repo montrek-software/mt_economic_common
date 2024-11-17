@@ -26,5 +26,5 @@ class CreditInstitutionRepository(MontrekRepository):
                 "country_name",
                 "hub_entity_id",
             ],
+            rename_field_map={"hub_entity_id": "country_id"},
         )
-        self.rename_field("hub_entity_id", "country_id")

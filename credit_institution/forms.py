@@ -10,5 +10,5 @@ class CreditInstitutionCreateForm(MontrekCreateForm):
         self.add_link_choice_field(
             display_field="country_name",
             link_name="link_credit_institution_country",
-            queryset=CountryRepository().std_queryset(),
+            queryset=CountryRepository().receive(),
         )
