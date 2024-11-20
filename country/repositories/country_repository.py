@@ -18,6 +18,8 @@ class CountryRepository(MontrekRepository):
     default_order_fields = ("country_name",)
 
     def set_annotations(self):
+        self.session_data["start_date"] = timezone.datetime.min
+        self.session_data["end_date"] = timezone.datetime.max
         self.add_satellite_fields_annotations(
             CountryStaticSatellite,
             [
