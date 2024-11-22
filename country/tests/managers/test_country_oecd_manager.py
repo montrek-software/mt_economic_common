@@ -59,19 +59,20 @@ class TestOecdCountryManager(TestCase):
         # Act
         country_manager.upload_and_process()
         # Assert
-        registry_query = country_manager.repository.std_queryset()
+        registry_query = country_manager.repository.receive()
         self.assertEqual(registry_query.count(), 1)
-        test_query = CountryOecdRepository().std_queryset()
+        test_query = CountryOecdRepository().receive()
         self.assertEqual(test_query.count(), 4)
+        test_query = test_query.filter(annual_fx_average__isnull=False)
         self.assertEqual(
-            [test_query[i].annual_fx_average for i in range(4)],
-            [None, 446.000041, 16.355853, 585.911013],
+            [test_query[i].annual_fx_average for i in range(3)],
+            [16.355853, 585.911013, 446.000041],
         )
         for country in self.country_factories[1:]:
             country_oecd_repository = CountryOecdTableRepository(
-                {"pk": country.hub_entity.id}
+                {"pk": country.hub_entity.get_hub_value_date().id}
             )
-            test_query = country_oecd_repository.std_queryset()
+            test_query = country_oecd_repository.receive()
             self.assertTrue(test_query.count() > 0)
 
     def test_get_oecd_inflation_average(self):
@@ -81,11 +82,12 @@ class TestOecdCountryManager(TestCase):
         # Act
         country_manager.upload_and_process()
         # Assert
-        registry_query = country_manager.repository.std_queryset()
+        registry_query = country_manager.repository.receive()
         self.assertEqual(registry_query.count(), 1)
-        test_query = CountryOecdInflationRepository().std_queryset()
+        test_query = CountryOecdInflationRepository().receive()
         self.assertEqual(test_query.count(), 4)
+        test_query = test_query.filter(inflation__isnull=False)
         self.assertEqual(
-            [test_query[i].inflation for i in range(4)],
-            [None, 446.000041, 16.355853, 585.911013],
+            [test_query[i].inflation for i in range(3)],
+            [16.355853, 585.911013, 446.000041],
         )

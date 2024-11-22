@@ -1,9 +1,5 @@
-from django.test import TestCase
 from mt_economic_common.credit_institution.tests.factories.credit_institution_factories import (
     CreditInstitutionStaticSatelliteFactory,
-)
-from mt_economic_common.country.tests.factories.country_factories import (
-    CountryStaticSatelliteFactory,
 )
 from mt_economic_common.credit_institution import views
 from testing.test_cases import view_test_cases as vtc
@@ -26,7 +22,7 @@ class TestCreditInstitutionDetailView(vtc.MontrekDetailViewTestCase):
         self.credit_institution = CreditInstitutionStaticSatelliteFactory()
 
     def url_kwargs(self) -> dict:
-        return {"pk": self.credit_institution.hub_entity.pk}
+        return {"pk": self.credit_institution.hub_entity.get_hub_value_date().pk}
 
 
 class TestCreditInstitutionCreateView(vtc.MontrekCreateViewTestCase):

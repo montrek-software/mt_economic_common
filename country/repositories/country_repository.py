@@ -15,8 +15,11 @@ from api_upload.repositories.api_upload_registry_repository import (
 
 class CountryRepository(MontrekRepository):
     hub_class = CountryHub
+    default_order_fields = ("country_name",)
 
-    def std_queryset(self):
+    def set_annotations(self):
+        self.session_data["start_date"] = timezone.datetime.min
+        self.session_data["end_date"] = timezone.datetime.max
         self.add_satellite_fields_annotations(
             CountryStaticSatellite,
             [
@@ -48,7 +51,6 @@ class CountryRepository(MontrekRepository):
                 "ccy_code",
             ],
         )
-        return self.build_queryset().order_by("country_name")
 
 
 class CountryApiUploadRegistryRepository(ApiUploadRepositoryABC):

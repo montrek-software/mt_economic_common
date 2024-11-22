@@ -28,7 +28,7 @@ class CountryReportManager(MontrekReportManager):
     def __init__(self, session_data):
         super().__init__(session_data)
         if "pk" in session_data:
-            self.obj = self.repository.std_queryset().get(pk=session_data["pk"])
+            self.obj = self.repository.receive().get(pk=session_data["pk"])
         else:
             self.obj = None
 
@@ -49,7 +49,7 @@ class CountryReportManager(MontrekReportManager):
         return country_summary.get("extract", "No summary found")
 
     def _plot_oecd_data(self):
-        oecd_data = CountryOecdTableRepository(self.session_data).std_queryset()
+        oecd_data = CountryOecdTableRepository(self.session_data).receive()
         oecd_df = read_frame(oecd_data)
         oecd_reporting_data = ReportingData(
             oecd_df,

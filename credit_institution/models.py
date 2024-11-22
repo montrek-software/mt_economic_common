@@ -12,6 +12,14 @@ class CreditInstitutionHub(baseclass_models.MontrekHubABC):
     )
 
 
+class CreditInstitutionHubValueDate(baseclass_models.HubValueDate):
+    hub = models.ForeignKey(
+        "CreditInstitutionHub",
+        on_delete=models.CASCADE,
+        related_name="hub_value_date",
+    )
+
+
 class CreditInstitutionStaticSatellite(baseclass_models.MontrekSatelliteABC):
     class UploadMethod(models.TextChoices):
         NONE = "none"

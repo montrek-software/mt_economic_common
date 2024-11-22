@@ -1,13 +1,7 @@
-from django.test import TestCase
-from django.urls import reverse
-from mt_economic_common.currency.repositories.currency_repository import (
-    CurrencyRepository,
-)
 from mt_economic_common.currency.tests.factories.currency_factories import (
     CurrencyStaticSatelliteFactory,
 )
 from mt_economic_common.currency import views
-from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from testing.test_cases import view_test_cases as vtc
 
 

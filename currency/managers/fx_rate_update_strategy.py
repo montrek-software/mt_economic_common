@@ -2,49 +2,33 @@ from typing import List, Dict
 import pandas as pd
 from django.utils import timezone
 import yfinance as yf
-from mt_economic_common.currency.repositories.currency_queries import (
-    get_all_currency_codes_from_db,
-)
-from mt_economic_common.currency.repositories.currency_queries import add_fx_rate_to_ccy
-from baseclasses.dataclasses.montrek_message import MontrekMessageError
+from baseclasses.dataclasses.montrek_message import MontrekMessage, MontrekMessageError
 
 
-class FxRateUpdateStrategy:
+class FxUpdateStrategyBase:
     def __init__(self):
-        self.messages = []
-        self.fx_rates = {}
+        self.messages: list[MontrekMessage] = []
 
-    def update_fx_rates(self, value_date: timezone.datetime):
-        currency_code_list = get_all_currency_codes_from_db()
-        self._get_fx_rates_from_source(currency_code_list, value_date)
-        self._add_fx_rates_to_db(self.fx_rates, value_date)
-
-    def _get_fx_rates_from_source(
-        self,
-        currency_code_list: List[str],
-        value_date: timezone.datetime,
-    ):
-        raise NotImplementedError(
-            f"{self.__class__.__name__} must implement _get_fx_rates_from_source()"
-        )
-
-    def _add_fx_rates_to_db(
-        self, fx_rates: Dict[str, float], value_date: timezone.datetime
-    ):
-        for ccy, fx_rate in fx_rates.items():
-            add_fx_rate_to_ccy(ccy, value_date, fx_rate)
-
-
-class YahooFxRateUpdateStrategy(FxRateUpdateStrategy):
-    def _get_fx_rates_from_source(
+    def get_fx_rates_from_source(
         self,
         currency_code_list: List[str],
         value_date: timezone.datetime,
     ) -> Dict[str, float]:
-        # value_date = value_date + timezone.timedelta(days=-2)
+        raise NotImplementedError(
+            f"{self.__class__.__name__} must implement _get_fx_rates_from_source()"
+        )
+
+
+class YahooFxRateUpdateStrategy(FxUpdateStrategyBase):
+    def get_fx_rates_from_source(
+        self,
+        currency_code_list: List[str],
+        value_date: timezone.datetime,
+    ) -> Dict[str, float]:
+        fx_rates = {}
         for ccy in currency_code_list:
             if ccy == "EUR":
-                self.fx_rates[ccy] = 1.0
+                fx_rates[ccy] = 1.0
                 continue
             pair_code = f"{ccy}EUR=X"
             data = yf.Ticker(pair_code)
@@ -54,16 +38,19 @@ class YahooFxRateUpdateStrategy(FxRateUpdateStrategy):
                 end=(value_date + timezone.timedelta(days=1)).strftime("%Y-%m-%d"),
                 period="1d",
             )
-            self.handle_hist_data_and_return_fx_rates(hist, ccy, pair_code, date_str)
+            fx_rates[ccy] = self.handle_hist_data_and_return_fx_rates(
+                hist, pair_code, date_str
+            )
+        return fx_rates
 
     def handle_hist_data_and_return_fx_rates(
-        self, hist: pd.DataFrame, ccy: str, pair_code: str, date_str: str
-    ):
+        self, hist: pd.DataFrame, pair_code: str, date_str: str
+    ) -> float | None:
         if hist.empty:
             self.messages.append(
                 MontrekMessageError(
                     f"YahooFxRateUpdateStrategy: {pair_code} has no data for {date_str}"
                 )
             )
-            return
-        self.fx_rates[ccy] = hist["Close"].iloc[-1]
+            return None
+        return hist["Close"].iloc[-1]

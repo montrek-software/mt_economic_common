@@ -1,12 +1,16 @@
 import factory
+from baseclasses.tests.factories.montrek_factory_schemas import (
+    MontrekHubFactory,
+    MontrekSatelliteFactory,
+)
 
 
-class CreditInstitutionHubFactory(factory.django.DjangoModelFactory):
+class CreditInstitutionHubFactory(MontrekHubFactory):
     class Meta:
         model = "credit_institution.CreditInstitutionHub"
 
 
-class CreditInstitutionStaticSatelliteFactory(factory.django.DjangoModelFactory):
+class CreditInstitutionStaticSatelliteFactory(MontrekSatelliteFactory):
     class Meta:
         model = "credit_institution.CreditInstitutionStaticSatellite"
 

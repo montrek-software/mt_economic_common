@@ -136,7 +136,7 @@ class CountryMapView(MontrekTemplateView):
     tab = "tab_map"
 
     def get_template_context(self) -> dict:
-        country = self.manager.repository.std_queryset().get(id=self.kwargs["pk"])
+        country = self.manager.repository.receive().get(id=self.kwargs["pk"])
         long = country.country_long
         lat = country.country_lat
         long = long if long else 0

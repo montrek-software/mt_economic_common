@@ -25,7 +25,7 @@ class CreditInstitutionPage(MontrekPage):
         super().__init__(**kwargs)
         if "pk" not in kwargs:
             raise ValueError("AccountPage needs pk specified in url!")
-        self.obj = self.repository.std_queryset().get(pk=kwargs["pk"])
+        self.obj = self.repository.receive().get(pk=kwargs["pk"])
         self.page_title = self.obj.credit_institution_name
 
     def get_tabs(self):

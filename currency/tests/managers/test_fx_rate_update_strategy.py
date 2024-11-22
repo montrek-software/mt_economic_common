@@ -1,97 +1,71 @@
 import pandas as pd
-from typing import List, Dict
-import decimal
 from django.test import TestCase
 from django.utils import timezone
 from mt_economic_common.currency.managers.fx_rate_update_strategy import (
-    FxRateUpdateStrategy,
     YahooFxRateUpdateStrategy,
-)
-from mt_economic_common.currency.tests.factories.currency_factories import (
-    CurrencyStaticSatelliteFactory,
-)
-from mt_economic_common.currency.repositories.currency_repository import (
-    CurrencyRepository,
+    FxUpdateStrategyBase,
 )
 from baseclasses.utils import montrek_time
 
 TEST_CURRENCY_CODES = ["USD", "EUR", "GBP"]
 
 
-class FxRateUpdateStrategyTestClass(FxRateUpdateStrategy):
-    def _get_fx_rates_from_source(
+class FxRateUpdateStrategyTestClass(FxUpdateStrategyBase):
+    def get_fx_rates_from_source(
         self,
-        currency_code_list: List[str],
+        currency_code_list: list[str],
         value_date: timezone.datetime,
-    ):
-        self.fx_rates = {ccy: 1.0 for ccy in currency_code_list}
+    ) -> dict[str, float]:
+        return {ccy: 1.0 for ccy in currency_code_list}
 
 
 class TestFxRateUpdateStrategy(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        for ccy in TEST_CURRENCY_CODES:
-            CurrencyStaticSatelliteFactory(ccy_code=ccy)
-        cls.test_time = timezone.datetime(2023, 11, 28)
+    def setUp(self):
+        self.test_time = montrek_time(2023, 11, 28)
 
     def test_get_update_fx_rates_not_implemented(self):
         with self.assertRaises(NotImplementedError) as error:
-            FxRateUpdateStrategy().update_fx_rates(self.test_time)
+            FxUpdateStrategyBase().get_fx_rates_from_source(
+                TEST_CURRENCY_CODES, self.test_time
+            )
         self.assertEqual(
             str(error.exception),
-            "FxRateUpdateStrategy must implement _get_fx_rates_from_source()",
+            "FxUpdateStrategyBase must implement _get_fx_rates_from_source()",
         )
 
     def test_right_currencies(self):
         strategy = FxRateUpdateStrategyTestClass()
-        strategy.update_fx_rates(self.test_time)
+        fx_rates = strategy.get_fx_rates_from_source(
+            TEST_CURRENCY_CODES, self.test_time
+        )
+        expectd_fx_rates = {ccy: 1.0 for ccy in TEST_CURRENCY_CODES}
+        self.assertEqual(fx_rates, expectd_fx_rates)
 
-        for currency_hub in CurrencyRepository().std_queryset().all():
-            self.assertEqual(currency_hub.fx_rate, 1.0)
 
-
-class TestYahooFxRateUpdateStrategy(TestFxRateUpdateStrategy):
+class TestYahooFxRateUpdateStrategy(TestCase):
     def test_get_fx_rates_from_source(self):
+        test_time = timezone.datetime(2023, 11, 28)
         strategy = YahooFxRateUpdateStrategy()
-        strategy.update_fx_rates(self.test_time)
+        test_fx_rates = strategy.get_fx_rates_from_source(
+            TEST_CURRENCY_CODES, test_time
+        )
         expected_rates = {"USD": 0.9125, "EUR": 1.0, "GBP": 1.1529}
-        for currency_hub in CurrencyRepository().std_queryset().all():
-            ccy_code = currency_hub.ccy_code
+        for ccy, fx_rate in test_fx_rates.items():
             self.assertAlmostEqual(
-                currency_hub.fx_rate,
-                decimal.Decimal(expected_rates[ccy_code]),
+                fx_rate,
+                expected_rates[ccy],
+                places=4,
             )
-
-    # def test_get_fx_rates_on_weekends(self):
-    #    strategy = YahooFxRateUpdateStrategy()
-    #    strategy.update_fx_rates(montrek_time(2024,1,14)) # Sunday
-    #    for currency_hub in CurrencyRepository().std_queryset().all():
-    #        ccy_code = currency_hub.ccy_code
-    #        ccy_code.value_date.weekday() == 5
-
-    ##    strategy.update_fx_rates(montrek_time(2024,1,13)) # Saturday
-    #    for currency_hub in CurrencyHub.objects.all():
-    #        ccy_code = select_satellite(currency_hub, CurrencyStaticSatellite).ccy_code
-    #        ccy_code.value_date.weekday() == 5
-
-    #    strategy.update_fx_rates(montrek_time(2024,1,11)) # Thursday
-    #    for currency_hub in CurrencyHub.objects.all():
-    #        ccy_code = select_satellite(currency_hub, CurrencyStaticSatellite).ccy_code
-    #        ccy_code.value_date.weekday() == 4
 
     def test_receive_no_data_message(self):
         strategy = YahooFxRateUpdateStrategy()
-        strategy.handle_hist_data_and_return_fx_rates(
-            pd.DataFrame(), "", "bli", "blubb"
-        )
-        self.assertEqual(len(strategy.fx_rates), 0)
+        strategy.handle_hist_data_and_return_fx_rates(pd.DataFrame(), "bli", "blubb")
         self.assertEqual(len(strategy.messages), 1)
         self.assertEqual(
             strategy.messages[0].message,
             "YahooFxRateUpdateStrategy: bli has no data for blubb",
         )
-        strategy.handle_hist_data_and_return_fx_rates(
-            pd.DataFrame({"Close": [1.2]}), "EUR", "bli", "blubb"
+        test_result = strategy.handle_hist_data_and_return_fx_rates(
+            pd.DataFrame({"Close": [1.2]}), "bli", "blubb"
         )
-        self.assertEqual(len(strategy.fx_rates), 1)
-        self.assertEqual(strategy.fx_rates["EUR"], 1.2)
+        self.assertEqual(test_result, 1.2)

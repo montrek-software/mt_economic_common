@@ -1,3 +1,4 @@
+from io import StringIO
 import pandas as pd
 import json
 from mt_economic_common.currency.repositories.currency_repository import (
@@ -23,7 +24,7 @@ class RestCountriesUploadProcessor:
         return True
 
     def process(self, json_response: dict | list) -> bool:
-        countries_df = pd.read_json(json.dumps(json_response))
+        countries_df = pd.read_json(StringIO(json.dumps(json_response)))
         try:
             countries_df["link_country_currency"] = self.create_currencies(
                 countries_df["currencies"]
@@ -132,7 +133,7 @@ class RestCountriesUploadProcessor:
         currency_df = pd.DataFrame(currency_list).drop_duplicates(subset=["ccy_code"])
         currency_repository = CurrencyRepository(session_data=self.session_data)
         currency_repository.create_objects_from_data_frame(currency_df)
-        currency_hubs = currency_repository.std_queryset().all()
+        currency_hubs = currency_repository.receive().all()
         currency_hub_map = {c.ccy_code: c for c in currency_hubs}
         return pd.Series(
             currencies_series.apply(lambda x: [currency_hub_map[c] for c in x])
@@ -176,8 +177,8 @@ class OecdCountriesUploadProcessor:
     def _map_country_hub(self, df: pd.DataFrame) -> pd.DataFrame:
         unique_country_codes = df["REF_AREA"].unique()
         cnt_code_hub_map = {
-            c.country_code: c.id
-            for c in self.repository.std_queryset().filter(
+            c.country_code: c.hub.id
+            for c in self.repository.receive().filter(
                 country_code__in=unique_country_codes
             )
         }

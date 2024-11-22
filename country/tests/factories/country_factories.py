@@ -1,17 +1,31 @@
 import datetime
+
 import factory
 from api_upload.tests.factories import (
     ApiUploadRegistryHubFactory,
     ApiUploadRegistryStaticSatelliteFactory,
 )
+from baseclasses.tests.factories.montrek_factory_schemas import (
+    MontrekHubFactory,
+    MontrekHubValueDateFactory,
+    MontrekSatelliteFactory,
+    MontrekTSSatelliteFactory,
+)
 
 
-class CountryHubFactory(factory.django.DjangoModelFactory):
+class CountryHubFactory(MontrekHubFactory):
     class Meta:
         model = "country.CountryHub"
 
 
-class CountryStaticSatelliteFactory(factory.django.DjangoModelFactory):
+class CountryHubValueDateFactory(MontrekHubValueDateFactory):
+    class Meta:
+        model = "country.CountryHubValueDate"
+
+    hub = factory.SubFactory(CountryHubFactory)
+
+
+class CountryStaticSatelliteFactory(MontrekSatelliteFactory):
     class Meta:
         model = "country.CountryStaticSatellite"
 
@@ -20,10 +34,9 @@ class CountryStaticSatelliteFactory(factory.django.DjangoModelFactory):
     country_code = factory.Sequence(lambda n: f"{n:03d}")
 
 
-class CountryOecdTSSatelliteFactory(factory.django.DjangoModelFactory):
-    hub_entity = factory.SubFactory(CountryHubFactory)
+class CountryOecdTSSatelliteFactory(MontrekTSSatelliteFactory):
+    hub_value_date = factory.SubFactory(CountryHubValueDateFactory)
     year = factory.Sequence(lambda n: 2000 + n)
-    value_date = factory.LazyAttribute(lambda obj: datetime.date(obj.year, 1, 1))
 
 
 class CountryOecdFxAnnualTSSatelliteFactory(CountryOecdTSSatelliteFactory):

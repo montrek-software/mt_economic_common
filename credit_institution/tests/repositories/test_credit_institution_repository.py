@@ -16,7 +16,7 @@ class TestCreditInstitutionRepository(TestCase):
 
     def test_get_credit_institution_repository_elements(self):
         credit_institution_repository = CreditInstitutionRepository()
-        queries_objects = credit_institution_repository.std_queryset()
+        queries_objects = credit_institution_repository.receive()
         self.assertEqual(queries_objects.count(), 1)
         for field in (
             "credit_institution_name",

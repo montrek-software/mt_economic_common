@@ -28,7 +28,7 @@ class CountryTableManager(MontrekTableManager):
             table_elements.LinkTextTableElement(
                 name="Country Name",
                 url="country_details",
-                kwargs={"pk": "id"},
+                kwargs={"pk": "hub_id"},
                 text="country_name",
                 hover_text="View Country",
             ),
