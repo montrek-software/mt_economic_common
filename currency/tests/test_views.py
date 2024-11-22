@@ -24,7 +24,7 @@ class TestCurrencyDetails(vtc.MontrekDetailViewTestCase):
         self.ccy = CurrencyStaticSatelliteFactory()
 
     def url_kwargs(self) -> dict:
-        return {"pk": self.ccy.get_hub_value_date().id}
+        return {"pk": self.ccy.hub_entity.id}
 
 
 class TestCurrencyOverview(vtc.MontrekListViewTestCase):

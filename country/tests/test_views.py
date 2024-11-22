@@ -49,7 +49,7 @@ class TestCountryDetailsView(vtc.MontrekDetailViewTestCase):
         self.country = CountryStaticSatelliteFactory()
 
     def url_kwargs(self) -> dict:
-        return {"pk": self.country.get_hub_value_date().id}
+        return {"pk": self.country.hub_entity.id}
 
 
 class TestCountryUpdateView(vtc.MontrekUpdateViewTestCase):
