@@ -30,14 +30,14 @@ class CountryPage(MontrekPage):
         if "pk" not in kwargs:
             raise ValueError("CountryPage needs pk specified in url!")
         repo = CountryRepository()
-        hub = repo.get_hub_by_id(kwargs["pk"])
-        self.obj = CountryRepository().receive().get(hub=hub)
+        self.hub = repo.get_hub_by_id(kwargs["pk"])
+        self.obj = CountryRepository().receive().get(hub=self.hub)
         self.page_title = self.obj.country_name
 
     def get_tabs(self):
         details_tab = TabElement(
             name="Details",
-            link=reverse("country_details", args=[self.obj.id]),
+            link=reverse("country_details", args=[self.hub.id]),
             html_id="tab_details",
         )
         map_tab = TabElement(
