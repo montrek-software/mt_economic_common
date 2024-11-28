@@ -219,15 +219,15 @@ class TestCountryOecdDataApi(vtc.MontrekRestApiViewTestCase):
         return [
             {
                 "country_code_2": "C1",
-                "year": 2024,
-                "annual_fx_average": 2.0,
-                "inflation": 200.0,
-            },
-            {
-                "country_code_2": "C1",
                 "year": 2023,
                 "annual_fx_average": 1.0,
                 "inflation": 100.0,
+            },
+            {
+                "country_code_2": "C1",
+                "year": 2024,
+                "annual_fx_average": 2.0,
+                "inflation": 200.0,
             },
             {
                 "country_code_2": "C2",
