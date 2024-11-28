@@ -64,9 +64,11 @@ class TestOecdCountryManager(TestCase):
         test_query = CountryOecdRepository().receive()
         self.assertEqual(test_query.count(), 4)
         test_query = test_query.filter(annual_fx_average__isnull=False)
+        check = [test_query[i].annual_fx_average for i in range(3)]
+        check.sort()
         self.assertEqual(
-            [test_query[i].annual_fx_average for i in range(3)],
-            [585.911013, 446.000041, 16.355853],
+            check,
+            [16.355853, 446.000041, 585.911013],
         )
         for country in self.country_factories[1:]:
             country_oecd_repository = CountryOecdTableRepository(
@@ -87,7 +89,9 @@ class TestOecdCountryManager(TestCase):
         test_query = CountryOecdInflationRepository().receive()
         self.assertEqual(test_query.count(), 4)
         test_query = test_query.filter(inflation__isnull=False)
+        check = [test_query[i].inflation for i in range(3)]
+        check.sort()
         self.assertEqual(
-            [test_query[i].inflation for i in range(3)],
-            [585.911013, 446.000041, 16.355853],
+            check,
+            [16.355853, 446.000041, 585.911013],
         )
