@@ -193,7 +193,8 @@ class OecdCountriesUploadProcessor:
                 "value": self.value_field,
             }
         )
-        df["value_date"] = pd.to_datetime(df["year"], format="%Y")
+        df["value_date"] = df["year"].apply(lambda x: f"{x}-12-31")
+        df["value_date"] = pd.to_datetime(df["value_date"])
         return df.loc[
             ~pd.isnull(df["hub_entity_id"]),
             ["hub_entity_id", "year", self.value_field, "value_date"],
