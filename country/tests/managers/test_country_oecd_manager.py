@@ -76,6 +76,9 @@ class TestOecdCountryManager(TestCase):
             )
             test_query = country_oecd_repository.receive()
             self.assertTrue(test_query.count() > 0)
+            test_object = test_query.first()
+            self.assertEqual(test_object.value_date.month, 12)
+            self.assertEqual(test_object.value_date.day, 31)
 
     def test_get_oecd_inflation_average(self):
         country_manager = MockCountryOecdInflationUploadManager(
