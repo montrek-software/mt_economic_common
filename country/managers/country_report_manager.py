@@ -39,7 +39,7 @@ class CountryReportManager(MontrekReportManager):
     def collect_report_elements(self):
         self.append_report_element(rt.ReportingHeader1("Country Details"))
         self.append_report_element(CountryDetailsManager(self.session_data))
-        self.append_report_element(rt.ReportingHeader1("Country Informations"))
+        self.append_report_element(rt.ReportingHeader1("Country Information"))
         self.append_report_element(rt.ReportingParagraph(self.get_wikipedia_section()))
         self.append_report_element(rt.ReportingHeader1("OECD Data"))
         self._plot_oecd_data()
