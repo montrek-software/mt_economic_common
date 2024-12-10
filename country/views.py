@@ -29,7 +29,11 @@ from mt_economic_common.country.managers.country_report_manager import (
     CountryReportManager,
 )
 from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
-from mt_economic_common.country.tasks import COUNTRY_REST_API_UPLOAD_TASK
+from mt_economic_common.country.tasks import (
+    COUNTRY_REST_API_UPLOAD_TASK,
+    OECD_ANNUAL_FX_UPLOAD_TASK,
+    OECD_INFLATION_UPLOAD_TASK,
+)
 
 
 class CountryCreateView(MontrekCreateView):
@@ -115,14 +119,8 @@ def upload_countries_rest_countries(request):
 
 def upload_oecd_country_data(request):
     session_data = {"user_id": request.user.id}
-    managers = (
-        CountryOecdAnnualFxUploadManager(session_data=session_data),
-        CountryOecdInflationUploadManager(session_data=session_data),
-    )
-    for man in managers:
-        man.upload_and_process()
-        for m in man.messages:
-            getattr(messages, m.message_type)(request, m.message)
+    OECD_ANNUAL_FX_UPLOAD_TASK.delay(session_data=session_data)
+    OECD_INFLATION_UPLOAD_TASK.delay(session_data=session_data)
     return HttpResponseRedirect(reverse("country"))
 
 
