@@ -40,6 +40,26 @@ class CountryTableManager(MontrekTableManager):
                 name="Code2",
                 attr="country_code_2",
             ),
+            table_elements.StringTableElement(
+                name="Region",
+                attr="country_region",
+            ),
+            table_elements.StringTableElement(
+                name="Subregion",
+                attr="country_subregion",
+            ),
+            table_elements.StringTableElement(
+                name="Continent",
+                attr="country_continent",
+            ),
+            table_elements.IntTableElement(
+                name="Area [km²]",
+                attr="country_area",
+            ),
+            table_elements.IntTableElement(
+                name="Population",
+                attr="country_population",
+            ),
         )
 
 
