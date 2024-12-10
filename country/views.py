@@ -1,34 +1,38 @@
+from baseclasses.dataclasses.view_classes import ActionElement
+from baseclasses.views import (
+    MontrekCreateView,
+    MontrekDetailView,
+    MontrekListView,
+    MontrekReportView,
+    MontrekRestApiView,
+    MontrekTemplateView,
+    MontrekUpdateView,
+)
 from django.contrib import messages
 from django.urls import reverse
 from django.views.generic.base import HttpResponseRedirect
 
-from baseclasses.views import (
-    MontrekCreateView,
-    MontrekListView,
-    MontrekDetailView,
-    MontrekReportView,
-    MontrekRestApiView,
-    MontrekUpdateView,
-    MontrekTemplateView,
-)
-from baseclasses.dataclasses.view_classes import ActionElement
-from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
 from mt_economic_common.country.forms import CountryCreateForm
 from mt_economic_common.country.managers.country_manager import (
-    CountryManager,
-    RestCountriesUploadManager,
-    CountryTableManager,
-    CountryDetailsManager,
     CountryApiUploadRegistryManager,
+    CountryDetailsManager,
+    CountryManager,
+    CountryTableManager,
 )
 from mt_economic_common.country.managers.country_oecd_manager import (
     CountryOecdAnnualFxUploadManager,
+    CountryOecdDataApiManager,
     CountryOecdInflationUploadManager,
     CountryOecdTableManager,
-    CountryOecdDataApiManager,
 )
 from mt_economic_common.country.managers.country_report_manager import (
     CountryReportManager,
+)
+from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
+from mt_economic_common.country.tasks import (
+    COUNTRY_REST_API_UPLOAD_TASK,
+    OECD_ANNUAL_FX_UPLOAD_TASK,
+    OECD_INFLATION_UPLOAD_TASK,
 )
 
 
@@ -108,23 +112,15 @@ class CountryUpdateView(MontrekUpdateView):
 
 
 def upload_countries_rest_countries(request):
-    man = RestCountriesUploadManager(session_data={"user_id": request.user.id})
-    man.upload_and_process()
-    for m in man.messages:
-        getattr(messages, m.message_type)(request, m.message)
+    task = COUNTRY_REST_API_UPLOAD_TASK
+    task.delay(session_data={"user_id": request.user.id})
     return HttpResponseRedirect(reverse("country"))
 
 
 def upload_oecd_country_data(request):
     session_data = {"user_id": request.user.id}
-    managers = (
-        CountryOecdAnnualFxUploadManager(session_data=session_data),
-        CountryOecdInflationUploadManager(session_data=session_data),
-    )
-    for man in managers:
-        man.upload_and_process()
-        for m in man.messages:
-            getattr(messages, m.message_type)(request, m.message)
+    OECD_ANNUAL_FX_UPLOAD_TASK.delay(session_data=session_data)
+    OECD_INFLATION_UPLOAD_TASK.delay(session_data=session_data)
     return HttpResponseRedirect(reverse("country"))
 
 
