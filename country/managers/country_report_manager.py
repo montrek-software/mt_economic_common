@@ -51,6 +51,7 @@ class CountryReportManager(MontrekReportManager):
     def _plot_oecd_data(self):
         oecd_data = CountryOecdTableRepository(self.session_data).receive()
         oecd_df = read_frame(oecd_data)
+        oecd_df = oecd_df.sort_values("value_date")
         oecd_reporting_data = ReportingData(
             oecd_df,
             "Annual FX Average",
