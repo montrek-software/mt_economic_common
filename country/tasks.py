@@ -20,11 +20,3 @@ class CountryOecdAnnualFxUploadTask(ApiUploadTask):
 
 class CountryOecdInflationUploadTask(ApiUploadTask):
     api_upload_manager_class = CountryOecdInflationUploadManager
-
-
-COUNTRY_REST_API_UPLOAD_TASK = CountryRestApiUploadTask()
-OECD_ANNUAL_FX_UPLOAD_TASK = CountryOecdAnnualFxUploadTask()
-OECD_INFLATION_UPLOAD_TASK = CountryOecdInflationUploadTask()
-celery_app.register_task(COUNTRY_REST_API_UPLOAD_TASK)
-celery_app.register_task(OECD_ANNUAL_FX_UPLOAD_TASK)
-celery_app.register_task(OECD_INFLATION_UPLOAD_TASK)
