@@ -8,7 +8,6 @@ from baseclasses.views import (
     MontrekTemplateView,
     MontrekUpdateView,
 )
-from django.contrib import messages
 from django.urls import reverse
 from django.views.generic.base import HttpResponseRedirect
 
@@ -20,20 +19,14 @@ from mt_economic_common.country.managers.country_manager import (
     CountryTableManager,
 )
 from mt_economic_common.country.managers.country_oecd_manager import (
-    CountryOecdAnnualFxUploadManager,
     CountryOecdDataApiManager,
-    CountryOecdInflationUploadManager,
     CountryOecdTableManager,
 )
 from mt_economic_common.country.managers.country_report_manager import (
     CountryReportManager,
 )
 from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
-from mt_economic_common.country.tasks import (
-    COUNTRY_REST_API_UPLOAD_TASK,
-    OECD_ANNUAL_FX_UPLOAD_TASK,
-    OECD_INFLATION_UPLOAD_TASK,
-)
+from mt_economic_common.country import tasks as country_tasks
 
 
 class CountryCreateView(MontrekCreateView):
@@ -112,15 +105,15 @@ class CountryUpdateView(MontrekUpdateView):
 
 
 def upload_countries_rest_countries(request):
-    task = COUNTRY_REST_API_UPLOAD_TASK
+    task = country_tasks.CountryRestApiUploadTask()
     task.delay(session_data={"user_id": request.user.id})
     return HttpResponseRedirect(reverse("country"))
 
 
 def upload_oecd_country_data(request):
     session_data = {"user_id": request.user.id}
-    OECD_ANNUAL_FX_UPLOAD_TASK.delay(session_data=session_data)
-    OECD_INFLATION_UPLOAD_TASK.delay(session_data=session_data)
+    country_tasks.CountryOecdAnnualFxUploadTask().delay(session_data=session_data)
+    country_tasks.CountryOecdInflationUploadTask().delay(session_data=session_data)
     return HttpResponseRedirect(reverse("country"))
 
 
