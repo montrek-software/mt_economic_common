@@ -105,15 +105,15 @@ class CountryUpdateView(MontrekUpdateView):
 
 
 def upload_countries_rest_countries(request):
-    task = country_tasks.CountryRestApiUploadTask()
+    task = country_tasks.country_rest_api_upload_task
     task.delay(session_data={"user_id": request.user.id})
     return HttpResponseRedirect(reverse("country"))
 
 
 def upload_oecd_country_data(request):
     session_data = {"user_id": request.user.id}
-    country_tasks.CountryOecdAnnualFxUploadTask().delay(session_data=session_data)
-    country_tasks.CountryOecdInflationUploadTask().delay(session_data=session_data)
+    country_tasks.country_oecd_annual_fx_upload_task.delay(session_data=session_data)
+    country_tasks.country_oecd_infation_upload_task.delay(session_data=session_data)
     return HttpResponseRedirect(reverse("country"))
 
 
