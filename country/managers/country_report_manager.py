@@ -49,6 +49,7 @@ class CountryReportManager(MontrekReportManager):
         return country_summary.get("extract", "No summary found")
 
     def _plot_oecd_data(self):
+        plot_grid = ReportGridLayout(1, 2)
         oecd_data = CountryOecdTableRepository(self.session_data).receive()
         oecd_df = read_frame(oecd_data)
         oecd_df = oecd_df.sort_values("value_date")
@@ -59,9 +60,9 @@ class CountryReportManager(MontrekReportManager):
             y_axis_columns=["annual_fx_average"],
             plot_types=["line"],
         )
-        plot = ReportingPlot()
+        plot = ReportingPlot(width=plot_grid.width)
         plot.generate(oecd_reporting_data)
-        self.append_report_element(plot)
+        plot_grid.add_report_grid_element(plot, 0, 0)
         oecd_reporting_data = ReportingData(
             oecd_df,
             "Inflation",
@@ -69,6 +70,7 @@ class CountryReportManager(MontrekReportManager):
             y_axis_columns=["inflation"],
             plot_types=["line"],
         )
-        plot = ReportingPlot()
+        plot = ReportingPlot(width=plot_grid.width)
         plot.generate(oecd_reporting_data)
-        self.append_report_element(plot)
+        plot_grid.add_report_grid_element(plot, 0, 1)
+        self.append_report_element(plot_grid)
