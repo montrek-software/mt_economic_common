@@ -68,7 +68,7 @@ class TestUploadCountriesRestCountries(TestCase):
         self.user = MontrekUserFactory()
         self.client.force_login(self.user)
 
-    @patch("api_upload.managers.request_manager.requests.get")
+    @patch("requesting.managers.request_manager.requests.get")
     def test_upload_countries_rest_countries_returns_correct_html(self, mock_get):
         mock_response = Mock()
         with open(
@@ -91,7 +91,7 @@ class TestUploadOecdCountryData(TestCase):
         self.user = MontrekUserFactory()
         self.client.force_login(self.user)
 
-    @patch("api_upload.managers.request_manager.requests.get")
+    @patch("requesting.managers.request_manager.requests.get")
     def test_upload_countries_rest_countries_returns_correct_html(self, mock_get):
         mock_response = Mock()
         with open(

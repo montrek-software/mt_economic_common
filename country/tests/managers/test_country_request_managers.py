@@ -8,7 +8,7 @@ from mt_economic_common.country.managers.country_request_manager import (
 
 
 class TestRestCountriesRequestManager(TestCase):
-    @patch("api_upload.managers.request_manager.requests.get")
+    @patch("requesting.managers.request_manager.requests.get")
     def test_get_countries_as_json(self, mock_get):
         # Mock API
         mock_response = Mock()

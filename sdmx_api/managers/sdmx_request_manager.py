@@ -1,6 +1,6 @@
 import sdmx
 import pandas as pd
-from api_upload.managers.request_manager import RequestManagerABC
+from requesting.managers.request_manager import RequestManagerABC
 
 
 class SdmxRequestManager(RequestManagerABC):
