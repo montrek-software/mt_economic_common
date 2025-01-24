@@ -1,4 +1,4 @@
-from api_upload.managers.request_manager import RequestJsonManager
+from requesting.managers.request_manager import RequestJsonManager
 
 
 class RestCountriesRequestManager(RequestJsonManager):

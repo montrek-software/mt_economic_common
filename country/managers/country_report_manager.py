@@ -1,4 +1,4 @@
-from api_upload.managers.request_manager import RequestJsonManager
+from requesting.managers.request_manager import RequestJsonManager
 from django_pandas.io import read_frame
 from mt_economic_common.country.managers.country_manager import (
     CountryDetailsManager,
