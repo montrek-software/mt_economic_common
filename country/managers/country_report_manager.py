@@ -45,7 +45,9 @@ class CountryReportManager(MontrekReportManager):
         self._plot_oecd_data()
 
     def get_wikipedia_section(self):
-        country_summary = WikipediaRequestManager().get_response(self.obj.country_name)
+        country_summary = WikipediaRequestManager(self.session_data).get_response(
+            self.obj.country_name
+        )
         return country_summary.get("extract", "No summary found")
 
     def _plot_oecd_data(self):

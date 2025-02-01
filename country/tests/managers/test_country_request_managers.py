@@ -20,7 +20,7 @@ class TestRestCountriesRequestManager(TestCase):
             mock_response.json.return_value = json.loads(f.read())
         mock_get.return_value = mock_response
         # Arrange
-        rest_countries_request_manager = RestCountriesRequestManager()
+        rest_countries_request_manager = RestCountriesRequestManager({})
         self.assertEqual(
             rest_countries_request_manager.base_url, "https://restcountries.com/v3.1/"
         )

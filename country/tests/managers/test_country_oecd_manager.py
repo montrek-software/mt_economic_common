@@ -26,6 +26,9 @@ class MockRequestManager:
     status_code = 1
     message = "Test message"
 
+    def __init__(self, session_data):
+        self.seesion_data = session_data
+
     def get_response(self, endpoint):
         return TEST_OECD_COUNTRY_DATA
 
