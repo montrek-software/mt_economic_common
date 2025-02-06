@@ -3,11 +3,11 @@ from baseclasses.views import (
     MontrekCreateView,
     MontrekDetailView,
     MontrekListView,
-    MontrekReportView,
     MontrekRestApiView,
     MontrekTemplateView,
     MontrekUpdateView,
 )
+from reporting.views import MontrekReportView
 from django.urls import reverse
 from django.views.generic.base import HttpResponseRedirect
 
