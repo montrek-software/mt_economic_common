@@ -27,7 +27,7 @@ class CreditInstitutionStaticSatellite(baseclass_models.MontrekSatelliteABC):
         ONVISTA = "onvis"
         TRADE_REPUBLIC = "trrep"
         QONTO_EXCEL = "qonex"
-        QONTO_API = "qonapi"
+        QONTO_API = "qoapi"
 
     hub_entity = models.ForeignKey(CreditInstitutionHub, on_delete=models.CASCADE)
     identifier_fields = ["credit_institution_name", "credit_institution_bic"]
