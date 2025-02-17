@@ -27,6 +27,7 @@ class CountryOecdRepository(MontrekRepository):
 
 class CountryOecdTableRepository(MontrekRepository):
     hub_class = CountryHub
+    default_order_fields: tuple[str, ...] = ("-year",)
 
     def set_annotations(self, **kwargs):
         self.add_satellite_fields_annotations(
