@@ -28,9 +28,7 @@ class CountryOecdAnnualFxUploadManager(ApiUploadManager):
     repository_class = CountryApiUploadRegistryRepository
     request_manager_class = OecdSdmxRequestManager
     api_upload_processor_class = OecdAnnualFxUploadProcessor
-    endpoint = (
-        "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE4,1.0/A....EXC_A.......?startPeriod=2000"
-    )
+    endpoint = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE4,/A....EXC_A.......?startPeriod=2000&dimensionAtObservation=AllDimensions"
 
 
 class CountryOecdInflationUploadManager(ApiUploadManager):
