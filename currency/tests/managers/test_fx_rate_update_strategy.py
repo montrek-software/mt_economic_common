@@ -1,11 +1,14 @@
+from unittest.mock import MagicMock, patch
+
 import pandas as pd
+from baseclasses.utils import montrek_time
 from django.test import TestCase
 from django.utils import timezone
+
 from mt_economic_common.currency.managers.fx_rate_update_strategy import (
-    YahooFxRateUpdateStrategy,
     FxUpdateStrategyBase,
+    YahooFxRateUpdateStrategy,
 )
-from baseclasses.utils import montrek_time
 
 TEST_CURRENCY_CODES = ["USD", "EUR", "GBP"]
 
@@ -43,13 +46,19 @@ class TestFxRateUpdateStrategy(TestCase):
 
 
 class TestYahooFxRateUpdateStrategy(TestCase):
-    def test_get_fx_rates_from_source(self):
-        test_time = timezone.datetime(2023, 11, 28)
+    @patch("yfinance.Ticker")
+    def test_get_fx_rates_from_source(self, mock_ticker):
+        test_time = timezone.datetime(2024, 11, 28)
         strategy = YahooFxRateUpdateStrategy()
+        mock_hist = pd.DataFrame({"Close": [0.9125]}, index=[test_time])
+        # Mock the Ticker instance and its history method
+        mock_ticker_instance = MagicMock()
+        mock_ticker_instance.history.return_value = mock_hist
+        mock_ticker.return_value = mock_ticker_instance
         test_fx_rates = strategy.get_fx_rates_from_source(
             TEST_CURRENCY_CODES, test_time
         )
-        expected_rates = {"USD": 0.9125, "EUR": 1.0, "GBP": 1.1529}
+        expected_rates = {"USD": 0.9125, "EUR": 1.0, "GBP": 0.9125}
         for ccy, fx_rate in test_fx_rates.items():
             self.assertAlmostEqual(
                 fx_rate,
