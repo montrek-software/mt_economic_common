@@ -1,7 +1,7 @@
 from django.db import models
 from baseclasses import models as baseclass_models
 from baseclasses.fields import HubForeignKey
-from data_import.api_import.models import api_registry_sat_models as api_upload_models
+from data_import.api_import import models as api_upload_models
 
 
 class CountryHub(baseclass_models.MontrekHubABC):
