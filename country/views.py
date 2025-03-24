@@ -113,8 +113,10 @@ def upload_countries_rest_countries(request):
 
 def upload_oecd_country_data(request):
     session_data = {"user_id": request.user.id}
-    country_tasks.country_oecd_annual_fx_upload_task.delay(session_data=session_data)
-    country_tasks.country_oecd_infation_upload_task.delay(session_data=session_data)
+    country_tasks.country_oecd_annual_fx_upload_task.setUp(session_data)
+    country_tasks.country_oecd_infation_upload_task.setUp(session_data)
+    country_tasks.country_oecd_annual_fx_upload_task.delay()
+    country_tasks.country_oecd_infation_upload_task.delay()
     return HttpResponseRedirect(reverse("country"))
 
 

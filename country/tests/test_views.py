@@ -1,24 +1,29 @@
-import os
 import json
+import os
+from unittest.mock import Mock, patch
+
 from django.test import TestCase
 from django.urls import reverse
-from unittest.mock import patch, Mock
+from django_pandas.io import read_frame
+from testing.test_cases import view_test_cases as vtc
+from user.tests.factories.montrek_user_factories import MontrekUserFactory
 
-from mt_economic_common.country.tests.factories.country_factories import (
-    CountryHubValueDateFactory,
-    CountryOecdFxAnnualTSSatelliteFactory,
-    CountryOecdInflationTSSatelliteFactory,
-    CountryStaticSatelliteFactory,
-    CountryHubFactory,
-    CountryApiUploadRegistryStaticSatelliteFactory,
-)
 from mt_economic_common.country import views
+from mt_economic_common.country.repositories.country_oecd_repository import (
+    CountryOecdRepository,
+)
 from mt_economic_common.country.repositories.country_repository import (
     CountryApiUploadRegistryRepository,
     CountryRepository,
 )
-from user.tests.factories.montrek_user_factories import MontrekUserFactory
-from testing.test_cases import view_test_cases as vtc
+from mt_economic_common.country.tests.factories.country_factories import (
+    CountryApiUploadRegistryStaticSatelliteFactory,
+    CountryHubFactory,
+    CountryHubValueDateFactory,
+    CountryOecdFxAnnualTSSatelliteFactory,
+    CountryOecdInflationTSSatelliteFactory,
+    CountryStaticSatelliteFactory,
+)
 
 
 class TestCountryOverview(vtc.MontrekListViewTestCase):
@@ -96,6 +101,8 @@ class TestUploadOecdCountryData(TestCase):
     def setUp(self):
         self.user = MontrekUserFactory()
         self.client.force_login(self.user)
+        for country_code in ["AUS","AUT","BEL","CAN"]:
+            CountryStaticSatelliteFactory.create(country_code=country_code)
 
     @patch("requesting.managers.request_manager.requests.get")
     def test_upload_countries_rest_countries_returns_correct_html(self, mock_get):
@@ -111,6 +118,14 @@ class TestUploadOecdCountryData(TestCase):
         self.assertEqual(response.url, reverse("country"))
         registry_query = CountryApiUploadRegistryRepository().receive()
         self.assertEqual(registry_query.count(), 2)
+        for registry_entry in registry_query:
+            self.assertEqual(registry_entry.import_status, "processed")
+            self.assertEqual(registry_entry.import_message, "Successfully uploaded 100 data points")
+        oecd_data =  CountryOecdRepository({}).receive()
+        self.assertEqual(oecd_data.count(), 4)
+        oecd_data_df = read_frame(oecd_data)
+        self.assertAlmostEqual(oecd_data_df["annual_fx_average"].sum(),4.732498)
+        self.assertAlmostEqual(oecd_data_df["inflation"].sum(),520.6035)
 
 
 class TestCountryMapView(vtc.MontrekViewTestCase):

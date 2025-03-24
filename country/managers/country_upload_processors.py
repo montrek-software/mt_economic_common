@@ -160,9 +160,9 @@ class OecdCountriesUploadProcessor(ProcessorBaseABC):
         data_df = self.convert_data_df(response_df)
         try:
             self.repository.create_objects_from_data_frame(data_df)
-            self.message = f"Successfully uploaded {len(data_df)} data points"
+            self.set_message(f"Successfully uploaded {len(data_df)} data points")
         except Exception as e:
-            self.message = (
+            self.set_message(
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
             return False
