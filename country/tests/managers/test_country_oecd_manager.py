@@ -1,8 +1,5 @@
-import os
-import json
 
 from django.test import TestCase
-from unittest.mock import patch, Mock
 from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdInflationRepository,
     CountryOecdRepository,
@@ -60,9 +57,9 @@ class TestOecdCountryManager(TestCase):
             session_data={"user_id": self.user.id}
         )
         # Act
-        country_manager.upload_and_process()
+        country_manager.process_import_data()
         # Assert
-        registry_query = country_manager.repository.receive()
+        registry_query = country_manager.registry_repository.receive()
         self.assertEqual(registry_query.count(), 1)
         test_query = CountryOecdRepository().receive()
         self.assertEqual(test_query.count(), 4)
@@ -88,9 +85,9 @@ class TestOecdCountryManager(TestCase):
             session_data={"user_id": self.user.id}
         )
         # Act
-        country_manager.upload_and_process()
+        country_manager.process_import_data()
         # Assert
-        registry_query = country_manager.repository.receive()
+        registry_query = country_manager.registry_repository.receive()
         self.assertEqual(registry_query.count(), 1)
         test_query = CountryOecdInflationRepository().receive()
         self.assertEqual(test_query.count(), 4)

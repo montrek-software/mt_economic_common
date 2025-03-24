@@ -1,7 +1,9 @@
 from io import StringIO
+from typing import Any
 import pandas as pd
 import json
 from data_import.base.managers.processor_base import ProcessorBaseABC
+from data_import.types import ImportDataType
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
@@ -138,23 +140,23 @@ class RestCountriesUploadProcessor(ProcessorBaseABC):
         )
 
 
-class OecdCountriesUploadProcessor:
+class OecdCountriesUploadProcessor(ProcessorBaseABC):
     repository_class = None
     value_field = ""
 
-    def __init__(self, api_upload_registry, session_data: dict):
-        self.api_upload_registry = api_upload_registry
-        self.session_data = session_data
-        self.repository = self.repository_class(session_data=session_data)
-        self.message = None
+    def __init__(self, session_data: dict[str, Any], import_data: ImportDataType):
+        super().__init__(session_data, import_data)
+        self.repository = self.repository_class(self.session_data)
 
-    def pre_check(self, json_response: dict | list) -> bool:
+
+    def pre_check(self) -> bool:
         return True
 
-    def post_check(self, json_response: dict | list) -> bool:
+    def post_check(self) -> bool:
         return True
 
-    def process(self, response_df: pd.DataFrame) -> bool:
+    def process(self) -> bool:
+        response_df = self.import_data
         data_df = self.convert_data_df(response_df)
         try:
             self.repository.create_objects_from_data_frame(data_df)

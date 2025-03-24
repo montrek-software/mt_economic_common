@@ -1,4 +1,3 @@
-from api_upload.managers.api_upload_manager import ApiUploadManager
 from data_import.api_import.managers.api_data_import_manager import ApiDataImportManager
 from baseclasses.managers.montrek_manager import MontrekManager
 from reporting.managers.montrek_table_manager import MontrekTableManager
