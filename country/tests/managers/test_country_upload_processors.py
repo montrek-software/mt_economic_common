@@ -29,7 +29,7 @@ class TestRestCountryUploadProcessor(TestCase):
         processor = RestCountriesUploadProcessor( {"user_id": self.user.id}, mailicious_json)
         processor.process()
         self.assertTrue(
-            processor.message.startswith(
+            processor.get_message().startswith(
                 "Error raised during object creation:",
             )
         )
