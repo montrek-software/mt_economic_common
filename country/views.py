@@ -106,7 +106,8 @@ class CountryUpdateView(MontrekUpdateView):
 
 def upload_countries_rest_countries(request):
     task = country_tasks.country_rest_api_upload_task
-    task.delay(session_data={"user_id": request.user.id})
+    task.setUp(session_data={"user_id": request.user.id})
+    task.delay()
     return HttpResponseRedirect(reverse("country"))
 
 

@@ -15,6 +15,7 @@ from mt_economic_common.country.tests.factories.country_factories import (
 from mt_economic_common.country import views
 from mt_economic_common.country.repositories.country_repository import (
     CountryApiUploadRegistryRepository,
+    CountryRepository,
 )
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from testing.test_cases import view_test_cases as vtc
@@ -84,6 +85,10 @@ class TestUploadCountriesRestCountries(TestCase):
         self.assertEqual(response.url, reverse("country"))
         registry_query = CountryApiUploadRegistryRepository().receive()
         self.assertEqual(registry_query.count(), 1)
+        registry_entry = registry_query.first()
+        self.assertEqual(registry_entry.import_status, "processed")
+        countries = CountryRepository({}).receive()
+        self.assertEqual(countries.count(), 2)
 
 
 class TestUploadOecdCountryData(TestCase):
