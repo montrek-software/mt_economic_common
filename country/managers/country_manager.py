@@ -148,17 +148,17 @@ class CountryApiUploadRegistryManager(MontrekTableManager):
     @property
     def table_elements(self) -> tuple:
         return (
-            table_elements.StringTableElement(
+            table_elements.ExternalLinkTableElement(
                 name="URL",
-                attr="url",
+                attr="import_url",
             ),
             table_elements.StringTableElement(
-                name="Upload Status",
-                attr="upload_status",
+                name="Import Status",
+                attr="import_status",
             ),
             table_elements.StringTableElement(
-                name="Upload Message",
-                attr="upload_message",
+                name="Import Message",
+                attr="import_message",
             ),
             table_elements.DateTimeTableElement(name="Created At", attr="created_at"),
             table_elements.StringTableElement(name="Created By", attr="created_by"),
