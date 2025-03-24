@@ -294,11 +294,11 @@ class TestCountryManager(TestCase):
             session_data={"user_id": self.user.id}
         )
         # Act
-        country_manager.upload_and_process()
+        country_manager.process_import_data()
         # Assert
-        registry_query = country_manager.repository.receive()
+        registry_query = country_manager.registry_repository.receive()
         self.assertEqual(registry_query.count(), 1)
-        self.assertEqual(registry_query[0].upload_status, "processed")
+        self.assertEqual(registry_query[0].import_status, "processed")
 
         test_query = CountryRepository().receive()
         self.assertEqual(test_query.count(), 2)

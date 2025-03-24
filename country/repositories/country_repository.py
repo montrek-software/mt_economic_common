@@ -8,9 +8,7 @@ from mt_economic_common.country.models import (
     CountryApiUploadRegistryStaticSatellite,
 )
 from mt_economic_common.currency.models import CurrencyStaticSatellite
-from api_upload.repositories.api_upload_registry_repository import (
-    ApiUploadRepositoryABC,
-)
+from data_import.api_import.repositories.api_data_import_registry_repositories import ApiDataImportRegistryRepository
 
 
 class CountryRepository(MontrekRepository):
@@ -53,6 +51,6 @@ class CountryRepository(MontrekRepository):
         )
 
 
-class CountryApiUploadRegistryRepository(ApiUploadRepositoryABC):
+class CountryApiUploadRegistryRepository(ApiDataImportRegistryRepository):
     hub_class = CountryApiUploadRegistryHub
-    static_satellite_class = CountryApiUploadRegistryStaticSatellite
+    registry_satellite = CountryApiUploadRegistryStaticSatellite

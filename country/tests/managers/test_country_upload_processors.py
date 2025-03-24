@@ -14,7 +14,6 @@ class TestRestCountryUploadProcessor(TestCase):
         self.user = MontrekUserFactory()
 
     def test_process__raise_error_when_ccy_upload_fails(self):
-        processor = RestCountriesUploadProcessor(None, {"user_id": self.user.id})
         mailicious_json = [
             {
                 "currencies": {
@@ -27,15 +26,16 @@ class TestRestCountryUploadProcessor(TestCase):
                 }
             },
         ]
-        processor.process(mailicious_json)
+        processor = RestCountriesUploadProcessor( {"user_id": self.user.id}, mailicious_json)
+        processor.process()
         self.assertTrue(
-            processor.message.startswith(
+            processor.get_message().startswith(
                 "Error raised during object creation:",
             )
         )
 
     def test_create_currencies__return_list_of_currency_objects(self):
-        processor = RestCountriesUploadProcessor(None, {"user_id": self.user.id})
+        processor = RestCountriesUploadProcessor({"user_id": self.user.id}, None)
         currencies = pd.Series(
             [
                 {"ABC": {"name": "First name", "symbol": "AB"}},

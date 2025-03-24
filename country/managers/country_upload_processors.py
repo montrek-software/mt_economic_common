@@ -1,6 +1,9 @@
 from io import StringIO
+from typing import Any
 import pandas as pd
 import json
+from data_import.base.managers.processor_base import ProcessorBaseABC
+from data_import.types import ImportDataType
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
@@ -11,26 +14,23 @@ from mt_economic_common.country.repositories.country_oecd_repository import (
 )
 
 
-class RestCountriesUploadProcessor:
-    def __init__(self, api_upload_registry, session_data: dict):
-        self.api_upload_registry = api_upload_registry
-        self.session_data = session_data
-        self.message = None
+class RestCountriesUploadProcessor(ProcessorBaseABC):
 
-    def pre_check(self, json_response: dict | list) -> bool:
+    def pre_check(self) -> bool:
         return True
 
-    def post_check(self, json_response: dict | list) -> bool:
+    def post_check(self) -> bool:
         return True
 
-    def process(self, json_response: dict | list) -> bool:
+    def process(self) -> bool:
+        json_response = self.import_data
         countries_df = pd.read_json(StringIO(json.dumps(json_response)))
         try:
             countries_df["link_country_currency"] = self.create_currencies(
                 countries_df["currencies"]
             )
         except Exception as e:
-            self.message = (
+            self.set_message(
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
             return False
@@ -99,9 +99,9 @@ class RestCountriesUploadProcessor:
             CountryRepository(
                 session_data=self.session_data
             ).create_objects_from_data_frame(countries_df)
-            self.message = f"Successfully uploaded {len(countries_df)} countries"
+            self.set_message(f"Successfully uploaded {len(countries_df)} countries")
         except Exception as e:
-            self.message = (
+            self.set_message(
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
             return False
@@ -140,29 +140,29 @@ class RestCountriesUploadProcessor:
         )
 
 
-class OecdCountriesUploadProcessor:
+class OecdCountriesUploadProcessor(ProcessorBaseABC):
     repository_class = None
     value_field = ""
 
-    def __init__(self, api_upload_registry, session_data: dict):
-        self.api_upload_registry = api_upload_registry
-        self.session_data = session_data
-        self.repository = self.repository_class(session_data=session_data)
-        self.message = None
+    def __init__(self, session_data: dict[str, Any], import_data: ImportDataType):
+        super().__init__(session_data, import_data)
+        self.repository = self.repository_class(self.session_data)
 
-    def pre_check(self, json_response: dict | list) -> bool:
+
+    def pre_check(self) -> bool:
         return True
 
-    def post_check(self, json_response: dict | list) -> bool:
+    def post_check(self) -> bool:
         return True
 
-    def process(self, response_df: pd.DataFrame) -> bool:
+    def process(self) -> bool:
+        response_df = self.import_data
         data_df = self.convert_data_df(response_df)
         try:
             self.repository.create_objects_from_data_frame(data_df)
-            self.message = f"Successfully uploaded {len(data_df)} data points"
+            self.set_message(f"Successfully uploaded {len(data_df)} data points")
         except Exception as e:
-            self.message = (
+            self.set_message(
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
             return False

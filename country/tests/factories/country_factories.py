@@ -1,16 +1,12 @@
-import datetime
 
 import factory
-from api_upload.tests.factories import (
-    ApiUploadRegistryHubFactory,
-    ApiUploadRegistryStaticSatelliteFactory,
-)
 from baseclasses.tests.factories.montrek_factory_schemas import (
     MontrekHubFactory,
     MontrekHubValueDateFactory,
     MontrekSatelliteFactory,
     MontrekTSSatelliteFactory,
 )
+from data_import.api_import.tests.factories.api_data_import_registry_factories import ApiDataImportRegistryBaseSatelliteFactory
 
 
 class CountryHubFactory(MontrekHubFactory):
@@ -53,13 +49,13 @@ class CountryOecdInflationTSSatelliteFactory(CountryOecdTSSatelliteFactory):
     inflation = 100.0
 
 
-class CountryApiUploadRegistryHubFactory(ApiUploadRegistryHubFactory):
+class CountryApiUploadRegistryHubFactory(MontrekHubFactory):
     class Meta:
         model = "country.CountryApiUploadRegistryHub"
 
 
 class CountryApiUploadRegistryStaticSatelliteFactory(
-    ApiUploadRegistryStaticSatelliteFactory
+    ApiDataImportRegistryBaseSatelliteFactory
 ):
     class Meta:
         model = "country.CountryApiUploadRegistryStaticSatellite"
