@@ -1,6 +1,7 @@
 from io import StringIO
 import pandas as pd
 import json
+from data_import.base.managers.processor_base import ProcessorBaseABC
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
@@ -11,19 +12,16 @@ from mt_economic_common.country.repositories.country_oecd_repository import (
 )
 
 
-class RestCountriesUploadProcessor:
-    def __init__(self, api_upload_registry, session_data: dict):
-        self.api_upload_registry = api_upload_registry
-        self.session_data = session_data
-        self.message = None
+class RestCountriesUploadProcessor(ProcessorBaseABC):
 
-    def pre_check(self, json_response: dict | list) -> bool:
+    def pre_check(self) -> bool:
         return True
 
-    def post_check(self, json_response: dict | list) -> bool:
+    def post_check(self) -> bool:
         return True
 
-    def process(self, json_response: dict | list) -> bool:
+    def process(self) -> bool:
+        json_response = self.import_data
         countries_df = pd.read_json(StringIO(json.dumps(json_response)))
         try:
             countries_df["link_country_currency"] = self.create_currencies(

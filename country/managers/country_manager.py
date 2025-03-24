@@ -1,4 +1,5 @@
 from api_upload.managers.api_upload_manager import ApiUploadManager
+from data_import.api_import.managers.api_data_import_manager import ApiDataImportManager
 from baseclasses.managers.montrek_manager import MontrekManager
 from reporting.managers.montrek_table_manager import MontrekTableManager
 from reporting.managers.montrek_details_manager import MontrekDetailsManager
@@ -135,10 +136,10 @@ class CountryDetailsManager(MontrekDetailsManager):
         )
 
 
-class RestCountriesUploadManager(ApiUploadManager):
-    repository_class = CountryApiUploadRegistryRepository
+class RestCountriesUploadManager(ApiDataImportManager):
+    registry_repository_class = CountryApiUploadRegistryRepository
     request_manager_class = RestCountriesRequestManager
-    api_upload_processor_class = RestCountriesUploadProcessor
+    processor_class = RestCountriesUploadProcessor
     endpoint = "all"
 
 

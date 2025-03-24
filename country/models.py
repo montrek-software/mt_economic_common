@@ -1,7 +1,7 @@
 from django.db import models
 from baseclasses import models as baseclass_models
 from baseclasses.fields import HubForeignKey
-from api_upload import models as api_upload_models
+from data_import.api_import.models import api_registry_sat_models as api_upload_models
 
 
 class CountryHub(baseclass_models.MontrekHubABC):
@@ -71,7 +71,7 @@ class LinkCountryCurrency(baseclass_models.MontrekManyToManyLinkABC):
     hub_out = models.ForeignKey("currency.CurrencyHub", on_delete=models.CASCADE)
 
 
-class CountryApiUploadRegistryHub(api_upload_models.ApiUploadRegistryHubABC):
+class CountryApiUploadRegistryHub(baseclass_models.MontrekHubABC):
     pass
 
 
@@ -80,7 +80,7 @@ class CountryApiUploadRegistryHubValueDate(baseclass_models.HubValueDate):
 
 
 class CountryApiUploadRegistryStaticSatellite(
-    api_upload_models.ApiUploadRegistryStaticSatelliteABC
+    api_upload_models.ApiRegistrySatellite
 ):
     hub_entity = models.ForeignKey(
         CountryApiUploadRegistryHub, on_delete=models.CASCADE
