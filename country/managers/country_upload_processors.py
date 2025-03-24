@@ -30,7 +30,7 @@ class RestCountriesUploadProcessor(ProcessorBaseABC):
                 countries_df["currencies"]
             )
         except Exception as e:
-            self.message = (
+            self.set_message(
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
             return False
@@ -99,9 +99,9 @@ class RestCountriesUploadProcessor(ProcessorBaseABC):
             CountryRepository(
                 session_data=self.session_data
             ).create_objects_from_data_frame(countries_df)
-            self.message = f"Successfully uploaded {len(countries_df)} countries"
+            self.set_message(f"Successfully uploaded {len(countries_df)} countries")
         except Exception as e:
-            self.message = (
+            self.set_message(
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
             return False

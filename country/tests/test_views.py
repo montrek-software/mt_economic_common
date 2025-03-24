@@ -87,6 +87,7 @@ class TestUploadCountriesRestCountries(TestCase):
         self.assertEqual(registry_query.count(), 1)
         registry_entry = registry_query.first()
         self.assertEqual(registry_entry.import_status, "processed")
+        self.assertEqual(registry_entry.import_message, "Successfully uploaded 2 countries")
         countries = CountryRepository({}).receive()
         self.assertEqual(countries.count(), 2)
 
