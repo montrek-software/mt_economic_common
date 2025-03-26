@@ -8,7 +8,9 @@ from mt_economic_common.country.models import (
     CountryApiUploadRegistryStaticSatellite,
 )
 from mt_economic_common.currency.models import CurrencyStaticSatellite
-from data_import.api_import.repositories.api_data_import_registry_repositories import ApiDataImportRegistryRepository
+from data_import.api_import.repositories.api_data_import_registry_repositories import (
+    ApiDataImportRegistryRepository,
+)
 
 
 class CountryRepository(MontrekRepository):
@@ -48,6 +50,7 @@ class CountryRepository(MontrekRepository):
             [
                 "ccy_code",
             ],
+            separator=",",
         )
 
 
