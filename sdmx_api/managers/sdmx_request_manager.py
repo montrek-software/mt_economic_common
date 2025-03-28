@@ -1,3 +1,4 @@
+from django.conf import settings
 import sdmx
 import pandas as pd
 from requesting.managers.request_manager import RequestManagerABC
@@ -9,6 +10,8 @@ class SdmxRequestManager(RequestManagerABC):
             data_message = self._get_data_message(endpoint)
             response_df = sdmx.to_pandas(data_message)
         except Exception as e:
+            if settings.IS_TEST_RUN:
+                raise e
             self.message = (
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )

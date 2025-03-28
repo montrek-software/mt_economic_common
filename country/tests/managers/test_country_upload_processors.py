@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 import pandas as pd
 from mt_economic_common.country.managers.country_upload_processors import (
     RestCountriesUploadProcessor,
@@ -13,6 +13,7 @@ class TestRestCountryUploadProcessor(TestCase):
     def setUp(self):
         self.user = MontrekUserFactory()
 
+    @override_settings(IS_TEST_RUN=False)
     def test_process__raise_error_when_ccy_upload_fails(self):
         mailicious_json = [
             {

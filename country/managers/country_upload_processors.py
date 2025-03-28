@@ -1,5 +1,6 @@
 from io import StringIO
 from typing import Any
+from django.conf import settings
 import pandas as pd
 import json
 from data_import.base.managers.processor_base import ProcessorBaseABC
@@ -30,6 +31,8 @@ class RestCountriesUploadProcessor(ProcessorBaseABC):
                 countries_df["currencies"]
             )
         except Exception as e:
+            if settings.IS_TEST_RUN:
+                raise e
             self.set_message(
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
@@ -101,6 +104,8 @@ class RestCountriesUploadProcessor(ProcessorBaseABC):
             ).create_objects_from_data_frame(countries_df)
             self.set_message(f"Successfully uploaded {len(countries_df)} countries")
         except Exception as e:
+            if settings.IS_TEST_RUN:
+                raise e
             self.set_message(
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
@@ -162,6 +167,8 @@ class OecdCountriesUploadProcessor(ProcessorBaseABC):
             self.repository.create_objects_from_data_frame(data_df)
             self.set_message(f"Successfully uploaded {len(data_df)} data points")
         except Exception as e:
+            if settings.IS_TEST_RUN:
+                raise e
             self.set_message(
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
