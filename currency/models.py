@@ -15,7 +15,8 @@ class CurrencyHubValueDate(baseclass_models.HubValueDate):
 
 class CurrencyStaticSatellite(baseclass_models.MontrekSatelliteABC):
     hub_entity = models.ForeignKey(
-        CurrencyHub, on_delete=models.CASCADE, related_name="currency_static_satellites"
+        CurrencyHub,
+        on_delete=models.CASCADE,  # , related_name="currency_static_satellites"
     )
     ccy_name = models.CharField(max_length=50)
     ccy_code = models.CharField(max_length=3)
