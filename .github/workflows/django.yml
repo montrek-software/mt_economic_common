@@ -61,6 +61,7 @@ jobs:
           echo "DB_NAME=montrek_ci_pipe_db" >> $ENVPATH
           echo "DB_HOST=0.0.0.0" >> $ENVPATH
           echo "INSTALLED_APPS=${{ vars.INSTALLED_APPS }} " >> $ENVPATH
+          echo "SECRET_KEY=testkey" >> $ENVPATH
 
       - name: Install Arial font
         run: |
