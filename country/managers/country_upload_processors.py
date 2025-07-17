@@ -108,11 +108,11 @@ class RestCountriesUploadProcessor(ProcessorBaseABC):
                 ]
                 + list(rename_columns.values()),
             ]
-        except Exception as e:
+        except (KeyError, ValueError, pd.errors.ParserError) as e:
             if settings.IS_TEST_RUN:
                 raise e
             self.set_message(
-                f"Error raised during object creation: {e.__class__.__name__}: {e}"
+                f"Error raised during DataFrame transformation: {e.__class__.__name__}: {e}"
             )
             return False
         try:
