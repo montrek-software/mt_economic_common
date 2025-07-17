@@ -6,15 +6,27 @@ class RestCountriesRequestManager(RequestJsonManager):
     request_kwargs = {
         "fields": ",".join(
             [
+                "cca2",
                 "name",
+                "cca3",
                 "latlng",
-                "continents",
                 "capital",
                 "postalCode",
                 "maps",
                 "flags",
-                "cca3",
+                "unMember",
+                "currencies",
+            ]
+        )
+    }
+
+
+class RestCountriesLocalityRequestManager(RestCountriesRequestManager):
+    request_kwargs = {
+        "fields": ",".join(
+            [
                 "cca2",
+                "continents",
                 "unMember",
                 "region",
                 "subregion",
