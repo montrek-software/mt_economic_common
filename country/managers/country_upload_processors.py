@@ -20,6 +20,8 @@ from mt_economic_common.currency.repositories.currency_repository import (
 
 
 class RestCountriesUploadProcessor(ProcessorBaseABC):
+    country_locality_request_manager_class = RestCountriesLocalityRequestManager
+
     def pre_check(self) -> bool:
         return True
 
@@ -29,17 +31,17 @@ class RestCountriesUploadProcessor(ProcessorBaseABC):
     def process(self) -> bool:
         json_response = self.import_data
         countries_df = pd.read_json(StringIO(json.dumps(json_response)))
-        countries_locality_response = RestCountriesLocalityRequestManager(
+        countries_locality_response = self.country_locality_request_manager_class(
             self.session_data
         ).get_response("all")
-        countries_locality_df = pd.read_json(
-            StringIO(json.dumps(countries_locality_response))
-        )
-        countries_df = countries_df.set_index("cca2").join(
-            countries_locality_df.set_index("cca2"), rsuffix="_locality"
-        )
-        countries_df["cca2"] = countries_df.index
         try:
+            countries_locality_df = pd.read_json(
+                StringIO(json.dumps(countries_locality_response))
+            )
+            countries_df = countries_df.set_index("cca2").join(
+                countries_locality_df.set_index("cca2"), rsuffix="_locality"
+            )
+            countries_df["cca2"] = countries_df.index
             countries_df["link_country_currency"] = self.create_currencies(
                 countries_df["currencies"]
             )

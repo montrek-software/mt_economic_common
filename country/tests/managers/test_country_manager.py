@@ -1,14 +1,18 @@
 from django.test import TestCase
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
+
 from mt_economic_common.country.managers.country_manager import (
     RestCountriesUploadManager,
+)
+from mt_economic_common.country.managers.country_request_manager import (
+    RestCountriesRequestManager,
+)
+from mt_economic_common.country.managers.country_upload_processors import (
+    RestCountriesUploadProcessor,
 )
 from mt_economic_common.country.repositories.country_repository import CountryRepository
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
-)
-from mt_economic_common.country.managers.country_request_manager import (
-    RestCountriesRequestManager,
 )
 
 
@@ -82,7 +86,7 @@ class MockCountryRequestManager(RestCountriesRequestManager):
                     "eng": {"f": "French", "m": "French"},
                     "fra": {"f": "Française", "m": "Français"},
                 },
-                "flag": "\uD83C\uDDEB\uD83C\uDDF7",
+                "flag": "\ud83c\uddeb\ud83c\uddf7",
                 "maps": {
                     "googleMaps": "https://goo.gl/maps/g7QxxSFsWyTPKuzd7",
                     "openStreetMaps": "https://www.openstreetmap.org/relation/1403916",
@@ -253,7 +257,7 @@ class MockCountryRequestManager(RestCountriesRequestManager):
                     "eng": {"f": "German", "m": "German"},
                     "fra": {"f": "Allemande", "m": "Allemand"},
                 },
-                "flag": "\uD83C\uDDE9\uD83C\uDDEA",
+                "flag": "\ud83c\udde9\ud83c\uddea",
                 "maps": {
                     "googleMaps": "https://goo.gl/maps/mD9FBMq1nvXUBrkv6",
                     "openStreetMaps": "https://www.openstreetmap.org/relation/51477",
@@ -280,8 +284,13 @@ class MockCountryRequestManager(RestCountriesRequestManager):
         ]
 
 
+class MockRestCountriesUploadProcessor(RestCountriesUploadProcessor):
+    country_locality_request_manager_class = MockCountryRequestManager
+
+
 class MockRestCountriesManager(RestCountriesUploadManager):
     request_manager_class = MockCountryRequestManager
+    processor_class = MockRestCountriesUploadProcessor
 
 
 class TestCountryManager(TestCase):

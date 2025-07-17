@@ -1,12 +1,25 @@
-from django.test import TestCase, override_settings
 import pandas as pd
+from django.test import TestCase, override_settings
+from user.tests.factories.montrek_user_factories import MontrekUserFactory
+
+from mt_economic_common.country.managers.country_request_manager import (
+    RestCountriesLocalityRequestManager,
+)
 from mt_economic_common.country.managers.country_upload_processors import (
     RestCountriesUploadProcessor,
 )
-from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
+
+
+class MockRestCountriesLocalityRequestManager(RestCountriesLocalityRequestManager):
+    def get_response(self, endpoint: str):
+        return {}
+
+
+class MockRestCountriesUploadProcessor(RestCountriesUploadProcessor):
+    country_locality_request_manager_class = MockRestCountriesLocalityRequestManager
 
 
 class TestRestCountryUploadProcessor(TestCase):
@@ -27,7 +40,9 @@ class TestRestCountryUploadProcessor(TestCase):
                 }
             },
         ]
-        processor = RestCountriesUploadProcessor( {"user_id": self.user.id}, mailicious_json)
+        processor = MockRestCountriesUploadProcessor(
+            {"user_id": self.user.id}, mailicious_json
+        )
         processor.process()
         self.assertTrue(
             processor.get_message().startswith(
@@ -36,7 +51,7 @@ class TestRestCountryUploadProcessor(TestCase):
         )
 
     def test_create_currencies__return_list_of_currency_objects(self):
-        processor = RestCountriesUploadProcessor({"user_id": self.user.id}, None)
+        processor = MockRestCountriesUploadProcessor({"user_id": self.user.id}, None)
         currencies = pd.Series(
             [
                 {"ABC": {"name": "First name", "symbol": "AB"}},
