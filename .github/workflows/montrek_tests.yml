@@ -1,0 +1,18 @@
+name: Run Montrek TestSuite
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "00 6 * * *"
+
+jobs:
+  run-tests:
+    uses: montrek-software/montrek-templates/.github/workflows/montrek_tests_template.yaml@main
+    with:
+      montrek_base_version: ${{ vars.MONTREK_BASE_VERSION }}
+      montrek_project: ${{ vars.MONTREK_PROJECT }}
+    secrets:
+      PAT: ${{ secrets.ECONOMIC_COMMON_PAT }}
