@@ -11,7 +11,7 @@ on:
 
 jobs:
   run-tests:
-    uses: montrek-software/montrek-templates/.github/workflows/montrek_tests_template.yml@main
+    uses: montrek-software/.github/.github/workflows/montrek_tests_template.yml@main
     with:
       montrek_base_version: ${{ vars.MONTREK_BASE_VERSION }}
       montrek_project: ${{ vars.MONTREK_PROJECT }}
