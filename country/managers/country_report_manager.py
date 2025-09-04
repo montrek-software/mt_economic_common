@@ -55,9 +55,9 @@ class CountryReportManager(MontrekReportManager):
         oecd_data = CountryOecdTableRepository(self.session_data).receive()
         oecd_df = read_frame(oecd_data)
         oecd_reporting_data = ReportingData(
-            oecd_df,
-            "Annual FX Average",
-            "year",
+            data_df=oecd_df,
+            title="Annual FX Average",
+            x_axis_column="year",
             y_axis_columns=["annual_fx_average"],
             plot_types=["line"],
         )
@@ -65,9 +65,9 @@ class CountryReportManager(MontrekReportManager):
         plot.generate(oecd_reporting_data)
         plot_grid.add_report_grid_element(plot, 0, 0)
         oecd_reporting_data = ReportingData(
-            oecd_df,
-            "Inflation",
-            "year",
+            data_df=oecd_df,
+            title="Inflation",
+            x_axis_column="year",
             y_axis_columns=["inflation"],
             plot_types=["line"],
         )
