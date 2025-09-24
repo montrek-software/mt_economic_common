@@ -1,0 +1,6 @@
+projectKey=mt_economic_common
+serverUrl=http://business.montrek.lan:9000
+serverVersion=25.6.0.109173
+dashboardUrl=http://business.montrek.lan:9000/dashboard?id=mt_economic_common
+ceTaskId=84fac26c-66c1-4ce3-a767-4e9d7685ab18
+ceTaskUrl=http://business.montrek.lan:9000/api/ce/task?id=84fac26c-66c1-4ce3-a767-4e9d7685ab18
