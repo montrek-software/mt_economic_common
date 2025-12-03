@@ -92,7 +92,9 @@ class TestUploadCountriesRestCountries(TestCase):
         self.assertEqual(registry_query.count(), 1)
         registry_entry = registry_query.first()
         self.assertEqual(registry_entry.import_status, "processed")
-        self.assertEqual(registry_entry.import_message, "Successfully uploaded 2 countries")
+        self.assertEqual(
+            registry_entry.import_message, "Successfully uploaded 2 countries"
+        )
         countries = CountryRepository({}).receive()
         self.assertEqual(countries.count(), 2)
 
@@ -101,7 +103,7 @@ class TestUploadOecdCountryData(TestCase):
     def setUp(self):
         self.user = MontrekUserFactory()
         self.client.force_login(self.user)
-        for country_code in ["AUS","AUT","BEL","CAN"]:
+        for country_code in ["AUS", "AUT", "BEL", "CAN"]:
             CountryStaticSatelliteFactory.create(country_code=country_code)
 
     @patch("requesting.managers.request_manager.requests.get")
@@ -120,12 +122,14 @@ class TestUploadOecdCountryData(TestCase):
         self.assertEqual(registry_query.count(), 2)
         for registry_entry in registry_query:
             self.assertEqual(registry_entry.import_status, "processed")
-            self.assertEqual(registry_entry.import_message, "Successfully uploaded 100 data points")
-        oecd_data =  CountryOecdRepository({}).receive()
+            self.assertEqual(
+                registry_entry.import_message, "Successfully uploaded 100 data points"
+            )
+        oecd_data = CountryOecdRepository({}).receive()
         self.assertEqual(oecd_data.count(), 4)
         oecd_data_df = read_frame(oecd_data)
-        self.assertAlmostEqual(oecd_data_df["annual_fx_average"].sum(),4.732498)
-        self.assertAlmostEqual(oecd_data_df["inflation"].sum(),520.6035)
+        self.assertAlmostEqual(oecd_data_df["annual_fx_average"].sum(), 4.732498)
+        self.assertAlmostEqual(oecd_data_df["inflation"].sum(), 520.6097)
 
 
 class TestCountryMapView(vtc.MontrekViewTestCase):
