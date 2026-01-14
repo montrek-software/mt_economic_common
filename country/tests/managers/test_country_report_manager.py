@@ -1,4 +1,8 @@
+from unittest import mock
+
 from django.test import TestCase
+from testing.decorators.mock_external_get import mock_external_get
+
 from mt_economic_common.country.managers.country_report_manager import (
     CountryReportManager,
 )
@@ -20,9 +24,18 @@ class TestCountryReportManager(TestCase):
         # Then
         self.assertEqual(result, "Country Report: Italy")
 
-    def test_get_wikipedia_section(self):
+    @mock_external_get(
+        response=mock.Mock(
+            status_code=200,
+            json=lambda: {
+                "extract": "Italy, officially the Italian Republic, is a country in Southern and Western Europe. "
+            },
+        )
+    )
+    def test_get_wikipedia_section(self, mocked_get):
         wiki_test = self.country_report_manager.get_wikipedia_section()
         self.assertIn(
             "Italy, officially the Italian Republic, is a country in Southern and Western Europe. ",
             wiki_test,
         )
+        mocked_get.assert_called_once()
