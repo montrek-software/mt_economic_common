@@ -8,7 +8,6 @@ from django.urls import reverse
 from django_pandas.io import read_frame
 import sdmx
 from testing.test_cases import view_test_cases as vtc
-from testing.test_cases.montrek_live_server_test_case import MontrekLiveServerTestCase
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 
 from mt_economic_common.country import views
