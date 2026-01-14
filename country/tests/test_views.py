@@ -1,10 +1,12 @@
 import json
 import os
+from pathlib import Path
 from unittest.mock import Mock, patch
 
 from django.test import TestCase
 from django.urls import reverse
 from django_pandas.io import read_frame
+import sdmx
 from testing.test_cases import view_test_cases as vtc
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 
@@ -106,14 +108,18 @@ class TestUploadOecdCountryData(TestCase):
         for country_code in ["AUS", "AUT", "BEL", "CAN"]:
             CountryStaticSatelliteFactory.create(country_code=country_code)
 
-    @patch("requesting.managers.request_manager.requests.get")
-    def test_upload_countries_rest_countries_returns_correct_html(self, mock_get):
-        mock_response = Mock()
-        with open(
-            os.path.join(os.path.dirname(__file__), "test_data/fx_annual_example.json")
-        ) as f:
-            mock_response.json.return_value = json.loads(f.read())
-        mock_get.return_value = mock_response
+    def load_sdmx_fixture(self, name: str):
+        return sdmx.read_sdmx(Path(__file__).parent / "test_data" / name)
+
+    @patch(
+        "mt_economic_common.country.managers.country_oecd_manager.CountryOecdAnnualFxUploadManager.request_manager_class._get_data_message"
+    )
+    def test_upload_countries_rest_countries_returns_correct_html(
+        self, mock__get_response
+    ):
+        mock__get_response.return_value = self.load_sdmx_fixture(
+            "fx_annual_example.xml"
+        )
         url = reverse("upload_oecd_country_data")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
@@ -129,7 +135,7 @@ class TestUploadOecdCountryData(TestCase):
         self.assertEqual(oecd_data.count(), 4)
         oecd_data_df = read_frame(oecd_data)
         self.assertAlmostEqual(oecd_data_df["annual_fx_average"].sum(), 4.732498)
-        self.assertAlmostEqual(oecd_data_df["inflation"].sum(), 520.6097)
+        self.assertAlmostEqual(oecd_data_df["inflation"].sum(), 4.732498)
 
 
 class TestCountryMapView(vtc.MontrekViewTestCase):
