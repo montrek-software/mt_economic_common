@@ -21,6 +21,7 @@ from mt_economic_common.country.managers.country_manager import (
     RestCountriesUploadManager,
 )
 from mt_economic_common.country.managers.country_oecd_manager import (
+    CountryOecdAnnualFxUploadManager,
     CountryOecdDataApiManager,
     CountryOecdTableManager,
 )
@@ -106,22 +107,17 @@ class CountryUpdateView(MontrekUpdateView):
     success_url = "country"
 
 
-def upload_countries_rest_countries(request):
-    task = country_tasks.country_rest_api_upload_task
-    task.delay(session_data={"user_id": request.user.id})
-    return HttpResponseRedirect(reverse("country"))
-
-
 class UploadCountryApiView(DataImportView):
     manager_class = RestCountriesUploadManager
     success_url = "country"
 
 
-def upload_oecd_country_data(request):
-    session_data = {"user_id": request.user.id}
-    country_tasks.country_oecd_annual_fx_upload_task.delay(session_data)
-    country_tasks.country_oecd_infation_upload_task.delay(session_data)
-    return HttpResponseRedirect(reverse("country"))
+class UploadOecdCountryDataView(DataImportView):
+    manager_class = CountryOecdAnnualFxUploadManager
+
+    def process(self):
+        super().process()
+        # TODO: Upload Inflation Data
 
 
 class CountryMapView(MontrekTemplateView):

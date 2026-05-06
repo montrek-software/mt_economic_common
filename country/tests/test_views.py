@@ -5,7 +5,10 @@ from django.test import TestCase
 from django.urls import reverse
 from django_pandas.io import read_frame
 import sdmx
-from mt_economic_common.country.tests.mocks import MockUploadCountryApiView
+from mt_economic_common.country.tests.mocks import (
+    MockUploadCountryApiView,
+    MockUploadOECDCountryDataView,
+)
 from testing.test_cases import view_test_cases as vtc
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 
@@ -84,36 +87,19 @@ class TestUploadCountriesApiView(vtc.ProcessPipelineViewTestCase):
         self.assertEqual(countries.count(), 2)
 
 
-class TestUploadOecdCountryData(TestCase):
+class TestUploadOecdCountryData(vtc.ProcessPipelineViewTestCase):
+    viewname = "upload_oecd_country_data"
+    view_class = MockUploadOECDCountryDataView
+    real_view_class = views.UploadOecdCountryDataView
+    expected_message = "Successfully uploaded 100 data points"
+    # expected_no_of_registries: int = 2
+
     def setUp(self):
-        self.user = MontrekUserFactory()
-        self.client.force_login(self.user)
         for country_code in ["AUS", "AUT", "BEL", "CAN"]:
             CountryStaticSatelliteFactory.create(country_code=country_code)
+        super().setUp()
 
-    def load_sdmx_fixture(self, name: str):
-        return sdmx.read_sdmx(Path(__file__).parent / "test_data" / name)
-
-    @patch(
-        "mt_economic_common.country.managers.country_oecd_manager.CountryOecdAnnualFxUploadManager.request_manager_class._get_data_message"
-    )
-    def test_upload_countries_rest_countries_returns_correct_html(
-        self, mock__get_response
-    ):
-        mock__get_response.return_value = self.load_sdmx_fixture(
-            "fx_annual_example.xml"
-        )
-        url = reverse("upload_oecd_country_data")
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("country"))
-        registry_query = CountryApiUploadRegistryRepository().receive()
-        self.assertEqual(registry_query.count(), 2)
-        for registry_entry in registry_query:
-            self.assertEqual(registry_entry.import_status, "processed")
-            self.assertEqual(
-                registry_entry.import_message, "Successfully uploaded 100 data points"
-            )
+    def additional_assertions(self):
         oecd_data = CountryOecdRepository({}).receive()
         self.assertEqual(oecd_data.count(), 4)
         oecd_data_df = read_frame(oecd_data)

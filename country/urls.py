@@ -39,7 +39,7 @@ urlpatterns = [
     ),
     path(
         "upload_oecd_country_data",
-        views.upload_oecd_country_data,
+        views.UploadOecdCountryDataView.as_view(),
         name="upload_oecd_country_data",
     ),
     path(

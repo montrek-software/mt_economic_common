@@ -12,9 +12,6 @@ from mt_economic_common.country.repositories.country_oecd_repository import (
 from mt_economic_common.country.repositories.country_repository import (
     CountryApiUploadRegistryRepository,
 )
-from mt_economic_common.sdmx_api.managers.sdmx_request_manager import (
-    OecdSdmxRequestManager,
-)
 from reporting.dataclasses import table_elements as te
 from reporting.managers.montrek_table_manager import MontrekTableManager
 
@@ -25,18 +22,12 @@ class CountryOecdManager(MontrekManager):
 
 class CountryOecdAnnualFxUploadManager(ApiDataImportManager):
     registry_repository_class = CountryApiUploadRegistryRepository
-    request_manager_class = OecdSdmxRequestManager
     processor_class = OecdAnnualFxUploadProcessor
-    endpoint = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE4,/A....EXC_A.......?startPeriod=2000&dimensionAtObservation=AllDimensions"
 
 
 class CountryOecdInflationUploadManager(ApiDataImportManager):
     registry_repository_class = CountryApiUploadRegistryRepository
-    request_manager_class = OecdSdmxRequestManager
     processor_class = OecdInflationUploadProcessor
-    endpoint = (
-        "OECD.SDD.TPS,DSD_PRICES@DF_PRICES_ALL,1.0/.A.N.CPI.IX._T.N.?startPeriod=2000"
-    )
 
 
 class YearTableElement(te.IntTableElement):

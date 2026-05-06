@@ -6,7 +6,6 @@ import pandas as pd
 from data_import.api_import.managers.api_data_import_processor import (
     ApiDataImportProcessorBase,
 )
-from data_import.base.managers.processor_base import ProcessorBaseABC
 from data_import.types import ImportDataType
 from django.conf import settings
 from mt_economic_common.country.managers.country_request_manager import (
@@ -20,6 +19,9 @@ from mt_economic_common.country.repositories.country_oecd_repository import (
 from mt_economic_common.country.repositories.country_repository import CountryRepository
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
+)
+from mt_economic_common.sdmx_api.managers.sdmx_request_manager import (
+    OecdSdmxRequestManager,
 )
 
 
@@ -165,16 +167,14 @@ class RestCountriesUploadProcessor(ApiDataImportProcessorBase):
         )
 
 
-class OecdCountriesUploadProcessor(ProcessorBaseABC):
+class OecdCountriesUploadProcessor(ApiDataImportProcessorBase):
     repository_class = None
+    request_manager_class = OecdSdmxRequestManager
     value_field = ""
 
     def __init__(self, session_data: dict[str, Any], import_data: ImportDataType):
         super().__init__(session_data, import_data)
         self.repository = self.repository_class(self.session_data)
-
-    def pre_check(self) -> bool:
-        return True
 
     def post_check(self) -> bool:
         return True
@@ -230,8 +230,12 @@ class OecdCountriesUploadProcessor(ProcessorBaseABC):
 class OecdAnnualFxUploadProcessor(OecdCountriesUploadProcessor):
     value_field = "annual_fx_average"
     repository_class = CountryOecdFxAnnualRepository
+    endpoint = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE4,/A....EXC_A.......?startPeriod=2000&dimensionAtObservation=AllDimensions"
 
 
 class OecdInflationUploadProcessor(OecdCountriesUploadProcessor):
     value_field = "inflation"
     repository_class = CountryOecdInflationRepository
+    endpoint = (
+        "OECD.SDD.TPS,DSD_PRICES@DF_PRICES_ALL,1.0/.A.N.CPI.IX._T.N.?startPeriod=2000"
+    )
