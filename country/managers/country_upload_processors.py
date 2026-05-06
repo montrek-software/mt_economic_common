@@ -3,11 +3,14 @@ from io import StringIO
 from typing import Any
 
 import pandas as pd
-from data_import.base.managers.processor_base import ProcessorBaseABC
+from data_import.api_import.managers.api_data_import_processor import (
+    ApiDataImportProcessorBase,
+)
 from data_import.types import ImportDataType
 from django.conf import settings
 from mt_economic_common.country.managers.country_request_manager import (
     RestCountriesLocalityRequestManager,
+    RestCountriesRequestManager,
 )
 from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdFxAnnualRepository,
@@ -17,18 +20,20 @@ from mt_economic_common.country.repositories.country_repository import CountryRe
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
+from mt_economic_common.sdmx_api.managers.sdmx_request_manager import (
+    OecdSdmxRequestManager,
+)
 
 
-class RestCountriesUploadProcessor(ProcessorBaseABC):
+class RestCountriesUploadProcessor(ApiDataImportProcessorBase):
+    request_manager_class = RestCountriesRequestManager
     country_locality_request_manager_class = RestCountriesLocalityRequestManager
-
-    def pre_check(self) -> bool:
-        return True
+    endpoint = "all"
 
     def post_check(self) -> bool:
         return True
 
-    def process(self) -> bool:
+    def apply_import_data(self) -> bool:
         json_response = self.import_data
         countries_df = pd.read_json(StringIO(json.dumps(json_response)))
         countries_locality_response = self.country_locality_request_manager_class(
@@ -51,7 +56,7 @@ class RestCountriesUploadProcessor(ProcessorBaseABC):
             countries_df["country_official_name"] = countries_df["name"].apply(
                 lambda x: x["official"]
             )
-            countries_df["comment"] = f"Uploaded via REST Api"
+            countries_df["comment"] = "Uploaded via REST Api"
             countries_df["country_lat"] = countries_df["latlng"].apply(
                 lambda x: x[0] if x else None
             )
@@ -162,16 +167,14 @@ class RestCountriesUploadProcessor(ProcessorBaseABC):
         )
 
 
-class OecdCountriesUploadProcessor(ProcessorBaseABC):
+class OecdCountriesUploadProcessor(ApiDataImportProcessorBase):
     repository_class = None
+    request_manager_class = OecdSdmxRequestManager
     value_field = ""
 
     def __init__(self, session_data: dict[str, Any], import_data: ImportDataType):
         super().__init__(session_data, import_data)
         self.repository = self.repository_class(self.session_data)
-
-    def pre_check(self) -> bool:
-        return True
 
     def post_check(self) -> bool:
         return True
@@ -227,8 +230,12 @@ class OecdCountriesUploadProcessor(ProcessorBaseABC):
 class OecdAnnualFxUploadProcessor(OecdCountriesUploadProcessor):
     value_field = "annual_fx_average"
     repository_class = CountryOecdFxAnnualRepository
+    endpoint = "OECD.SDD.NAD,DSD_NAMAIN10@DF_TABLE4,/A....EXC_A.......?startPeriod=2000&dimensionAtObservation=AllDimensions"
 
 
 class OecdInflationUploadProcessor(OecdCountriesUploadProcessor):
     value_field = "inflation"
     repository_class = CountryOecdInflationRepository
+    endpoint = (
+        "OECD.SDD.TPS,DSD_PRICES@DF_PRICES_ALL,1.0/.A.N.CPI.IX._T.N.?startPeriod=2000"
+    )

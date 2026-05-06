@@ -286,10 +286,10 @@ class MockCountryRequestManager(RestCountriesRequestManager):
 
 class MockRestCountriesUploadProcessor(RestCountriesUploadProcessor):
     country_locality_request_manager_class = MockCountryRequestManager
+    request_manager_class = MockCountryRequestManager
 
 
 class MockRestCountriesManager(RestCountriesUploadManager):
-    request_manager_class = MockCountryRequestManager
     processor_class = MockRestCountriesUploadProcessor
 
 

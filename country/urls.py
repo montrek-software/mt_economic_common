@@ -29,7 +29,7 @@ urlpatterns = [
     ),
     path(
         "upload_countries_rest_countries",
-        views.upload_countries_rest_countries,
+        views.UploadCountryApiView.as_view(),
         name="upload_countries_rest_countries",
     ),
     path(
@@ -39,7 +39,7 @@ urlpatterns = [
     ),
     path(
         "upload_oecd_country_data",
-        views.upload_oecd_country_data,
+        views.UploadOecdCountryDataView.as_view(),
         name="upload_oecd_country_data",
     ),
     path(

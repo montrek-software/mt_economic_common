@@ -7,6 +7,7 @@ from baseclasses.views import (
     MontrekTemplateView,
     MontrekUpdateView,
 )
+from data_import.base.views.data_import_views import DataImportView
 from reporting.views import MontrekReportView
 from django.urls import reverse
 from django.views.generic.base import HttpResponseRedirect
@@ -17,9 +18,12 @@ from mt_economic_common.country.managers.country_manager import (
     CountryDetailsManager,
     CountryManager,
     CountryTableManager,
+    RestCountriesUploadManager,
 )
 from mt_economic_common.country.managers.country_oecd_manager import (
+    CountryOecdAnnualFxUploadManager,
     CountryOecdDataApiManager,
+    CountryOecdInflationUploadManager,
     CountryOecdTableManager,
 )
 from mt_economic_common.country.managers.country_report_manager import (
@@ -104,17 +108,19 @@ class CountryUpdateView(MontrekUpdateView):
     success_url = "country"
 
 
-def upload_countries_rest_countries(request):
-    task = country_tasks.country_rest_api_upload_task
-    task.delay(session_data={"user_id": request.user.id})
-    return HttpResponseRedirect(reverse("country"))
+class UploadCountryApiView(DataImportView):
+    manager_class = RestCountriesUploadManager
+    success_url = "country"
 
 
-def upload_oecd_country_data(request):
-    session_data = {"user_id": request.user.id}
-    country_tasks.country_oecd_annual_fx_upload_task.delay(session_data)
-    country_tasks.country_oecd_infation_upload_task.delay(session_data)
-    return HttpResponseRedirect(reverse("country"))
+class UploadOecdCountryDataView(DataImportView):
+    manager_class = CountryOecdAnnualFxUploadManager
+    inflation_manager_class = CountryOecdInflationUploadManager
+    success_url = "country"
+
+    def process(self):
+        super().process()
+        self.inflation_manager_class(self.session_data).process_import_data()
 
 
 class CountryMapView(MontrekTemplateView):

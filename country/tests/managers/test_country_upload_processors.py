@@ -45,7 +45,7 @@ class TestRestCountryUploadProcessor(TestCase):
         )
         processor.process()
         self.assertTrue(
-            processor.get_message().startswith(
+            processor.message.startswith(
                 "Error raised during DataFrame transformation:",
             )
         )
