@@ -23,6 +23,7 @@ from mt_economic_common.country.managers.country_manager import (
 from mt_economic_common.country.managers.country_oecd_manager import (
     CountryOecdAnnualFxUploadManager,
     CountryOecdDataApiManager,
+    CountryOecdInflationUploadManager,
     CountryOecdTableManager,
 )
 from mt_economic_common.country.managers.country_report_manager import (
@@ -114,10 +115,11 @@ class UploadCountryApiView(DataImportView):
 
 class UploadOecdCountryDataView(DataImportView):
     manager_class = CountryOecdAnnualFxUploadManager
+    inflation_manager_class = CountryOecdInflationUploadManager
 
     def process(self):
         super().process()
-        # TODO: Upload Inflation Data
+        self.inflation_manager_class(self.session_data).process_import_data()
 
 
 class CountryMapView(MontrekTemplateView):

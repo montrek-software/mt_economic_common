@@ -9,12 +9,14 @@ from mt_economic_common.country.managers.country_manager import (
 )
 from mt_economic_common.country.managers.country_oecd_manager import (
     CountryOecdAnnualFxUploadManager,
+    CountryOecdInflationUploadManager,
 )
 from mt_economic_common.country.managers.country_request_manager import (
     RestCountriesRequestManager,
 )
 from mt_economic_common.country.managers.country_upload_processors import (
     OecdAnnualFxUploadProcessor,
+    OecdInflationUploadProcessor,
     RestCountriesUploadProcessor,
 )
 from mt_economic_common.country.views import (
@@ -66,5 +68,14 @@ class MockCountryOecdAnnualFxUploadManager(CountryOecdAnnualFxUploadManager):
     processor_class = MockOecdAnnualFxUploadProcessor
 
 
+class MockOecdInflationUploadProcessor(OecdInflationUploadProcessor):
+    request_manager_class = MockOecdSdmxRequestManager
+
+
+class MockCountryOecdInflationUploadManager(CountryOecdInflationUploadManager):
+    processor_class = MockOecdInflationUploadProcessor
+
+
 class MockUploadOECDCountryDataView(UploadOecdCountryDataView):
     manager_class = MockCountryOecdAnnualFxUploadManager
+    inflation_manager_class = MockCountryOecdInflationUploadManager

@@ -92,7 +92,8 @@ class TestUploadOecdCountryData(vtc.ProcessPipelineViewTestCase):
     view_class = MockUploadOECDCountryDataView
     real_view_class = views.UploadOecdCountryDataView
     expected_message = "Successfully uploaded 100 data points"
-    # expected_no_of_registries: int = 2
+    expected_no_of_registries: int = 2
+    additional_patched_view_attrs: list[str] = ["inflation_manager_class"]
 
     def setUp(self):
         for country_code in ["AUS", "AUT", "BEL", "CAN"]:
