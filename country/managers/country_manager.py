@@ -1,13 +1,11 @@
 from data_import.api_import.managers.api_data_import_manager import ApiDataImportManager
 from baseclasses.managers.montrek_manager import MontrekManager
+from mt_economic_common.country.tasks import CountryRestApiUploadTask
 from reporting.managers.montrek_table_manager import MontrekTableManager
 from reporting.managers.montrek_details_manager import MontrekDetailsManager
 from mt_economic_common.country.repositories.country_repository import (
     CountryRepository,
     CountryApiUploadRegistryRepository,
-)
-from mt_economic_common.country.managers.country_request_manager import (
-    RestCountriesRequestManager,
 )
 from reporting.dataclasses import table_elements
 from mt_economic_common.country.managers.country_upload_processors import (
@@ -138,6 +136,8 @@ class CountryDetailsManager(MontrekDetailsManager):
 class RestCountriesUploadManager(ApiDataImportManager):
     registry_repository_class = CountryApiUploadRegistryRepository
     processor_class = RestCountriesUploadProcessor
+    pipeline_task_class = CountryRestApiUploadTask
+    do_process_async = True
 
 
 class CountryApiUploadRegistryManager(MontrekTableManager):

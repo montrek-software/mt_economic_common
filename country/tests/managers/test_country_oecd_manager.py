@@ -1,10 +1,15 @@
-
 from django.test import TestCase
+import sdmx
+from mt_economic_common.country.managers.country_upload_processors import (
+    OecdAnnualFxUploadProcessor,
+    OecdInflationUploadProcessor,
+)
 from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdInflationRepository,
     CountryOecdRepository,
     CountryOecdTableRepository,
 )
+from mt_economic_common.country.tests.mocks import MockOecdSdmxRequestManager
 from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,
@@ -19,26 +24,26 @@ from mt_economic_common.country.managers.country_oecd_manager import (
 )
 
 
-class MockRequestManager:
-    status_code = 1
-    message = "Test message"
-
-    def __init__(self, session_data):
-        self.seesion_data = session_data
-
-    def get_response(self, endpoint):
+class MockRequestManager(MockOecdSdmxRequestManager):
+    def get_response(self, endpoint: str) -> dict | list:
+        self.status_code = 200
         return TEST_OECD_COUNTRY_DATA
 
-    def get_endpoint_url(self, endpoint):
-        return "http://example.com/TEST"
+
+class MockOecdAnnualFxUploadProcessor(OecdAnnualFxUploadProcessor):
+    request_manager_class = MockRequestManager
 
 
 class MockCountryOecdAnnualFxUploadManager(CountryOecdAnnualFxUploadManager):
+    processor_class = MockOecdAnnualFxUploadProcessor
+
+
+class MockOecdInflationUploadProcessor(OecdInflationUploadProcessor):
     request_manager_class = MockRequestManager
 
 
 class MockCountryOecdInflationUploadManager(CountryOecdInflationUploadManager):
-    request_manager_class = MockRequestManager
+    processor_class = MockOecdInflationUploadProcessor
 
 
 class TestOecdCountryManager(TestCase):

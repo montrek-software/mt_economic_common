@@ -95,6 +95,9 @@ class TestUploadOecdCountryData(vtc.ProcessPipelineViewTestCase):
     expected_no_of_registries: int = 2
     additional_patched_view_attrs: list[str] = ["inflation_manager_class"]
 
+    def expected_url(self) -> str:
+        return reverse("country")
+
     def setUp(self):
         for country_code in ["AUS", "AUT", "BEL", "CAN"]:
             CountryStaticSatelliteFactory.create(country_code=country_code)

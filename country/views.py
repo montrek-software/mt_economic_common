@@ -116,6 +116,7 @@ class UploadCountryApiView(DataImportView):
 class UploadOecdCountryDataView(DataImportView):
     manager_class = CountryOecdAnnualFxUploadManager
     inflation_manager_class = CountryOecdInflationUploadManager
+    success_url = "country"
 
     def process(self):
         super().process()
