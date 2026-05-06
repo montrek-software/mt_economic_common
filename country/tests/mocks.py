@@ -15,6 +15,7 @@ from mt_economic_common.country.views import UploadCountryApiView
 
 class MockRestCountriesRequestManager(RestCountriesRequestManager):
     def get_response(self, endpoint: str) -> dict | list:
+        self.status_code = 200
         with open(
             os.path.join(
                 os.path.dirname(__file__), "test_data/rest_countries_example.json"
@@ -25,6 +26,7 @@ class MockRestCountriesRequestManager(RestCountriesRequestManager):
 
 class MockRestCountriesUploadProcessor(RestCountriesUploadProcessor):
     request_manager_class = MockRestCountriesRequestManager
+    country_locality_request_manager_class = MockRestCountriesRequestManager
 
 
 class MockRestCountriesUploadManager(RestCountriesUploadManager):

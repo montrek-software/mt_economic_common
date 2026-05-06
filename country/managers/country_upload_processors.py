@@ -54,7 +54,7 @@ class RestCountriesUploadProcessor(ApiDataImportProcessorBase):
             countries_df["country_official_name"] = countries_df["name"].apply(
                 lambda x: x["official"]
             )
-            countries_df["comment"] = f"Uploaded via REST Api"
+            countries_df["comment"] = "Uploaded via REST Api"
             countries_df["country_lat"] = countries_df["latlng"].apply(
                 lambda x: x[0] if x else None
             )

@@ -70,43 +70,18 @@ class TestCountryUpdateView(vtc.MontrekUpdateViewTestCase):
         return {"pk": self.country.get_hub_value_date().id}
 
 
-# class TestUploadCountriesRestCountries(TestCase):
-#     def setUp(self):
-#         self.user = MontrekUserFactory()
-#         self.client.force_login(self.user)
-#
-#     @patch("requesting.managers.request_manager.requests.get")
-#     def test_upload_countries_rest_countries_returns_correct_html(self, mock_get):
-#         mock_response = Mock()
-#         with open(
-#             os.path.join(
-#                 os.path.dirname(__file__), "test_data/rest_countries_example.json"
-#             )
-#         ) as f:
-#             mock_response.json.return_value = json.loads(f.read())
-#         mock_get.return_value = mock_response
-#         url = reverse("upload_countries_rest_countries")
-#         response = self.client.get(url)
-#         self.assertEqual(response.status_code, 302)
-#         self.assertEqual(response.url, reverse("country"))
-#         registry_query = CountryApiUploadRegistryRepository().receive()
-#         self.assertEqual(registry_query.count(), 1)
-#         registry_entry = registry_query.first()
-#         self.assertEqual(registry_entry.import_status, "processed")
-#         self.assertEqual(
-#             registry_entry.import_message, "Successfully uploaded 2 countries"
-#         )
-#         countries = CountryRepository({}).receive()
-#         self.assertEqual(countries.count(), 2)
-
-
 class TestUploadCountriesApiView(vtc.ProcessPipelineViewTestCase):
     viewname = "upload_countries_rest_countries"
     view_class = MockUploadCountryApiView
     real_view_class = views.UploadCountryApiView
+    expected_message = "Successfully uploaded 2 countries"
 
     def expected_url(self) -> str:
         return reverse("country")
+
+    def additional_assertions(self):
+        countries = CountryRepository({}).receive()
+        self.assertEqual(countries.count(), 2)
 
 
 class TestUploadOecdCountryData(TestCase):
