@@ -137,9 +137,7 @@ class CountryDetailsManager(MontrekDetailsManager):
 
 class RestCountriesUploadManager(ApiDataImportManager):
     registry_repository_class = CountryApiUploadRegistryRepository
-    request_manager_class = RestCountriesRequestManager
     processor_class = RestCountriesUploadProcessor
-    endpoint = "all"
 
 
 class CountryApiUploadRegistryManager(MontrekTableManager):

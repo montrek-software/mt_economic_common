@@ -29,7 +29,7 @@ urlpatterns = [
     ),
     path(
         "upload_countries_rest_countries",
-        views.upload_countries_rest_countries,
+        views.UploadCountryApiView.as_view(),
         name="upload_countries_rest_countries",
     ),
     path(

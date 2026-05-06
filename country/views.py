@@ -7,6 +7,7 @@ from baseclasses.views import (
     MontrekTemplateView,
     MontrekUpdateView,
 )
+from data_import.base.views.data_import_views import DataImportView
 from reporting.views import MontrekReportView
 from django.urls import reverse
 from django.views.generic.base import HttpResponseRedirect
@@ -17,6 +18,7 @@ from mt_economic_common.country.managers.country_manager import (
     CountryDetailsManager,
     CountryManager,
     CountryTableManager,
+    RestCountriesUploadManager,
 )
 from mt_economic_common.country.managers.country_oecd_manager import (
     CountryOecdDataApiManager,
@@ -108,6 +110,11 @@ def upload_countries_rest_countries(request):
     task = country_tasks.country_rest_api_upload_task
     task.delay(session_data={"user_id": request.user.id})
     return HttpResponseRedirect(reverse("country"))
+
+
+class UploadCountryApiView(DataImportView):
+    manager_class = RestCountriesUploadManager
+    success_url = "country"
 
 
 def upload_oecd_country_data(request):

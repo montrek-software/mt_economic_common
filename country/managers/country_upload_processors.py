@@ -3,11 +3,15 @@ from io import StringIO
 from typing import Any
 
 import pandas as pd
+from data_import.api_import.managers.api_data_import_processor import (
+    ApiDataImportProcessorBase,
+)
 from data_import.base.managers.processor_base import ProcessorBaseABC
 from data_import.types import ImportDataType
 from django.conf import settings
 from mt_economic_common.country.managers.country_request_manager import (
     RestCountriesLocalityRequestManager,
+    RestCountriesRequestManager,
 )
 from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdFxAnnualRepository,
@@ -19,16 +23,15 @@ from mt_economic_common.currency.repositories.currency_repository import (
 )
 
 
-class RestCountriesUploadProcessor(ProcessorBaseABC):
+class RestCountriesUploadProcessor(ApiDataImportProcessorBase):
+    request_manager_class = RestCountriesRequestManager
     country_locality_request_manager_class = RestCountriesLocalityRequestManager
-
-    def pre_check(self) -> bool:
-        return True
+    endpoint = "all"
 
     def post_check(self) -> bool:
         return True
 
-    def process(self) -> bool:
+    def apply_import_data(self) -> bool:
         json_response = self.import_data
         countries_df = pd.read_json(StringIO(json.dumps(json_response)))
         countries_locality_response = self.country_locality_request_manager_class(
