@@ -1,25 +1,12 @@
-from pathlib import Path
-from unittest.mock import patch
-
-from django.test import TestCase
 from django.urls import reverse
 from django_pandas.io import read_frame
-import sdmx
-from mt_economic_common.country.tests.mocks import (
-    MockUploadCountryApiView,
-    MockUploadOECDCountryDataView,
-)
 from testing.test_cases import view_test_cases as vtc
-from user.tests.factories.montrek_user_factories import MontrekUserFactory
 
 from mt_economic_common.country import views
 from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdRepository,
 )
-from mt_economic_common.country.repositories.country_repository import (
-    CountryApiUploadRegistryRepository,
-    CountryRepository,
-)
+from mt_economic_common.country.repositories.country_repository import CountryRepository
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryApiUploadRegistryStaticSatelliteFactory,
     CountryHubFactory,
@@ -27,6 +14,10 @@ from mt_economic_common.country.tests.factories.country_factories import (
     CountryOecdFxAnnualTSSatelliteFactory,
     CountryOecdInflationTSSatelliteFactory,
     CountryStaticSatelliteFactory,
+)
+from mt_economic_common.country.tests.mocks import (
+    MockUploadCountryApiView,
+    MockUploadOECDCountryDataView,
 )
 
 
