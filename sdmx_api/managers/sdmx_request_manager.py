@@ -1,11 +1,12 @@
-from django.conf import settings
-import sdmx
 import pandas as pd
+import sdmx
+from django.conf import settings
 from requesting.managers.request_manager import RequestManagerABC
 
 
 class SdmxRequestManager(RequestManagerABC):
     def get_response(self, endpoint: str) -> pd.DataFrame:
+        self.status_code = 0
         try:
             data_message = self._get_data_message(endpoint)
             response_df = sdmx.to_pandas(data_message)
@@ -15,6 +16,7 @@ class SdmxRequestManager(RequestManagerABC):
             self.message = (
                 f"Error raised during object creation: {e.__class__.__name__}: {e}"
             )
+            self.status_code = 400
             return pd.DataFrame()
         self.status_code = 200
         return response_df

@@ -1,5 +1,10 @@
 from django.test import TestCase
-import sdmx
+from user.tests.factories.montrek_user_factories import MontrekUserFactory
+
+from mt_economic_common.country.managers.country_oecd_manager import (
+    CountryOecdAnnualFxUploadManager,
+    CountryOecdInflationUploadManager,
+)
 from mt_economic_common.country.managers.country_upload_processors import (
     OecdAnnualFxUploadProcessor,
     OecdInflationUploadProcessor,
@@ -9,18 +14,12 @@ from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdRepository,
     CountryOecdTableRepository,
 )
-from mt_economic_common.country.tests.mocks import MockOecdSdmxRequestManager
-from user.tests.factories.montrek_user_factories import MontrekUserFactory
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,
 )
+from mt_economic_common.country.tests.mocks import MockOecdSdmxRequestManager
 from mt_economic_common.country.tests.test_data.country_oecd_test_data import (
     TEST_OECD_COUNTRY_DATA,
-)
-
-from mt_economic_common.country.managers.country_oecd_manager import (
-    CountryOecdAnnualFxUploadManager,
-    CountryOecdInflationUploadManager,
 )
 
 
