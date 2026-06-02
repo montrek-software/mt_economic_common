@@ -47,10 +47,8 @@ class CountryRepository(MontrekRepository):
         self.add_linked_satellites_field_annotations(
             CurrencyStaticSatellite,
             LinkCountryCurrency,
-            [
-                "ccy_code",
-            ],
-            separator=",",
+            ["ccy_code", "hub_entity_id"],
+            rename_field_map={"hub_entity_id": "ccy_id"},
         )
 
 

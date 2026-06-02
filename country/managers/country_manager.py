@@ -83,12 +83,13 @@ class CountryDetailsManager(MontrekDetailsManager):
                 name="Code2",
                 attr="country_code_2",
             ),
-            table_elements.LinkTextTableElement(
-                url="currency",
+            table_elements.LinkListTableElement(
+                url="currency_details",
                 name="Currency",
                 text="ccy_code",
                 hover_text="View Currency",
-                kwargs={"filter": "ccy_code"},
+                list_kwarg="pk",
+                list_attr="ccy_id",
             ),
             table_elements.ImageTableElement(
                 name="Flag",
