@@ -1,0 +1,13 @@
+# .forgejo/workflows/sonar_cleanup.yml
+name: SonarQube PR Cleanup
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup-sonar:
+    uses: montrek-software/.forgejo/.forgejo/workflows/montrek_sonar_cleanup_template.yml@main
+    with:
+      montrek_project: ${{ vars.MONTREK_PROJECT }}
+    secrets:
+      SONARCUBE_ADMIN_TOKEN: ${{ secrets.SONARCUBE_ADMIN_TOKEN }}

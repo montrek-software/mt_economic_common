@@ -1,0 +1,24 @@
+name: Run Montrek Release-Drafter
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  pull_request_target:
+    types: [opened, reopened, synchronize, edited, labeled, unlabeled]
+  workflow_dispatch:
+
+jobs:
+  release_drafter:
+    uses: montrek-software/.forgejo/.forgejo/workflows/montrek_release_drafter_template.yml@main
+    with:
+      # Shared config lives in the .forgejo repo; nothing to configure per repo.
+      config_ref: 5-release_drafter
+    secrets:
+      PAT: ${{ secrets.PAT }}

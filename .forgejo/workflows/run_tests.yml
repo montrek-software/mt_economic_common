@@ -1,0 +1,24 @@
+# .forgejo/workflows/run_tests.yml
+name: Run Tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+  schedule:
+    # Every day at 02:00 local time (Forgejo defaults to UTC without the prefix).
+    - cron: "TZ=Europe/Berlin 0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    uses: montrek-software/.forgejo/.forgejo/workflows/montrek_tests_template.yml@main
+    with:
+      montrek_base_version: ${{ vars.MONTREK_BASE_VERSION }}
+      montrek_project: ${{ vars.MONTREK_PROJECT }}
+      sonar_enabled: true
+    secrets:
+      PAT: ${{ secrets.PAT }}
+      REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
+      SONARCUBE_TOKEN: ${{ secrets.SONARCUBE_TOKEN }}
