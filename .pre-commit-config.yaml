@@ -7,32 +7,33 @@ repos:
       - id: trailing-whitespace
       - id: debug-statements
       - id: no-commit-to-branch
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.9.3
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
     hooks:
-      - id: isort
+      - id: ruff
+        args: [--fix]
   - repo: https://github.com/psf/black
     rev: 25.1.0
     hooks:
       - id: black
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.3.1
-    hooks:
-      - id: autoflake
-        args:
-          [
-            --remove-all-unused-imports,
-            --in-place,
-            --ignore-init-module-imports,
-          ]
   - repo: https://github.com/Riverside-Healthcare/djLint
     rev: v1.34.0
     hooks:
       - id: djlint
+        args: [--ignore=H021]
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.5
     hooks:
       - id: bandit
+        args: ["-c", "pyproject.toml"]
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: bash -c "cd .. && mypy --config-file mt_llm/pyproject.toml mt_llm"
+        language: system
+        types: [python]
+        pass_filenames: false
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
     hooks:
