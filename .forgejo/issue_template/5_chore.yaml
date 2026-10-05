@@ -1,0 +1,25 @@
+name: Chore
+about: A cleanup task that doesn't change behaviour, e.g. updating tests after a change in core montrek.
+title: "[Chore] "
+labels: ["chore"]
+body:
+  - type: textarea
+    id: task
+    attributes:
+      label: Task
+      description: What needs to be cleaned up or updated?
+    validations:
+      required: true
+  - type: textarea
+    id: trigger
+    attributes:
+      label: Trigger
+      description: What made this necessary? Link the montrek release, commit or issue if there is one.
+      placeholder: "e.g. montrek-software/montrek#123 changed the repository API"
+  - type: checkboxes
+    id: behaviour
+    attributes:
+      label: Scope
+      options:
+        - label: This doesn't change the program's behaviour
+          required: true

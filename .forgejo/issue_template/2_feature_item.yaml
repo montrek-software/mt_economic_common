@@ -1,0 +1,39 @@
+name: Feature item
+about: One step of a Feature. Linked to its parent feature issue.
+title: "[Feature item] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        After creating this issue, add its number to the parent feature's
+        **Steps** list (`- [ ] #<this issue>`) and tick it there once this
+        issue is closed.
+  - type: input
+    id: parent
+    attributes:
+      label: Part of feature
+      description: Number of the parent Feature issue. Forgejo links it and shows this issue on the feature's timeline.
+      placeholder: "#123"
+    validations:
+      required: true
+  - type: textarea
+    id: step
+    attributes:
+      label: Step
+      description: What does this step deliver? It should fit in a single pull request.
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Affected apps and models, other steps this one depends on.

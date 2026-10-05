@@ -1,0 +1,24 @@
+name: Issue
+about: A small adjustment, or a response to something that broke that isn't urgent.
+title: "[Issue] "
+labels: ["issue"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What should change?
+      description: Current behaviour and the behaviour you want.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why is this needed? Link the parent feature or the change that caused it, if there is one.
+      placeholder: "Part of #"
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      value: |
+        - [ ]
