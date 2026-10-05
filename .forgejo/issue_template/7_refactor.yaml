@@ -1,0 +1,31 @@
+name: Refactor
+about: The code changes but the functionality stays the same.
+title: "[Refactor] "
+labels: ["refactor"]
+body:
+  - type: textarea
+    id: current
+    attributes:
+      label: Current state
+      description: Which code is affected and what is wrong with it (duplication, performance, readability, ...)?
+    validations:
+      required: true
+  - type: textarea
+    id: target
+    attributes:
+      label: Target state
+      description: What should the code look like afterwards?
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety net
+      description: Which tests cover the affected code? Which tests need to be added first?
+  - type: checkboxes
+    id: behaviour
+    attributes:
+      label: Scope
+      options:
+        - label: Functionality stays the same
+          required: true

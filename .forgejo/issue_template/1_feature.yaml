@@ -1,0 +1,54 @@
+name: Feature
+about: Something larger, e.g. a client request or part of the project. Broken down into smaller steps.
+title: "[Feature] "
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A feature is too large for one pull request. Break it down into steps
+        below and open a *Feature item* issue for each step, so each can be
+        reviewed and released on its own.
+  - type: input
+    id: requester
+    attributes:
+      label: Requested by
+      description: Client, project or person the feature comes from.
+      placeholder: "e.g. Client X / project Y"
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should users be able to do afterwards, and why do they need it?
+      placeholder: "As a <role> I want to <action> so that <benefit>."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: When is the feature done?
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps
+      description: Break the feature down into small, separately deliverable steps. Add each step's Feature item number once it exists.
+      value: |
+        - [ ] #
+        - [ ] #
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Affected apps and models, dependencies on other mt_* extensions, mockups, open questions.
+  - type: input
+    id: deadline
+    attributes:
+      label: Deadline
+      placeholder: "YYYY-MM-DD"

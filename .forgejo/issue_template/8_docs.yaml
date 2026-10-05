@@ -1,0 +1,18 @@
+name: Documentation
+about: Missing, outdated or unclear documentation (README, docs pages, docstrings).
+title: "[Docs] "
+labels: ["docs"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Where
+      description: File, page or module.
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: What is missing or wrong?
+    validations:
+      required: true
