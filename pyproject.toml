@@ -4,3 +4,46 @@ line-length = 88
 [tool.isort]
 profile = "black"
 line_length = 88
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+# Only report errors for the files/packages passed on the command line
+# (e.g. `mypy baseclasses`); imported first-party modules are analysed silently.
+follow_imports = "silent"
+
+[[tool.mypy.overrides]]
+# Third-party packages without type hints or installed stubs.
+module = [
+  "_plotly_utils.*",
+  "bleach.*",
+  "celery.*",
+  "debug_toolbar.*",
+  "decouple.*",
+  "django_pandas.*",
+  "encrypted_fields.*",
+  "kombu.*",
+  "mozilla_django_oidc.*",
+  "networkx.*",
+  "openpyxl.*",
+  "pandas.*",
+  "plotly.*",
+  "psycopg2.*",
+  "pypandoc.*",
+  "requests.*",
+  "rest_framework.*",
+  "vcr.*",
+  "weasyprint.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# mypy 1.19 crashes on the generic TypedDicts with type parameter defaults
+# in langchain.agents (e.g. AgentState[ResponseT]); treat the module as Any.
+module = ["langchain.agents", "langchain.agents.*"]
+follow_imports = "skip"
+
+[tool.django-stubs]
+django_settings_module = "montrek.settings"
+
+[tool.bandit]
+exclude_dirs = ["tests", "migrations"]
