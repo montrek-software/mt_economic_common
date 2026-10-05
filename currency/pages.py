@@ -39,7 +39,12 @@ class CurrencyPage(MontrekPage):
     def get_tabs(self):
         details_tab = TabElement(
             name="Details",
-            link=reverse("currency_details", args=[self.obj.id]),
+            link=reverse("currency_details", args=[self.obj.hub_entity_id]),
             html_id="tab_details",
         )
-        return [details_tab]
+        report_tab = TabElement(
+            name="FX Rates",
+            link=reverse("currency_report", args=[self.obj.id]),
+            html_id="tab_report",
+        )
+        return [details_tab, report_tab]

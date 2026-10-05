@@ -9,7 +9,6 @@ from baseclasses.views import MontrekCreateView
 from baseclasses.views import MontrekTemplateView
 from reporting.dataclasses.table_elements import (
     StringTableElement,
-    FloatTableElement,
 )
 from mt_economic_common.currency.managers.currency_manager import (
     CurrencyManager,
@@ -20,9 +19,14 @@ from mt_economic_common.currency.managers.fx_rate_import_manager import (
     FxRateImportRegistryManager,
 )
 from mt_economic_common.currency.managers.fx_rate_sources import FxRateSource
+from mt_economic_common.currency.managers.currency_report_manager import (
+    CurrencyReportManager,
+)
 from mt_economic_common.currency.pages import CurrencyAppPage
 from mt_economic_common.currency.pages import CurrencyPage
 from mt_economic_common.currency.forms import CurrencyCreateForm, FxRateImportForm
+from mt_economic_common.currency.table_elements import FxRateTableElement
+from reporting.views import MontrekReportView
 
 
 class CurrencyOverview(MontrekListView):
@@ -60,8 +64,25 @@ class CurrencyDetailView(MontrekDetailView):
             StringTableElement(name="Name", attr="ccy_name"),
             StringTableElement(name="Code", attr="ccy_code"),
             StringTableElement(name="Symbol", attr="ccy_symbol"),
-            FloatTableElement(name="FX Rate", attr="fx_rate"),
+            FxRateTableElement(name="FX Rate", attr="fx_rate"),
         )
+
+    @property
+    def actions(self) -> tuple:
+        action_back = ActionElement(
+            icon="chevron-left",
+            link=reverse("currency"),
+            action_id="id_back",
+            hover_text="Back to Overview",
+        )
+        return (action_back,)
+
+
+class CurrencyReportView(MontrekReportView):
+    page_class = CurrencyPage
+    tab = "tab_report"
+    title = "FX Rates"
+    manager_class = CurrencyReportManager
 
     @property
     def actions(self) -> tuple:

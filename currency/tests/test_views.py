@@ -1,12 +1,18 @@
 import datetime
+from decimal import Decimal
 
 from django.urls import reverse
 
+from mt_economic_common.currency.repositories.currency_repository import (
+    CurrencyRepository,
+)
 from mt_economic_common.currency.repositories.fx_rate_import_registry_repository import (
     FxRateImportRegistryRepository,
 )
 from mt_economic_common.currency.tests.factories.currency_factories import (
+    CurrencyHubValueDateFactory,
     CurrencyStaticSatelliteFactory,
+    CurrencyTimeSeriesSatelliteFactory,
     FxRateImportRegistrySatelliteFactory,
 )
 from mt_economic_common.currency import views
@@ -85,3 +91,46 @@ class TestFxRateImportRegistryView(vtc.MontrekListViewTestCase):
 
     def build_factories(self):
         FxRateImportRegistrySatelliteFactory.create_batch(2)
+
+
+class TestCurrencyReportView(vtc.MontrekReportViewTestCase):
+    viewname = "currency_report"
+    view_class = views.CurrencyReportView
+    expected_number_of_report_elements = 4
+
+    def build_factories(self):
+        static = CurrencyStaticSatelliteFactory(ccy_name="US Dollar", ccy_code="USD")
+        other_currency = CurrencyStaticSatelliteFactory(ccy_code="GBP")
+        for hub, value_date, fx_rate in (
+            (static.hub_entity, "2026-10-01", 0.89),
+            (static.hub_entity, "2026-10-02", 0.8908686),
+            (other_currency.hub_entity, "2026-10-02", 1.17),
+        ):
+            CurrencyTimeSeriesSatelliteFactory(
+                hub_value_date=CurrencyHubValueDateFactory(
+                    hub=hub, value_date=value_date
+                ),
+                fx_rate=fx_rate,
+            )
+        self.currency = CurrencyRepository({}).receive().get(ccy_code="USD")
+
+    def url_kwargs(self) -> dict:
+        return {"pk": self.currency.pk}
+
+    def test_fx_rate_history(self):
+        report_manager = self.view.manager
+        rows = list(report_manager.history_manager.get_full_table())
+        self.assertEqual(
+            [(str(row.value_date), row.fx_rate) for row in rows],
+            [
+                ("2026-10-02", Decimal("0.8908686000")),
+                ("2026-10-01", Decimal("0.8900000000")),
+            ],
+        )
+        self.assertEqual(report_manager.document_title, "FX Rates: US Dollar (USD)")
+
+    def test_fx_rate_plot(self):
+        plot = self.view.manager._get_fx_rate_plot()
+        line = plot.figure.data[0]
+        self.assertEqual([str(x) for x in line.x], ["2026-10-01", "2026-10-02"])
+        self.assertEqual(list(line.y), [0.89, 0.8908686])

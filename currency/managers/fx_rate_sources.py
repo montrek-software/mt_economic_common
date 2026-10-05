@@ -4,6 +4,7 @@ from baseclasses.utils import ChoicesEnum
 
 from mt_economic_common.currency.managers.fx_rate_import_processors import (
     DummyFxRateImportProcessor,
+    FrankfurterFxRateImportProcessor,
     FxRateImportProcessorABC,
 )
 
@@ -25,6 +26,11 @@ class FxRateSource(ChoicesEnum):
         label="dummy",
         description="Dummy (every FX rate set to 1)",
         processor_class=DummyFxRateImportProcessor,
+    )
+    FRANKFURTER = FxRateSourceDataClass(
+        label="frankfurter",
+        description="Frankfurter (ECB reference rates)",
+        processor_class=FrankfurterFxRateImportProcessor,
     )
 
     @classmethod

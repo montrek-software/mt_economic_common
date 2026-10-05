@@ -2,10 +2,10 @@ from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
 from reporting.dataclasses.table_elements import (
-    FloatTableElement,
     LinkTableElement,
     StringTableElement,
 )
+from mt_economic_common.currency.table_elements import FxRateTableElement
 from reporting.managers.montrek_details_manager import MontrekDetailsManager
 from reporting.managers.montrek_table_manager import MontrekTableManager
 
@@ -19,7 +19,7 @@ class CurrencyManager(MontrekTableManager):
             StringTableElement(name="Name", attr="ccy_name"),
             StringTableElement(name="Code", attr="ccy_code"),
             StringTableElement(name="Symbol", attr="ccy_symbol"),
-            FloatTableElement(name="FX Rate", attr="fx_rate"),
+            FxRateTableElement(name="FX Rate", attr="fx_rate"),
             LinkTableElement(
                 name="Link",
                 url="currency_details",
@@ -39,5 +39,5 @@ class CurrencyDetailsManager(MontrekDetailsManager):
             StringTableElement(name="Name", attr="ccy_name"),
             StringTableElement(name="Code", attr="ccy_code"),
             StringTableElement(name="Symbol", attr="ccy_symbol"),
-            FloatTableElement(name="FX Rate", attr="fx_rate"),
+            FxRateTableElement(name="FX Rate", attr="fx_rate"),
         )

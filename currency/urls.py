@@ -7,6 +7,7 @@ urlpatterns = [
     path(
         "<int:pk>/details", views.CurrencyDetailView.as_view(), name="currency_details"
     ),
+    path("<int:pk>/report", views.CurrencyReportView.as_view(), name="currency_report"),
     path("fx_rate_import", views.FxRateImportView.as_view(), name="fx_rate_import"),
     path(
         "fx_rate_import_registry",
