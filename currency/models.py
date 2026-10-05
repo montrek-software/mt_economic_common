@@ -1,6 +1,8 @@
 from django.db import models
 from baseclasses import models as baseclass_models
 from baseclasses.fields import HubForeignKey
+from data_import.base.models import DataImportRegistryBaseSatelliteABC
+from process_pipeline.models.pipeline_registry_hub_models import PipelineRegistryHubABC
 
 # Create your models here.
 
@@ -32,6 +34,22 @@ class CurrencyTimeSeriesSatellite(baseclass_models.MontrekTimeSeriesSatelliteABC
         on_delete=models.CASCADE,
         related_name="currency_time_series_satellites",
     )
+    # Ten decimal places so that rates of weak currencies against EUR (e.g. IDR
+    # at about 0.00005) do not round to zero.
     fx_rate = models.DecimalField(
-        max_digits=10, decimal_places=4, null=True, blank=True
+        max_digits=20, decimal_places=10, null=True, blank=True
     )
+
+
+class FxRateImportRegistryHub(PipelineRegistryHubABC):
+    pass
+
+
+class FxRateImportRegistryHubValueDate(baseclass_models.HubValueDate):
+    hub = HubForeignKey(FxRateImportRegistryHub)
+
+
+class FxRateImportRegistrySatellite(DataImportRegistryBaseSatelliteABC):
+    hub_entity = models.ForeignKey(FxRateImportRegistryHub, on_delete=models.CASCADE)
+    fx_source = models.CharField(max_length=50, default="")
+    fx_value_date = models.DateField(null=True, blank=True)

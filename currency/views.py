@@ -1,10 +1,12 @@
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.utils import timezone
+from baseclasses.access import AccessKind
 from baseclasses.dataclasses.view_classes import ActionElement
 from baseclasses.views import MontrekListView
 from baseclasses.views import MontrekDetailView
 from baseclasses.views import MontrekCreateView
+from baseclasses.views import MontrekTemplateView
 from reporting.dataclasses.table_elements import (
     StringTableElement,
     FloatTableElement,
@@ -12,13 +14,15 @@ from reporting.dataclasses.table_elements import (
 from mt_economic_common.currency.managers.currency_manager import (
     CurrencyManager,
     CurrencyDetailsManager,
-    YahooFxUploadManager,
 )
+from mt_economic_common.currency.managers.fx_rate_import_manager import (
+    FxRateImportManager,
+    FxRateImportRegistryManager,
+)
+from mt_economic_common.currency.managers.fx_rate_sources import FxRateSource
 from mt_economic_common.currency.pages import CurrencyAppPage
 from mt_economic_common.currency.pages import CurrencyPage
-from mt_economic_common.currency.forms import CurrencyCreateForm
-
-# Create your views here.
+from mt_economic_common.currency.forms import CurrencyCreateForm, FxRateImportForm
 
 
 class CurrencyOverview(MontrekListView):
@@ -35,13 +39,13 @@ class CurrencyOverview(MontrekListView):
             action_id="id_create_currency",
             hover_text="Create Currency",
         )
-        action_yahoo_upload = ActionElement(
+        action_import_fx_rates = ActionElement(
             icon="upload",
-            link=reverse("upload_yahoo_fx_rates"),
-            action_id="id_upload_yahoo_fx_rates",
-            hover_text="Yahoo FX Rates Upload",
+            link=reverse("fx_rate_import"),
+            action_id="id_import_fx_rates",
+            hover_text="Import FX Rates",
         )
-        return (action_new_currency, action_yahoo_upload)
+        return (action_new_currency, action_import_fx_rates)
 
 
 class CurrencyDetailView(MontrekDetailView):
@@ -78,9 +82,48 @@ class CurrencyCreateView(MontrekCreateView):
     success_url = "currency"
 
 
-def upload_yahoo_fx_rates(request):
-    yahoo_manager = YahooFxUploadManager(session_data={"user_id": request.user.id})
-    yahoo_manager.update_fx_rates(
-        (timezone.datetime.now() - timezone.timedelta(days=1)).date()
-    )
-    return HttpResponseRedirect(reverse("currency"))
+class FxRateImportView(MontrekTemplateView):
+    page_class = CurrencyAppPage
+    tab = "tab_overview"
+    title = "Import FX Rates"
+    template_name = "fx_rate_import_form.html"
+    manager_class = FxRateImportManager
+    access_kind = AccessKind.CREATE
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.import_form = FxRateImportForm()
+
+    def get_template_context(self) -> dict:
+        return {"import_form": self.import_form}
+
+    def post(self, request, *args, **kwargs):
+        self.import_form = FxRateImportForm(request.POST)
+        if not self.import_form.is_valid():
+            return self.render_to_response(self.get_context_data())
+        result = self.manager.import_fx_rates(
+            FxRateSource.from_label(self.import_form.cleaned_data["fx_source"]),
+            self.import_form.cleaned_data["fx_value_date"],
+        )
+        if result:
+            messages.info(request, self.manager.message)
+        else:
+            messages.error(request, self.manager.message)
+        return HttpResponseRedirect(reverse("fx_rate_import_registry"))
+
+
+class FxRateImportRegistryView(MontrekListView):
+    page_class = CurrencyAppPage
+    tab = "tab_fx_rate_import_registry"
+    title = "FX Rate Imports"
+    manager_class = FxRateImportRegistryManager
+
+    @property
+    def actions(self) -> tuple:
+        action_import_fx_rates = ActionElement(
+            icon="upload",
+            link=reverse("fx_rate_import"),
+            action_id="id_import_fx_rates",
+            hover_text="Import FX Rates",
+        )
+        return (action_import_fx_rates,)

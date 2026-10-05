@@ -1,15 +1,12 @@
-from django.db.models import Q
 from django.test import TestCase
 from django.utils import timezone
 from testing.decorators.add_logged_in_user import add_logged_in_user
 
-from mt_economic_common.currency.models import CurrencyTimeSeriesSatellite
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
 )
 from mt_economic_common.currency.tests.factories.currency_factories import (
     CurrencyHubFactory,
-    CurrencyTimeSeriesSatelliteFactory,
 )
 
 

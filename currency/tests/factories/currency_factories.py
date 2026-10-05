@@ -1,5 +1,4 @@
 import factory
-from django.utils import timezone
 from baseclasses.tests.factories.montrek_factory_schemas import (
     MontrekHubFactory,
     MontrekSatelliteFactory,
@@ -32,3 +31,23 @@ class CurrencyTimeSeriesSatelliteFactory(MontrekTSSatelliteFactory):
         model = "currency.CurrencyTimeSeriesSatellite"
 
     hub_value_date = factory.SubFactory(CurrencyHubValueDateFactory)
+
+
+class FxRateImportRegistryHubFactory(MontrekHubFactory):
+    class Meta:
+        model = "currency.FxRateImportRegistryHub"
+
+
+class FxRateImportRegistryHubValueDateFactory(MontrekHubValueDateFactory):
+    class Meta:
+        model = "currency.FxRateImportRegistryHubValueDate"
+
+    hub = factory.SubFactory(FxRateImportRegistryHubFactory)
+
+
+class FxRateImportRegistrySatelliteFactory(MontrekSatelliteFactory):
+    class Meta:
+        model = "currency.FxRateImportRegistrySatellite"
+
+    hub_entity = factory.SubFactory(FxRateImportRegistryHubFactory)
+    fx_source = "dummy"

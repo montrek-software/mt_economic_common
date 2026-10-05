@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from baseclasses.dataclasses.view_classes import TabElement, ActionElement
+from baseclasses.dataclasses.view_classes import TabElement
 from baseclasses.pages import MontrekPage
 from mt_economic_common.currency.repositories.currency_repository import (
     CurrencyRepository,
@@ -17,6 +17,11 @@ class CurrencyAppPage(MontrekPage):
                 html_id="tab_overview",
                 name="Overview",
                 link=reverse("currency"),
+            ),
+            TabElement(
+                html_id="tab_fx_rate_import_registry",
+                name="FX Rate Imports",
+                link=reverse("fx_rate_import_registry"),
             ),
         ]
 
