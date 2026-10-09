@@ -1,8 +1,18 @@
+import re
+from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Self
 
 from baseclasses.dataclasses.montrek_type import MontrekType, MontrekTypeEnum
 from reporting.core.reporting_colors import ReportingColors
+
+ISIN_PATTERN = re.compile(r"^[A-Z]{2}[A-Z0-9]{9}\d$")
+LEI_PATTERN = re.compile(r"^[A-Z0-9]{18}\d{2}$")
+
+
+def normalize_identifiers(identifiers: Iterable[str]) -> list[str]:
+    """Strip, upper-case, de-duplicate and sort identifiers like ISINs or LEIs."""
+    return sorted({i.strip().upper() for i in identifiers if i and i.strip()})
 
 
 @dataclass(frozen=True)

@@ -11,7 +11,6 @@ FIRDS returns one record per ISIN *per trading venue (MIC)*, so we:
   3. optionally keep the full per-venue table for inspection.
 """
 
-import re
 import time
 from collections.abc import Iterable, Iterator
 from urllib.parse import urlencode
@@ -19,10 +18,12 @@ from urllib.parse import urlencode
 import pandas as pd
 
 from baseclasses.errors.montrek_user_error import MontrekError
-from mt_economic_common.market_data.utils import AssetTypes
+from mt_economic_common.market_data.utils import (
+    ISIN_PATTERN,
+    AssetTypes,
+    normalize_identifiers,
+)
 from requesting.managers.request_manager import RequestJsonManager
-
-ISIN_PATTERN = re.compile(r"^[A-Z]{2}[A-Z0-9]{9}\d$")
 
 # Fields confirmed on equity records; bond and derivative specific fields are
 # kept automatically if present (see EXTRA_FIELD_PREFIXES).
@@ -60,7 +61,7 @@ class EsmaFirdsRequestManager(RequestJsonManager):
         ISINs without a FIRDS record (or with an invalid format) appear as
         empty rows instead of being dropped silently.
         """
-        requested = sorted({i.strip().upper() for i in isins if i and i.strip()})
+        requested = normalize_identifiers(isins)
         valid_isins = [isin for isin in requested if ISIN_PATTERN.match(isin)]
 
         records: list[dict] = []
