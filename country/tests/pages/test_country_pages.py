@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from mt_economic_common.country.pages import CountryPage
+from mt_economic_common.country.pages.country_pages import CountryPage
 
 
 class TestCountryPage(TestCase):

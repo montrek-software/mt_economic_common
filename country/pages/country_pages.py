@@ -1,6 +1,6 @@
 from django.urls import reverse
 from mt_economic_common.country.repositories.country_repository import CountryRepository
-from baseclasses.dataclasses.view_classes import TabElement, ActionElement
+from baseclasses.dataclasses.view_classes import TabElement
 from baseclasses.pages import MontrekPage
 
 

@@ -30,7 +30,7 @@ repos:
     hooks:
       - id: mypy
         name: mypy
-        entry: bash -c "cd .. && mypy --config-file mt_llm/pyproject.toml mt_llm"
+        entry: bash -c "cd .. && mypy --config-file mt_economic_common/pyproject.toml mt_economic_common"
         language: system
         types: [python]
         pass_filenames: false

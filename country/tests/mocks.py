@@ -19,7 +19,7 @@ from mt_economic_common.country.managers.country_upload_processors import (
     OecdInflationUploadProcessor,
     RestCountriesUploadProcessor,
 )
-from mt_economic_common.country.views import (
+from mt_economic_common.country.views.country_views import (
     UploadCountryApiView,
     UploadOecdCountryDataView,
 )

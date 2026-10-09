@@ -43,7 +43,6 @@ class RestCountriesUploadProcessor(ApiDataImportProcessorBase):
             countries_locality_df = pd.read_json(
                 StringIO(json.dumps(countries_locality_response))
             )
-            breakpoint()
             countries_df = countries_df.set_index("cca2").join(
                 countries_locality_df.set_index("cca2"), rsuffix="_locality"
             )

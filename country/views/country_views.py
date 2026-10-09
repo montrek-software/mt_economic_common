@@ -10,9 +10,8 @@ from baseclasses.views import (
 from data_import.base.views.data_import_views import DataImportView
 from reporting.views import MontrekReportView
 from django.urls import reverse
-from django.views.generic.base import HttpResponseRedirect
 
-from mt_economic_common.country.forms import CountryCreateForm
+from mt_economic_common.country.forms.country_forms import CountryCreateForm
 from mt_economic_common.country.managers.country_manager import (
     CountryApiUploadRegistryManager,
     CountryDetailsManager,
@@ -29,8 +28,10 @@ from mt_economic_common.country.managers.country_oecd_manager import (
 from mt_economic_common.country.managers.country_report_manager import (
     CountryReportManager,
 )
-from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
-from mt_economic_common.country import tasks as country_tasks
+from mt_economic_common.country.pages.country_pages import (
+    CountryOverviewPage,
+    CountryPage,
+)
 
 
 class CountryCreateView(MontrekCreateView):
