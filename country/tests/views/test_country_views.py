@@ -2,7 +2,7 @@ from django.urls import reverse
 from django_pandas.io import read_frame
 from testing.test_cases import view_test_cases as vtc
 
-from mt_economic_common.country import views
+from mt_economic_common.country.views import country_views as views
 from mt_economic_common.country.repositories.country_oecd_repository import (
     CountryOecdRepository,
 )

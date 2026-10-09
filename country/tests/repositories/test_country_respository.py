@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 from mt_economic_common.country.tests.factories.country_factories import (
     CountryStaticSatelliteFactory,

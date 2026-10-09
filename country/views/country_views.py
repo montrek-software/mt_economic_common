@@ -1,4 +1,4 @@
-from baseclasses.dataclasses.view_classes import ActionElement
+from baseclasses.dataclasses.view_classes import ActionElement, SettingsActionElement
 from baseclasses.views import (
     MontrekCreateView,
     MontrekDetailView,
@@ -10,9 +10,8 @@ from baseclasses.views import (
 from data_import.base.views.data_import_views import DataImportView
 from reporting.views import MontrekReportView
 from django.urls import reverse
-from django.views.generic.base import HttpResponseRedirect
 
-from mt_economic_common.country.forms import CountryCreateForm
+from mt_economic_common.country.forms.country_forms import CountryCreateForm
 from mt_economic_common.country.managers.country_manager import (
     CountryApiUploadRegistryManager,
     CountryDetailsManager,
@@ -29,8 +28,10 @@ from mt_economic_common.country.managers.country_oecd_manager import (
 from mt_economic_common.country.managers.country_report_manager import (
     CountryReportManager,
 )
-from mt_economic_common.country.pages import CountryOverviewPage, CountryPage
-from mt_economic_common.country import tasks as country_tasks
+from mt_economic_common.country.pages.country_pages import (
+    CountryOverviewPage,
+    CountryPage,
+)
 
 
 class CountryCreateView(MontrekCreateView):
@@ -75,6 +76,15 @@ class CountryApiUploadRegistryListView(MontrekListView):
     manager_class = CountryApiUploadRegistryManager
     title = "Country API Registry"
     tab = "tab_country_api_registry"
+
+    @property
+    def actions(self) -> tuple:
+        action_settings = SettingsActionElement(
+            url_name="country_api_credentials",
+            action_id="id_country_api_credentials",
+            hover_text="Set Credentials",
+        )
+        return (action_settings,)
 
 
 class CountryDetailsView(MontrekDetailView):

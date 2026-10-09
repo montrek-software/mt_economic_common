@@ -19,7 +19,7 @@ from mt_economic_common.country.managers.country_upload_processors import (
     OecdInflationUploadProcessor,
     RestCountriesUploadProcessor,
 )
-from mt_economic_common.country.views import (
+from mt_economic_common.country.views.country_views import (
     UploadCountryApiView,
     UploadOecdCountryDataView,
 )
@@ -29,7 +29,7 @@ from mt_economic_common.sdmx_api.managers.sdmx_request_manager import (
 
 
 class MockRestCountriesRequestManager(RestCountriesRequestManager):
-    def get_response(self, endpoint: str) -> dict | list:
+    def get_response(self, endpoint: str) -> list:
         self.status_code = 200
         with open(
             os.path.join(
@@ -41,7 +41,6 @@ class MockRestCountriesRequestManager(RestCountriesRequestManager):
 
 class MockRestCountriesUploadProcessor(RestCountriesUploadProcessor):
     request_manager_class = MockRestCountriesRequestManager
-    country_locality_request_manager_class = MockRestCountriesRequestManager
 
 
 class MockRestCountriesUploadManager(RestCountriesUploadManager):

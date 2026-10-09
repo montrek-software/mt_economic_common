@@ -1,5 +1,5 @@
 from django.urls import path
-from mt_economic_common.country import views
+from mt_economic_common.country.views import country_views as views
 
 urlpatterns = [
     path(

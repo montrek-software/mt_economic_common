@@ -1,22 +1,13 @@
+from baseclasses.models import MontrekSatelliteABC, MontrekTimeSeriesSatelliteABC
 from django.db import models
-from baseclasses import models as baseclass_models
-from baseclasses.fields import HubForeignKey
-from data_import.api_import import models as api_upload_models
+
+from mt_economic_common.country.models.country_hub_models import (
+    CountryHub,
+    CountryHubValueDate,
+)
 
 
-class CountryHub(baseclass_models.MontrekHubABC):
-    link_country_currency = models.ManyToManyField(
-        "currency.CurrencyHub",
-        related_name="link_currency_country",
-        through="LinkCountryCurrency",
-    )
-
-
-class CountryHubValueDate(baseclass_models.HubValueDate):
-    hub = HubForeignKey(CountryHub)
-
-
-class CountryStaticSatellite(baseclass_models.MontrekSatelliteABC):
+class CountryStaticSatellite(MontrekSatelliteABC):
     hub_entity = models.ForeignKey(CountryHub, on_delete=models.CASCADE)
     country_code = models.CharField(max_length=3)
     country_code_2 = models.CharField(max_length=2, null=True, blank=True)
@@ -44,7 +35,7 @@ class CountryStaticSatellite(baseclass_models.MontrekSatelliteABC):
         return self.country_name
 
 
-class CountryOecdTSSatelliteABC(baseclass_models.MontrekTimeSeriesSatelliteABC):
+class CountryOecdTSSatelliteABC(MontrekTimeSeriesSatelliteABC):
     class Meta:
         abstract = True
 
@@ -61,27 +52,3 @@ class CountryOecdFxAnnualTSSatellite(CountryOecdTSSatelliteABC):
 
 class CountryOecdInflationTSSatellite(CountryOecdTSSatelliteABC):
     inflation = models.FloatField(null=True, blank=True)
-
-
-class LinkCountryCurrency(baseclass_models.MontrekManyToManyLinkABC):
-    hub_in = models.ForeignKey(
-        "country.CountryHub",
-        on_delete=models.CASCADE,
-    )
-    hub_out = models.ForeignKey("currency.CurrencyHub", on_delete=models.CASCADE)
-
-
-class CountryApiUploadRegistryHub(baseclass_models.MontrekHubABC):
-    pass
-
-
-class CountryApiUploadRegistryHubValueDate(baseclass_models.HubValueDate):
-    hub = HubForeignKey(CountryApiUploadRegistryHub)
-
-
-class CountryApiUploadRegistryStaticSatellite(
-    api_upload_models.ApiRegistrySatellite
-):
-    hub_entity = models.ForeignKey(
-        CountryApiUploadRegistryHub, on_delete=models.CASCADE
-    )

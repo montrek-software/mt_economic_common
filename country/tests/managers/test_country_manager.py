@@ -16,276 +16,63 @@ from mt_economic_common.currency.repositories.currency_repository import (
 )
 
 
+def build_country(
+    common: str,
+    official: str,
+    alpha_2: str,
+    alpha_3: str,
+    capital: str,
+    currencies: list[dict],
+) -> dict:
+    return {
+        "names": {"common": common, "official": official},
+        "codes": {"alpha_2": alpha_2, "alpha_3": alpha_3},
+        "coordinates": {"lat": 46.0, "lng": 2.0},
+        "capitals": [
+            {
+                "name": capital,
+                "coordinates": {"lat": 48.87, "lng": 2.33},
+                "attributes": {"primary": True},
+            }
+        ],
+        "postal_code": {"format": "#####", "regex": "^(\\d{5})$"},
+        "links": {
+            "google_maps": "https://goo.gl/maps/example",
+            "open_street_maps": "https://www.openstreetmap.org/relation/1",
+        },
+        "flag": {"url_png": f"https://flags.restcountries.com/v5/w640/{alpha_2}.png"},
+        "classification": {"un_member": True},
+        "currencies": currencies,
+        "continents": ["Europe"],
+        "region": "Europe",
+        "subregion": "Western Europe",
+        "area": {"kilometers": 551695.0},
+        "population": 67391582,
+    }
+
+
 class MockCountryRequestManager(RestCountriesRequestManager):
     base_url = "test_url"
 
     def get_response(self, endpoint: str):
         self.status_code = 200
+        euro = {"code": "EUR", "name": "Euro", "symbol": "€"}
         return [
-            {
-                "name": {
-                    "common": "France",
-                    "official": "French Republic",
-                    "nativeName": {
-                        "fra": {"official": "République française", "common": "France"}
-                    },
-                },
-                "tld": [".fr"],
-                "cca2": "FR",
-                "ccn3": "250",
-                "cca3": "FRA",
-                "cioc": "FRA",
-                "independent": True,
-                "status": "officially-assigned",
-                "unMember": True,
-                "currencies": {"EUR": {"name": "Euro", "symbol": "€"}},
-                "idd": {"root": "+3", "suffixes": ["3"]},
-                "capital": ["Paris"],
-                "altSpellings": ["FR", "French Republic", "République française"],
-                "region": "Europe",
-                "subregion": "Western Europe",
-                "languages": {"fra": "French"},
-                "translations": {
-                    "ara": {"official": "الجمهورية الفرنسية", "common": "فرنسا"},
-                    "bre": {"official": "Republik Frañs", "common": "Frañs"},
-                    "ces": {"official": "Francouzská republika", "common": "Francie"},
-                    "cym": {"official": "French Republic", "common": "France"},
-                    "deu": {
-                        "official": "Französische Republik",
-                        "common": "Frankreich",
-                    },
-                    "est": {"official": "Prantsuse Vabariik", "common": "Prantsusmaa"},
-                    "fin": {"official": "Ranskan tasavalta", "common": "Ranska"},
-                    "fra": {"official": "République française", "common": "France"},
-                    "hrv": {"official": "Francuska Republika", "common": "Francuska"},
-                    "hun": {
-                        "official": "Francia Köztársaság",
-                        "common": "Franciaország",
-                    },
-                    "ita": {"official": "Repubblica francese", "common": "Francia"},
-                    "jpn": {"official": "フランス共和国", "common": "フランス"},
-                    "kor": {"official": "프랑스 공화국", "common": "프랑스"},
-                    "nld": {"official": "Franse Republiek", "common": "Frankrijk"},
-                    "per": {"official": "جمهوری فرانسه", "common": "فرانسه"},
-                    "pol": {"official": "Republika Francuska", "common": "Francja"},
-                    "por": {"official": "República Francesa", "common": "França"},
-                    "rus": {"official": "Французская Республика", "common": "Франция"},
-                    "slk": {"official": "Francúzska republika", "common": "Francúzsko"},
-                    "spa": {"official": "República francés", "common": "Francia"},
-                    "srp": {"official": "Француска Република", "common": "Француска"},
-                    "swe": {"official": "Republiken Frankrike", "common": "Frankrike"},
-                    "tur": {"official": "Fransa Cumhuriyeti", "common": "Fransa"},
-                    "urd": {"official": "جمہوریہ فرانس", "common": "فرانس"},
-                    "zho": {"official": "法兰西共和国", "common": "法国"},
-                },
-                "latlng": [46.0, 2.0],
-                "landlocked": False,
-                "borders": ["AND", "BEL", "DEU", "ITA", "LUX", "MCO", "ESP", "CHE"],
-                "area": 551695.0,
-                "demonyms": {
-                    "eng": {"f": "French", "m": "French"},
-                    "fra": {"f": "Française", "m": "Français"},
-                },
-                "flag": "\ud83c\uddeb\ud83c\uddf7",
-                "maps": {
-                    "googleMaps": "https://goo.gl/maps/g7QxxSFsWyTPKuzd7",
-                    "openStreetMaps": "https://www.openstreetmap.org/relation/1403916",
-                },
-                "population": 67391582,
-                "gini": {"2018": 32.4},
-                "fifa": "FRA",
-                "car": {"signs": ["F"], "side": "right"},
-                "timezones": [
-                    "UTC-10:00",
-                    "UTC-09:30",
-                    "UTC-09:00",
-                    "UTC-08:00",
-                    "UTC-04:00",
-                    "UTC-03:00",
-                    "UTC+01:00",
-                    "UTC+02:00",
-                    "UTC+03:00",
-                    "UTC+04:00",
-                    "UTC+05:00",
-                    "UTC+10:00",
-                    "UTC+11:00",
-                    "UTC+12:00",
-                ],
-                "continents": ["Europe"],
-                "flags": {
-                    "png": "https://flagcdn.com/w320/fr.png",
-                    "svg": "https://flagcdn.com/fr.svg",
-                    "alt": "The flag of France is composed of three equal vertical bands of blue, white and red.",
-                },
-                "coatOfArms": {
-                    "png": "https://mainfacts.com/media/images/coats_of_arms/fr.png",
-                    "svg": "https://mainfacts.com/media/images/coats_of_arms/fr.svg",
-                },
-                "startOfWeek": "monday",
-                "capitalInfo": {"latlng": [48.87, 2.33]},
-                "postalCode": {"format": "#####", "regex": "^(\\d{5})$"},
-            },
-            {
-                "name": {
-                    "common": "Germany",
-                    "official": "Federal Republic of Germany",
-                    "nativeName": {
-                        "deu": {
-                            "official": "Bundesrepublik Deutschland",
-                            "common": "Deutschland",
-                        }
-                    },
-                },
-                "tld": [".de"],
-                "cca2": "DE",
-                "ccn3": "276",
-                "cca3": "DEU",
-                "cioc": "GER",
-                "independent": True,
-                "status": "officially-assigned",
-                "unMember": True,
-                "currencies": {
-                    "EUR": {"name": "Euro", "symbol": "€"},
-                    "DM": {"name": "Deutsche Mark", "symbol": "DM"},
-                },
-                "idd": {"root": "+4", "suffixes": ["9"]},
-                "capital": ["Berlin"],
-                "altSpellings": [
-                    "DE",
-                    "Federal Republic of Germany",
-                    "Bundesrepublik Deutschland",
-                ],
-                "region": "Europe",
-                "subregion": "Western Europe",
-                "languages": {"deu": "German"},
-                "translations": {
-                    "ara": {
-                        "official": "جمهورية ألمانيا الاتحادية",
-                        "common": "ألمانيا",
-                    },
-                    "bre": {
-                        "official": "Republik Kevreadel Alamagn",
-                        "common": "Alamagn",
-                    },
-                    "ces": {
-                        "official": "Spolková republika Německo",
-                        "common": "Německo",
-                    },
-                    "cym": {
-                        "official": "Federal Republic of Germany",
-                        "common": "Germany",
-                    },
-                    "deu": {
-                        "official": "Bundesrepublik Deutschland",
-                        "common": "Deutschland",
-                    },
-                    "est": {"official": "Saksamaa Liitvabariik", "common": "Saksamaa"},
-                    "fin": {"official": "Saksan liittotasavalta", "common": "Saksa"},
-                    "fra": {
-                        "official": "République fédérale d'Allemagne",
-                        "common": "Allemagne",
-                    },
-                    "hrv": {
-                        "official": "Njemačka Federativna Republika",
-                        "common": "Njemačka",
-                    },
-                    "hun": {
-                        "official": "Német Szövetségi Köztársaság",
-                        "common": "Németország",
-                    },
-                    "ita": {
-                        "official": "Repubblica federale di Germania",
-                        "common": "Germania",
-                    },
-                    "jpn": {"official": "ドイツ連邦共和国", "common": "ドイツ"},
-                    "kor": {"official": "독일 연방 공화국", "common": "독일"},
-                    "nld": {
-                        "official": "Bondsrepubliek Duitsland",
-                        "common": "Duitsland",
-                    },
-                    "per": {"official": "جمهوری فدرال آلمان", "common": "آلمان"},
-                    "pol": {
-                        "official": "Republika Federalna Niemiec",
-                        "common": "Niemcy",
-                    },
-                    "por": {
-                        "official": "República Federal da Alemanha",
-                        "common": "Alemanha",
-                    },
-                    "rus": {
-                        "official": "Федеративная Республика Германия",
-                        "common": "Германия",
-                    },
-                    "slk": {
-                        "official": "Nemecká spolková republika",
-                        "common": "Nemecko",
-                    },
-                    "spa": {
-                        "official": "República Federal de Alemania",
-                        "common": "Alemania",
-                    },
-                    "srp": {
-                        "official": "Савезна Република Немачка",
-                        "common": "Немачка",
-                    },
-                    "swe": {
-                        "official": "Förbundsrepubliken Tyskland",
-                        "common": "Tyskland",
-                    },
-                    "tur": {
-                        "official": "Almanya Federal Cumhuriyeti",
-                        "common": "Almanya",
-                    },
-                    "urd": {"official": "وفاقی جمہوریہ جرمنی", "common": "جرمنی"},
-                    "zho": {"official": "德意志联邦共和国", "common": "德国"},
-                },
-                "latlng": [51.0, 9.0],
-                "landlocked": False,
-                "borders": [
-                    "AUT",
-                    "BEL",
-                    "CZE",
-                    "DNK",
-                    "FRA",
-                    "LUX",
-                    "NLD",
-                    "POL",
-                    "CHE",
-                ],
-                "area": 357114.0,
-                "demonyms": {
-                    "eng": {"f": "German", "m": "German"},
-                    "fra": {"f": "Allemande", "m": "Allemand"},
-                },
-                "flag": "\ud83c\udde9\ud83c\uddea",
-                "maps": {
-                    "googleMaps": "https://goo.gl/maps/mD9FBMq1nvXUBrkv6",
-                    "openStreetMaps": "https://www.openstreetmap.org/relation/51477",
-                },
-                "population": 83240525,
-                "gini": {"2016": 31.9},
-                "fifa": "GER",
-                "car": {"signs": ["DY"], "side": "right"},
-                "timezones": ["UTC+01:00"],
-                "continents": ["Europe"],
-                "flags": {
-                    "png": "https://flagcdn.com/w320/de.png",
-                    "svg": "https://flagcdn.com/de.svg",
-                    "alt": "The flag of Germany is composed of three equal horizontal bands of black, red and gold.",
-                },
-                "coatOfArms": {
-                    "png": "https://mainfacts.com/media/images/coats_of_arms/de.png",
-                    "svg": "https://mainfacts.com/media/images/coats_of_arms/de.svg",
-                },
-                "startOfWeek": "monday",
-                "capitalInfo": {"latlng": [52.52, 13.4]},
-                "postalCode": {"format": "#####", "regex": "^(\\d{5})$"},
-            },
+            build_country("France", "French Republic", "FR", "FRA", "Paris", [euro]),
+            build_country(
+                "Germany",
+                "Federal Republic of Germany",
+                "DE",
+                "DEU",
+                "Berlin",
+                [euro, {"code": "DM", "name": "Deutsche Mark", "symbol": "DM"}],
+            ),
+            # Entities without ISO codes are skipped
+            build_country("Abkhazia", "Republic of Abkhazia", "", "", "Sukhumi", []),
         ]
 
 
 class MockRestCountriesUploadProcessor(RestCountriesUploadProcessor):
-    country_locality_request_manager_class = MockCountryRequestManager
     request_manager_class = MockCountryRequestManager
 
 
@@ -317,6 +104,25 @@ class TestCountryManager(TestCase):
         self.assertEqual(test_query[1].country_name, "Germany")
         self.assertEqual(test_query[1].country_code, "DEU")
         self.assertEqual(test_query[1].country_code_2, "DE")
+        self.assertEqual(
+            test_query[1].country_official_name, "Federal Republic of Germany"
+        )
+        self.assertEqual(test_query[1].country_capital, "Berlin")
+        self.assertEqual(test_query[1].country_continent, "Europe")
+        self.assertEqual(test_query[1].country_region, "Europe")
+        self.assertEqual(test_query[1].country_subregion, "Western Europe")
+        self.assertTrue(test_query[1].country_un_member)
+        self.assertEqual(test_query[1].country_lat, 46.0)
+        self.assertEqual(test_query[1].country_long, 2.0)
+        self.assertEqual(test_query[1].country_area, 551695.0)
+        self.assertEqual(test_query[1].country_population, 67391582)
+        self.assertEqual(test_query[1].country_postal_code_format, "#####")
+        self.assertEqual(
+            test_query[1].country_flag, "https://flags.restcountries.com/v5/w640/DE.png"
+        )
+        self.assertEqual(
+            test_query[1].country_google_maps_url, "https://goo.gl/maps/example"
+        )
         ccy_query = CurrencyRepository().receive().all()
         self.assertEqual(ccy_query.count(), 2)
         self.assertEqual(ccy_query[0].ccy_code, "EUR")
