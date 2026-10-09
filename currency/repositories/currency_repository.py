@@ -23,3 +23,20 @@ class CurrencyRepository(MontrekRepository):
             CurrencyStaticSatellite,
             ["ccy_name", "ccy_code", "ccy_symbol"],
         )
+
+
+class CurrencyFxRateHistoryRepository(MontrekRepository):
+    """All FX rates of one currency, ``pk`` being its hub value date id."""
+
+    hub_class = CurrencyHub
+    default_order_fields: tuple[str, ...] = ("-value_date",)
+
+    def set_annotations(self, **kwargs) -> None:
+        self.add_satellite_fields_annotations(
+            CurrencyTimeSeriesSatellite,
+            ["fx_rate"],
+        )
+
+    def receive(self) -> QuerySet:
+        hub = self.get_hub_by_id(pk=self.session_data["pk"])
+        return super().receive().filter(hub=hub)

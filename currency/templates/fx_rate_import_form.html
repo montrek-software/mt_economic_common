@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+  <div class="col-12 col-lg-4">
+    <form method="post">
+      {% csrf_token %}
+      <div class="tile">
+        <div class="row m-2">{{ import_form.as_div }}</div>
+        <div class="row m-2">
+          <input type="submit" value="Import" class="input-custom" />
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}
