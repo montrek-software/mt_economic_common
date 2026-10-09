@@ -1,4 +1,4 @@
-from baseclasses.dataclasses.view_classes import ActionElement
+from baseclasses.dataclasses.view_classes import ActionElement, SettingsActionElement
 from baseclasses.views import (
     MontrekCreateView,
     MontrekDetailView,
@@ -76,6 +76,15 @@ class CountryApiUploadRegistryListView(MontrekListView):
     manager_class = CountryApiUploadRegistryManager
     title = "Country API Registry"
     tab = "tab_country_api_registry"
+
+    @property
+    def actions(self) -> tuple:
+        action_settings = SettingsActionElement(
+            url_name="country_api_credentials",
+            action_id="id_country_api_credentials",
+            hover_text="Set Credentials",
+        )
+        return (action_settings,)
 
 
 class CountryDetailsView(MontrekDetailView):

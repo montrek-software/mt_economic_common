@@ -1,5 +1,9 @@
 from django.urls import reverse
-from baseclasses.dataclasses.view_classes import ActionElement, ListActionElement
+from baseclasses.dataclasses.view_classes import (
+    ActionElement,
+    BackActionElement,
+    ListActionElement,
+)
 from baseclasses import views
 from mt_economic_common.country.managers.country_api_credentials_managers import (
     CountryApiCredentialsTableManager,
@@ -52,13 +56,21 @@ class CountryApiCredentialsListView(views.MontrekListView):
 
     @property
     def actions(self) -> tuple:
+        action_back = BackActionElement(
+            url_name="country_api_registry_list",
+            action_id="id_country_api_registry_list",
+            hover_text="Go to API Registry",
+        )
         action_new = ActionElement(
             icon="plus",
             link=reverse("country_api_credentials_create"),
             action_id="id_create_country_api_credentials",
             hover_text="Create new Country Api Credentials",
         )
-        return (action_new,)
+        return (
+            action_back,
+            action_new,
+        )
 
 
 class CountryApiCredentialsDetailView(views.MontrekDetailView):
