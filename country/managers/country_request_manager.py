@@ -2,7 +2,7 @@ from requesting.managers.request_manager import RequestJsonManager
 
 
 class RestCountriesRequestManager(RequestJsonManager):
-    base_url = "https://restcountries.com/v3.1/"
+    base_url = "https://api.restcountries.com/countries/v5/"
     request_kwargs = {
         "fields": ",".join(
             [
