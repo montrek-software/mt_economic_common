@@ -1,5 +1,3 @@
-import json
-from io import StringIO
 from typing import Any
 
 import pandas as pd
@@ -9,7 +7,6 @@ from data_import.api_import.managers.api_data_import_processor import (
 from data_import.types import ImportDataType
 from django.conf import settings
 from mt_economic_common.country.managers.country_request_manager import (
-    RestCountriesLocalityRequestManager,
     RestCountriesRequestManager,
 )
 from mt_economic_common.country.repositories.country_oecd_repository import (
@@ -27,76 +24,83 @@ from mt_economic_common.sdmx_api.managers.sdmx_request_manager import (
 
 class RestCountriesUploadProcessor(ApiDataImportProcessorBase):
     request_manager_class = RestCountriesRequestManager
-    country_locality_request_manager_class = RestCountriesLocalityRequestManager
-    endpoint = "all"
+    endpoint = ""
 
     def post_check(self) -> bool:
         return True
 
     def apply_import_data(self) -> bool:
-        json_response = self.import_data
-        countries_df = pd.read_json(StringIO(json.dumps(json_response)))
-        countries_locality_response = self.country_locality_request_manager_class(
-            self.session_data
-        ).get_response("all")
         try:
-            countries_locality_df = pd.read_json(
-                StringIO(json.dumps(countries_locality_response))
+            countries_df = pd.DataFrame(self.import_data)
+            countries_df["country_code"] = countries_df["codes"].apply(
+                lambda x: self._get_json_field(x, "alpha_3")
             )
-            countries_df = countries_df.set_index("cca2").join(
-                countries_locality_df.set_index("cca2"), rsuffix="_locality"
+            countries_df["country_code_2"] = countries_df["codes"].apply(
+                lambda x: self._get_json_field(x, "alpha_2")
             )
-            countries_df["cca2"] = countries_df.index
+            # Entities without ISO codes (e.g. Abkhazia) were not part of the
+            # legacy API and cannot be identified by country_code
+            countries_df = countries_df.loc[
+                countries_df["country_code"].notna()
+            ].reset_index(drop=True)
             countries_df["link_country_currency"] = self.create_currencies(
                 countries_df["currencies"]
             )
-            countries_df["country_name"] = countries_df["name"].apply(
-                lambda x: x["common"]
+            countries_df["country_name"] = countries_df["names"].apply(
+                lambda x: self._get_json_field(x, "common")
             )
-            countries_df["country_official_name"] = countries_df["name"].apply(
-                lambda x: x["official"]
+            countries_df["country_official_name"] = countries_df["names"].apply(
+                lambda x: self._get_json_field(x, "official")
             )
             countries_df["comment"] = "Uploaded via REST Api"
-            countries_df["country_lat"] = countries_df["latlng"].apply(
-                lambda x: x[0] if x else None
+            countries_df["country_lat"] = countries_df["coordinates"].apply(
+                lambda x: self._get_json_field(x, "lat")
             )
-            countries_df["country_long"] = countries_df["latlng"].apply(
-                lambda x: x[1] if x else None
+            countries_df["country_long"] = countries_df["coordinates"].apply(
+                lambda x: self._get_json_field(x, "lng")
             )
             countries_df["country_continent"] = countries_df["continents"].apply(
-                lambda x: ", ".join(x) if isinstance(x, list) else None
+                self._join_list
             )
-            countries_df["country_capital"] = countries_df["capital"].apply(
-                lambda x: ", ".join(x) if isinstance(x, list) else None
+            countries_df["country_capital"] = countries_df["capitals"].apply(
+                lambda x: self._join_list(
+                    [capital["name"] for capital in x] if isinstance(x, list) else x
+                )
             )
             countries_df["country_postal_code_format"] = countries_df[
-                "postalCode"
+                "postal_code"
             ].apply(lambda x: self._get_json_field(x, "format"))
             countries_df["country_postal_code_regex"] = countries_df[
-                "postalCode"
+                "postal_code"
             ].apply(lambda x: self._get_json_field(x, "regex"))
-            countries_df["country_google_maps_url"] = countries_df["maps"].apply(
-                lambda x: x["googleMaps"] if x else None
+            countries_df["country_google_maps_url"] = countries_df["links"].apply(
+                lambda x: self._get_json_field(x, "google_maps")
             )
-            countries_df["country_open_street_map_url"] = countries_df["maps"].apply(
-                lambda x: x["openStreetMaps"] if x else None
+            countries_df["country_open_street_map_url"] = countries_df["links"].apply(
+                lambda x: self._get_json_field(x, "open_street_maps")
             )
-            countries_df["country_flag"] = countries_df["flags"].apply(
-                lambda x: x["png"] if x else None
+            countries_df["country_flag"] = countries_df["flag"].apply(
+                lambda x: self._get_json_field(x, "url_png")
+            )
+            countries_df["country_un_member"] = countries_df["classification"].apply(
+                lambda x: self._get_json_field(x, "un_member")
+            )
+            countries_df["country_area"] = countries_df["area"].apply(
+                lambda x: self._get_json_field(x, "kilometers")
             )
             rename_columns = {
-                "cca3": "country_code",
-                "cca2": "country_code_2",
-                "unMember": "country_un_member",
                 "region": "country_region",
                 "subregion": "country_subregion",
-                "area": "country_area",
                 "population": "country_population",
             }
             countries_df = countries_df.rename(columns=rename_columns)
+            for column in ("country_region", "country_subregion"):
+                countries_df[column] = countries_df[column].apply(lambda x: x or None)
             countries_df = countries_df.loc[
                 :,
                 [
+                    "country_code",
+                    "country_code_2",
                     "country_name",
                     "country_capital",
                     "country_official_name",
@@ -109,11 +113,13 @@ class RestCountriesUploadProcessor(ApiDataImportProcessorBase):
                     "country_google_maps_url",
                     "country_open_street_map_url",
                     "country_flag",
+                    "country_un_member",
+                    "country_area",
                     "link_country_currency",
                 ]
                 + list(rename_columns.values()),
             ]
-        except (KeyError, ValueError, pd.errors.ParserError) as e:
+        except (KeyError, ValueError, TypeError) as e:
             if settings.IS_TEST_RUN:
                 raise e
             self.set_message(
@@ -134,36 +140,47 @@ class RestCountriesUploadProcessor(ApiDataImportProcessorBase):
             return False
         return True
 
-    def _get_json_field(self, json_obj: dict | None, field_name: str):
-        if pd.isnull(json_obj):
+    @staticmethod
+    def _get_json_field(json_obj: dict | None, field_name: str):
+        if not isinstance(json_obj, dict):
             return None
-        return json_obj.get(field_name, None)
+        value = json_obj.get(field_name)
+        # The API returns empty strings for missing values
+        if value == "":
+            return None
+        return value
+
+    @staticmethod
+    def _join_list(values: list | None) -> str | None:
+        if not isinstance(values, list) or not values:
+            return None
+        return ", ".join(values)
 
     def create_currencies(self, currencies_series: pd.Series) -> pd.Series:
-        def extract_currencies(data: list):
-            return [
-                {
-                    "ccy_code": currency,
-                    "ccy_name": details.get("name"),
-                    "ccy_symbol": details.get("symbol"),
-                }
-                for currency, details in data.items()
-            ]
-
-        currencies_series = currencies_series.dropna()
-
+        currencies_series = currencies_series.apply(
+            lambda x: x if isinstance(x, list) else []
+        )
         currency_list = [
-            item
-            for sublist in currencies_series.apply(extract_currencies)
-            for item in sublist
+            {
+                "ccy_code": currency["code"],
+                "ccy_name": currency.get("name"),
+                "ccy_symbol": currency.get("symbol"),
+            }
+            for currencies in currencies_series
+            for currency in currencies
         ]
-        currency_df = pd.DataFrame(currency_list).drop_duplicates(subset=["ccy_code"])
-        currency_repository = CurrencyRepository(session_data=self.session_data)
-        currency_repository.create_objects_from_data_frame(currency_df)
-        currency_hubs = currency_repository.receive().all()
-        currency_hub_map = {c.ccy_code: c for c in currency_hubs}
-        return pd.Series(
-            currencies_series.apply(lambda x: [currency_hub_map[c] for c in x])
+        if currency_list:
+            currency_df = pd.DataFrame(currency_list).drop_duplicates(
+                subset=["ccy_code"]
+            )
+            currency_repository = CurrencyRepository(session_data=self.session_data)
+            currency_repository.create_objects_from_data_frame(currency_df)
+        currency_hub_map = {
+            c.ccy_code: c
+            for c in CurrencyRepository(session_data=self.session_data).receive().all()
+        }
+        return currencies_series.apply(
+            lambda x: [currency_hub_map[currency["code"]] for currency in x]
         )
 
 
